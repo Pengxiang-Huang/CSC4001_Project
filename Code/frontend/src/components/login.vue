@@ -23,7 +23,7 @@
             </label>&nbsp;
               <div class="control is-expanded">
                 <input v-if="showPassword" type="text" class="input" v-model="password" />
-                <input v-else type="password" class="input" v-model="password" placeholder="*****">
+                <input v-else type="password" class="input" v-model="password" placeholder="Password">
               </div>
           </div>
           <el-button :plain="true" @click="submit">Log in</el-button>
@@ -74,7 +74,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  background-color:  #53c0f7;
+  background-color: #DCDDDF url(https://cssdeck.com/uploads/media/items/7/7AF2Qzt.png);
 }
 
 div#app {
