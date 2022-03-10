@@ -30,7 +30,15 @@
         </form>
       </div>
     </div>
+    <div>
+      <select v-model="url" @keyup.enter="confirm">
+        <option value="http://127.0.0.1:8000">Local</option>
+        <option value="http://175.178.34.84">Server</option>
+      </select>
+      <button @click="confirm">confirm</button>
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -57,6 +65,9 @@ export default{
       if (this.email === '' || !reg.test(this.email)) {
         this.$message.error('please input the correct email')
       }
+    },
+    confirm () {
+      this.GLOBAL.BASE_URL = this.url
     }
   }
 }
