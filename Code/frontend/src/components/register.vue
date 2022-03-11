@@ -65,9 +65,10 @@ export default{
           password: this.password1
         }
         console.log(Qs.stringify(sendData))
+        var url = this.GLOBAL.BASE_URL + '/register/'
         axios({
           method: 'post',
-          url: '/register/',
+          url: url,
           data: Qs.stringify(sendData)
         }).then((response) => {
           if (response.data.isRegister) {
