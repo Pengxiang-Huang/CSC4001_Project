@@ -4,17 +4,6 @@
 -- ------------------------------------------------------
 -- Server version	8.0.28-0ubuntu0.20.04.3
 
--- -----------------------------------------------------
--- Schema CSC4001
--- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `CSC4001` ;
-
--- -----------------------------------------------------
--- Schema CSC4001
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `CSC4001` DEFAULT CHARACTER SET utf8 ;
-USE `CSC4001` ;
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -25,6 +14,16 @@ USE `CSC4001` ;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+-- Schema CSC4001
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `CSC4001` ;
+
+-- -----------------------------------------------------
+-- Schema CSC4001
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `CSC4001` DEFAULT CHARACTER SET utf8 ;
+USE `CSC4001` ;
 
 --
 -- Table structure for table `Our_project_blog_answers`
@@ -80,6 +79,7 @@ CREATE TABLE `Our_project_blog_questions` (
   `hot` int(10) unsigned zerofill NOT NULL,
   `create_time` datetime(6) DEFAULT NULL,
   `update_time` datetime(6) DEFAULT NULL,
+  `views` int(10) unsigned zerofill NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sub_group_name_idx` (`sub_group_type`),
   KEY `email_idx` (`author_id`),
@@ -96,7 +96,7 @@ CREATE TABLE `Our_project_blog_questions` (
 
 LOCK TABLES `Our_project_blog_questions` WRITE;
 /*!40000 ALTER TABLE `Our_project_blog_questions` DISABLE KEYS */;
-INSERT INTO `Our_project_blog_questions` VALUES (1,'Question about the Django setings.py',1,'CSC4001',1,'I am a neophyte to Django, and now I am taking CSC4001, I don\'t know how to write the settings.py to set my dataBase.','Markdown',0000000003,0000000001,0000000010,NULL,NULL),(2,'Anybody know how to solve this problem of npm run dev?',2,'CSC4001',1,'When I using the npm run dev, it gives me an error about `webpack-dev-server --inline --progress --config build/webp','Markdown',0000000004,0000000004,0000000014,NULL,NULL),(3,'What\'s the meaning of two-direction association in UML',1,'CSC4001',2,'Actually, I don\'t know what\'s the meaning of two-direction in the description of assignment1','Markdown',0000000000,0000000001,0000000003,NULL,NULL),(4,'Building Kernel fail.',3,'CSC3150',3,'When I run make, it gives me a error about `permission denied`, why?','Markdown',0000000002,0000000000,0000000002,NULL,NULL),(5,'How many storage should I assign to VM?',4,'CSC3150',3,'Is 10GB assigned to VM enough? cause my computer doesn\'t have much storage left.','Markdown',0000000010,0000000015,0000000017,NULL,NULL);
+INSERT INTO `Our_project_blog_questions` VALUES (1,'Question about the Django setings.py',1,'CSC4001',1,'I am a neophyte to Django, and now I am taking CSC4001, I don\'t know how to write the settings.py to set my dataBase.','Markdown',0000000003,0000000001,0000000020,NULL,NULL,0000000113),(2,'Anybody know how to solve this problem of npm run dev?',2,'CSC4001',1,'When I using the npm run dev, it gives me an error about `webpack-dev-server --inline --progress --config build/webp','Markdown',0000000004,0000000004,0000000017,NULL,NULL,0000000057),(3,'What\'s the meaning of two-direction association in UML',1,'CSC4001',2,'Actually, I don\'t know what\'s the meaning of two-direction in the description of assignment1','Markdown',0000000000,0000000009,0000000009,NULL,NULL,0000000060),(4,'Building Kernel fail.',3,'CSC3150',3,'When I run make, it gives me a error about `permission denied`, why?','Markdown',0000000002,0000000000,0000000004,NULL,NULL,0000000201),(5,'How many storage should I assign to VM?',4,'CSC3150',3,'Is 10GB assigned to VM enough? cause my computer doesn\'t have much storage left.','Markdown',0000000010,0000000015,0000000040,NULL,NULL,0000000055);
 /*!40000 ALTER TABLE `Our_project_blog_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +154,7 @@ CREATE TABLE `Our_project_group` (
 
 LOCK TABLES `Our_project_group` WRITE;
 /*!40000 ALTER TABLE `Our_project_group` DISABLE KEYS */;
-INSERT INTO `Our_project_group` VALUES (1,'CSC3150','Operating System',NULL,NULL,NULL),(2,'CSC4001','Soft Engineering course',NULL,NULL,NULL);
+INSERT INTO `Our_project_group` VALUES (1,'CSC3150','Operating System',NULL,NULL,131),(2,'CSC4001','Soft Engineering course',NULL,NULL,111);
 /*!40000 ALTER TABLE `Our_project_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,17 +166,20 @@ DROP TABLE IF EXISTS `Our_project_picture`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Our_project_picture` (
-  `url` varchar(100) DEFAULT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
+  `url` varchar(100) NOT NULL,
   `question` int DEFAULT NULL,
   `answer` int DEFAULT NULL,
+  `group_name` varchar(45) DEFAULT NULL,
   `create_time` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `question_id_idx` (`question`),
   KEY `answer_id_idx` (`answer`),
+  KEY `group_name_index_idx` (`group_name`),
   CONSTRAINT `answer` FOREIGN KEY (`answer`) REFERENCES `Our_project_blog_answers` (`id`),
+  CONSTRAINT `group_name_index` FOREIGN KEY (`group_name`) REFERENCES `Our_project_group` (`group_name`),
   CONSTRAINT `question` FOREIGN KEY (`question`) REFERENCES `Our_project_blog_questions` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +188,7 @@ CREATE TABLE `Our_project_picture` (
 
 LOCK TABLES `Our_project_picture` WRITE;
 /*!40000 ALTER TABLE `Our_project_picture` DISABLE KEYS */;
-INSERT INTO `Our_project_picture` VALUES ('http://175.178.34.84/pics/Django_DB.JPG',1,1,NULL,NULL),('http://175.178.34.84/pics/double_dir.JPG',2,3,NULL,NULL),('http://175.178.34.84/pics/npm_run_dev.png',3,2,NULL,NULL),('http://175.178.34.84/pics/permission_deny.jpg',4,4,NULL,NULL),('http://175.178.34.84/pics/VM_storage.jpg',5,5,NULL,NULL),('http://175.178.34.84/pics/DB_ANSWER1.JPG',6,NULL,1,NULL);
+INSERT INTO `Our_project_picture` VALUES (1,'http://175.178.34.84/pics/Django_DB.JPG',1,NULL,NULL,NULL),(2,'http://175.178.34.84/pics/double_dir.JPG',3,NULL,NULL,NULL),(3,'http://175.178.34.84/pics/npm_run_dev.png',2,NULL,NULL,NULL),(4,'http://175.178.34.84/pics/permission_deny.jpg',4,NULL,NULL,NULL),(5,'http://175.178.34.84/pics/VM_storage.jpg',5,NULL,NULL,NULL),(6,'http://175.178.34.84/pics/DB_ANSWER1.JPG',NULL,1,NULL,NULL),(7,'http://175.178.34.84/pics/csc4001.jpg',NULL,NULL,'CSC4001',NULL),(8,'http://175.178.34.84/pics/CSC3150.JPG',NULL,NULL,'CSC3150',NULL);
 /*!40000 ALTER TABLE `Our_project_picture` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -234,8 +237,9 @@ CREATE TABLE `Our_project_user` (
   `grade` int DEFAULT NULL,
   `create_time` datetime(6) DEFAULT NULL,
   `update_time` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`id`),
+  KEY `Index_user_name` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,35 +248,115 @@ CREATE TABLE `Our_project_user` (
 
 LOCK TABLES `Our_project_user` WRITE;
 /*!40000 ALTER TABLE `Our_project_user` DISABLE KEYS */;
-INSERT INTO `Our_project_user` VALUES (1,'119010249@link.cuhk.edu.cn','qpr','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:04:49.493694','2022-03-11 07:04:49.493694'),(2,'119010249@link.cuhk.edu.cn','1234','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:12:25.407426','2022-03-11 07:12:25.407459'),(3,'119010249@link.cuhk.edu.cn','qqq','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:10.849469','2022-03-11 07:13:10.849469'),(4,'119010249@link.cuhk.edu.cn','yyy','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:51.020685','2022-03-11 07:13:51.020720'),(5,'123456789@link.cuhk.edu.cn','nobody','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-17 05:24:12.726320','2022-03-17 05:24:12.726353'),(6,'119011111@link.cuhk.edu.cn','不会起名','caf1a3dfb505ffed0d024130f58c5cfa',NULL,NULL,NULL,'2022-03-17 10:04:44.401660','2022-03-17 10:04:44.401695');
+INSERT INTO `Our_project_user` VALUES (1,'119010249@link.cuhk.edu.cn','qpr','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:04:49.493694','2022-03-11 07:04:49.493694'),(2,'119010249@link.cuhk.edu.cn','1234','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:12:25.407426','2022-03-11 07:12:25.407459'),(3,'119010249@link.cuhk.edu.cn','qqq','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:10.849469','2022-03-11 07:13:10.849469'),(4,'119010249@link.cuhk.edu.cn','yyy','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:51.020685','2022-03-11 07:13:51.020720'),(5,'123456789@link.cuhk.edu.cn','nobody','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-17 05:24:12.726320','2022-03-17 05:24:12.726353'),(6,'119011111@link.cuhk.edu.cn','不会起名','caf1a3dfb505ffed0d024130f58c5cfa',NULL,NULL,NULL,'2022-03-17 10:04:44.401660','2022-03-17 10:04:44.401695'),(7,'123456789@link.cuhk.edu.cn','5555','827ccb0eea8a706c4c34a16891f84e7b',NULL,NULL,NULL,'2022-03-17 10:09:53.288498','2022-03-17 10:09:53.288530');
 /*!40000 ALTER TABLE `Our_project_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Our_project_user_has_our_project_Group`
+-- Table structure for table `Our_project_user_follow_group`
 --
 
-DROP TABLE IF EXISTS `Our_project_user_has_our_project_Group`;
+DROP TABLE IF EXISTS `Our_project_user_follow_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Our_project_user_has_our_project_Group` (
-  `Our_project_user_id` int NOT NULL,
-  `Our_project_Group_group_name` varchar(45) NOT NULL,
-  PRIMARY KEY (`Our_project_user_id`,`Our_project_Group_group_name`),
-  KEY `fk_Our_project_user_has_Our_project_Group_Our_project_user1_idx` (`Our_project_user_id`),
-  KEY `fk_Our_project_user_has_Our_project_Group_Our_project_user2_idx` (`Our_project_Group_group_name`),
-  CONSTRAINT `fk_Our_project_user_has_Our_project_Group_Our_project_user1` FOREIGN KEY (`Our_project_user_id`) REFERENCES `Our_project_user` (`id`),
-  CONSTRAINT `fk_Our_project_user_has_Our_project_Group_Our_project_user2` FOREIGN KEY (`Our_project_Group_group_name`) REFERENCES `Our_project_group` (`group_name`)
+CREATE TABLE `Our_project_user_follow_group` (
+  `id` int NOT NULL,
+  `group_name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`,`group_name`),
+  KEY `fk_Our_project_user_has_Our_project_Group_Our_project_user1_idx` (`id`),
+  KEY `fk_Our_project_user_has_Our_project_Group_Our_project_user2_idx` (`group_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Our_project_user_has_our_project_Group`
+-- Dumping data for table `Our_project_user_follow_group`
 --
 
-LOCK TABLES `Our_project_user_has_our_project_Group` WRITE;
-/*!40000 ALTER TABLE `Our_project_user_has_our_project_Group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Our_project_user_has_our_project_Group` ENABLE KEYS */;
+LOCK TABLES `Our_project_user_follow_group` WRITE;
+/*!40000 ALTER TABLE `Our_project_user_follow_group` DISABLE KEYS */;
+INSERT INTO `Our_project_user_follow_group` VALUES (1,'CSC3150'),(1,'CSC4001'),(2,'CSC3150'),(3,'CSC4001'),(4,'CSC4001'),(5,'CSC4001'),(6,'CSC3150'),(6,'CSC4001');
+/*!40000 ALTER TABLE `Our_project_user_follow_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Our_project_user_follow_question`
+--
+
+DROP TABLE IF EXISTS `Our_project_user_follow_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Our_project_user_follow_question` (
+  `id` int NOT NULL,
+  `question_id` int NOT NULL,
+  PRIMARY KEY (`id`,`question_id`),
+  KEY `Index_questionid_idx` (`question_id`),
+  CONSTRAINT `Index_questionid` FOREIGN KEY (`question_id`) REFERENCES `Our_project_blog_questions` (`id`),
+  CONSTRAINT `Index_userid` FOREIGN KEY (`id`) REFERENCES `Our_project_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Our_project_user_follow_question`
+--
+
+LOCK TABLES `Our_project_user_follow_question` WRITE;
+/*!40000 ALTER TABLE `Our_project_user_follow_question` DISABLE KEYS */;
+INSERT INTO `Our_project_user_follow_question` VALUES (1,1),(5,1),(4,2),(7,2),(1,3),(7,3),(1,4),(2,4),(3,4);
+/*!40000 ALTER TABLE `Our_project_user_follow_question` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Our_project_user_like_answer`
+--
+
+DROP TABLE IF EXISTS `Our_project_user_like_answer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Our_project_user_like_answer` (
+  `id` int NOT NULL,
+  `question_id` int NOT NULL,
+  PRIMARY KEY (`id`,`question_id`),
+  KEY `index_a_id_idx` (`question_id`),
+  CONSTRAINT `index_a_id` FOREIGN KEY (`question_id`) REFERENCES `Our_project_blog_answers` (`id`),
+  CONSTRAINT `index_u_id` FOREIGN KEY (`id`) REFERENCES `Our_project_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Our_project_user_like_answer`
+--
+
+LOCK TABLES `Our_project_user_like_answer` WRITE;
+/*!40000 ALTER TABLE `Our_project_user_like_answer` DISABLE KEYS */;
+INSERT INTO `Our_project_user_like_answer` VALUES (1,1),(4,1),(5,1),(2,2),(5,2),(3,3),(1,4),(3,4),(4,4);
+/*!40000 ALTER TABLE `Our_project_user_like_answer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Our_project_user_like_question`
+--
+
+DROP TABLE IF EXISTS `Our_project_user_like_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Our_project_user_like_question` (
+  `id` int NOT NULL,
+  `question_id` int NOT NULL,
+  PRIMARY KEY (`id`,`question_id`),
+  KEY `Index_question_id_idx` (`question_id`),
+  CONSTRAINT `Index_question_id` FOREIGN KEY (`question_id`) REFERENCES `Our_project_blog_questions` (`id`),
+  CONSTRAINT `Index_user_id` FOREIGN KEY (`id`) REFERENCES `Our_project_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Our_project_user_like_question`
+--
+
+LOCK TABLES `Our_project_user_like_question` WRITE;
+/*!40000 ALTER TABLE `Our_project_user_like_question` DISABLE KEYS */;
+INSERT INTO `Our_project_user_like_question` VALUES (1,1),(4,1),(1,2),(3,2),(3,3),(1,4),(6,4),(2,5),(5,5),(6,5);
+/*!40000 ALTER TABLE `Our_project_user_like_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -552,7 +636,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('tm5f9jwnlhc1dxy3tp5a5505d5l21hrs','eyJ1c2VybmFtZSI6Ilx1NGUwZFx1NGYxYVx1OGQ3N1x1NTQwZCIsInVpZCI6Nn0:1nUmzs:R8OvVD47O676ppREdzOKYikblMw10tnb2NSmLRum27A','2022-03-31 10:04:44.420840'),('vnhtb1ta5poofxgvhw2beqayrxounqe4','eyJ1c2VybmFtZSI6IjEyMzQiLCJ1aWQiOjJ9:1nSZRp:ZPU_Kmp8qjXcRAqOxMoLsuljaDqP7Bka6kVWpX0Cyjs','2022-03-25 07:12:25.431922'),('zktqnu0h74t9ey8blqae4rtk4el26gcq','eyJ1c2VybmFtZSI6InFxcSIsInVpZCI6M30:1nSZSZ:tNg8UMYRlG_pgZsalVXm3v3HheKXFHgsUJe8n0vmJqg','2022-03-25 07:13:11.065469');
+INSERT INTO `django_session` VALUES ('tm5f9jwnlhc1dxy3tp5a5505d5l21hrs','eyJ1c2VybmFtZSI6IjU1NTUiLCJ1aWQiOjd9:1nUn4r:AQ3rjvEreeQAneHoqwKDOAb0aPbmpKOLTZGkg-4bIuw','2022-03-31 10:09:53.307199'),('vnhtb1ta5poofxgvhw2beqayrxounqe4','eyJ1c2VybmFtZSI6IjEyMzQiLCJ1aWQiOjJ9:1nSZRp:ZPU_Kmp8qjXcRAqOxMoLsuljaDqP7Bka6kVWpX0Cyjs','2022-03-25 07:12:25.431922'),('zktqnu0h74t9ey8blqae4rtk4el26gcq','eyJ1c2VybmFtZSI6InFxcSIsInVpZCI6M30:1nSZSZ:tNg8UMYRlG_pgZsalVXm3v3HheKXFHgsUJe8n0vmJqg','2022-03-25 07:13:11.065469');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -565,7 +649,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-17 18:05:55
+-- Dump completed on 2022-03-22 16:53:23
 
 DROP EVENT IF EXISTS refresh_hot; 
 
