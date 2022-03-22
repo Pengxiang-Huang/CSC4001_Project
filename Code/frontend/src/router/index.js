@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '@/components/login'
 import register from '@/components/register'
 import design from '@/components/design'
+import contact from '@/components/contact'
 import home from '@/components/home'
 
 Vue.use(Router)
@@ -23,6 +24,11 @@ export default new Router({
       path: '/design',
       name: 'design',
       component: design
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: contact
     },
     {
       path: '/home',
