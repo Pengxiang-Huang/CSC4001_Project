@@ -20,11 +20,11 @@
         <h3>I accept all terms & condition</h3>
       </div>
       <div class="input-box button">
-        <input @click="submit" type="Submit" value="Register Now">
+        <input @click="submit"  type="Submit" value="Register Now">
       </div>
       <div class="text">
         <h3>Already have an account? <router-link to="/">login in Now </router-link></h3>
-         <router-link to="/design">design </router-link>
+         <router-link to="/contact">contact us?</router-link>
       </div>
     </form>
   </div>
@@ -80,6 +80,7 @@ export default{
           console.log(error)
         })
       }
+      this.$router.push('/design')
     }
   }
 }
@@ -98,16 +99,27 @@ export default{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #4070f4;
+  background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
 }
 .wrapper{
   position: relative;
   max-width: 430px;
   width: 100%;
-  background: #fff;
+  background: linear-gradient(-218deg, #3f92b3 70%, #abe7ff 92%);
   padding: 34px;
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+  animation: box-login 3s;
+}
+@keyframes box-login {
+  0% {
+    transform: rotateX(100deg);
+  }
+
+  50%,
+  100% {
+    transform: rotateX(0deg);
+  }
 }
 .wrapper h2{
   position: relative;
@@ -147,14 +159,14 @@ form .input-box input{
 }
 .input-box input:focus,
 .input-box input:valid{
-  border-color: #4070f4;
+  border-color: #6083e4;
 }
 form .policy{
   display: flex;
   align-items: center;
 }
 form h3{
-  color: #707070;
+  color: #160303;
   font-size: 14px;
   font-weight: 500;
   margin-left: 10px;
@@ -163,11 +175,11 @@ form h3{
   color: #fff;
   letter-spacing: 1px;
   border: none;
-  background: #4070f4;
+  background: linear-gradient(-218deg, #bfe7f3 50%, #a6dcf1 66%);
   cursor: pointer;
 }
 .input-box.button input:hover{
-  background: #0e4bf1;
+  background: #4871e2;
 }
 form .text h3{
  color: #333;
