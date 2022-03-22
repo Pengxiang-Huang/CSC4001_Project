@@ -98,6 +98,7 @@ export default{
       if (this.email === '' || !reg.test(this.email)) {
         this.$message.error('please input the correct email')
       }
+      this.$router.push('/design')
     },
     confirm () {
       this.GLOBAL.BASE_URL = this.url
