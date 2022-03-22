@@ -55,7 +55,7 @@ CREATE TABLE `Our_project_blog_answers` (
 
 LOCK TABLES `Our_project_blog_answers` WRITE;
 /*!40000 ALTER TABLE `Our_project_blog_answers` DISABLE KEYS */;
-INSERT INTO `Our_project_blog_answers` VALUES (1,1,NULL,'just try filling the data base name with the schema name. Then write the host with your server IP, the host as the user name of database on server  ','Markdown',0000000005,5),(2,1,1,'Thank You!! I will try','Markdown',0000000001,1),(3,4,NULL,'Mark一下，有答案了踢一下我','Markdown',0000000000,2),(4,5,NULL,'亲测10GB也是没问题的','Markdown',0000000003,1);
+INSERT INTO `Our_project_blog_answers` VALUES (1,1,NULL,'just try filling the data base name with the schema name. Then write the host with your server IP, the host as the user name of database on server  ','Markdown',0000000007,5),(2,1,1,'Thank You!! I will try','Markdown',0000000001,1),(3,4,NULL,'Mark一下，有答案了踢一下我','Markdown',0000000000,2),(4,5,NULL,'亲测10GB也是没问题的','Markdown',0000000003,1);
 /*!40000 ALTER TABLE `Our_project_blog_answers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `Our_project_blog_questions` (
 
 LOCK TABLES `Our_project_blog_questions` WRITE;
 /*!40000 ALTER TABLE `Our_project_blog_questions` DISABLE KEYS */;
-INSERT INTO `Our_project_blog_questions` VALUES (1,'Question about the Django setings.py',1,'CSC4001',1,'I am a neophyte to Django, and now I am taking CSC4001, I don\'t know how to write the settings.py to set my dataBase.','Markdown',0000000003,0000000001,0000000020,NULL,NULL,0000000113),(2,'Anybody know how to solve this problem of npm run dev?',2,'CSC4001',1,'When I using the npm run dev, it gives me an error about `webpack-dev-server --inline --progress --config build/webp','Markdown',0000000004,0000000004,0000000017,NULL,NULL,0000000057),(3,'What\'s the meaning of two-direction association in UML',1,'CSC4001',2,'Actually, I don\'t know what\'s the meaning of two-direction in the description of assignment1','Markdown',0000000000,0000000009,0000000009,NULL,NULL,0000000060),(4,'Building Kernel fail.',3,'CSC3150',3,'When I run make, it gives me a error about `permission denied`, why?','Markdown',0000000002,0000000000,0000000004,NULL,NULL,0000000201),(5,'How many storage should I assign to VM?',4,'CSC3150',3,'Is 10GB assigned to VM enough? cause my computer doesn\'t have much storage left.','Markdown',0000000010,0000000015,0000000040,NULL,NULL,0000000055);
+INSERT INTO `Our_project_blog_questions` VALUES (1,'Question about the Django setings.py',1,'CSC4001',1,'I am a neophyte to Django, and now I am taking CSC4001, I don\'t know how to write the settings.py to set my dataBase.','Markdown',0000000002,0000000007,0000000010,NULL,'2022-03-22 14:52:36.168559',0000000113),(2,'Anybody know how to solve this problem of npm run dev?',2,'CSC4001',1,'When I using the npm run dev, it gives me an error about `webpack-dev-server --inline --progress --config build/webp','Markdown',0000000004,0000000004,0000000009,NULL,NULL,0000000057),(3,'What\'s the meaning of two-direction association in UML',1,'CSC4001',2,'Actually, I don\'t know what\'s the meaning of two-direction in the description of assignment1','Markdown',0000000000,0000000009,0000000005,NULL,'2022-03-22 15:06:59.295262',0000000060),(4,'Building Kernel fail.',3,'CSC3150',3,'When I run make, it gives me a error about `permission denied`, why?','Markdown',0000000002,0000000009,0000000002,NULL,'2022-03-22 15:07:13.093680',0000000201),(5,'How many storage should I assign to VM?',4,'CSC3150',3,'Is 10GB assigned to VM enough? cause my computer doesn\'t have much storage left.','Markdown',0000000010,0000000015,0000000020,NULL,'2022-03-22 15:03:24.927691',0000000055);
 /*!40000 ALTER TABLE `Our_project_blog_questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,7 @@ CREATE TABLE `Our_project_user` (
   `update_time` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Index_user_name` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +248,7 @@ CREATE TABLE `Our_project_user` (
 
 LOCK TABLES `Our_project_user` WRITE;
 /*!40000 ALTER TABLE `Our_project_user` DISABLE KEYS */;
-INSERT INTO `Our_project_user` VALUES (1,'119010249@link.cuhk.edu.cn','qpr','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:04:49.493694','2022-03-11 07:04:49.493694'),(2,'119010249@link.cuhk.edu.cn','1234','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:12:25.407426','2022-03-11 07:12:25.407459'),(3,'119010249@link.cuhk.edu.cn','qqq','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:10.849469','2022-03-11 07:13:10.849469'),(4,'119010249@link.cuhk.edu.cn','yyy','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:51.020685','2022-03-11 07:13:51.020720'),(5,'123456789@link.cuhk.edu.cn','nobody','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-17 05:24:12.726320','2022-03-17 05:24:12.726353'),(6,'119011111@link.cuhk.edu.cn','不会起名','caf1a3dfb505ffed0d024130f58c5cfa',NULL,NULL,NULL,'2022-03-17 10:04:44.401660','2022-03-17 10:04:44.401695'),(7,'123456789@link.cuhk.edu.cn','5555','827ccb0eea8a706c4c34a16891f84e7b',NULL,NULL,NULL,'2022-03-17 10:09:53.288498','2022-03-17 10:09:53.288530');
+INSERT INTO `Our_project_user` VALUES (1,'119010249@link.cuhk.edu.cn','qpr','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:04:49.493694','2022-03-11 07:04:49.493694'),(2,'119010249@link.cuhk.edu.cn','1234','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:12:25.407426','2022-03-11 07:12:25.407459'),(3,'119010249@link.cuhk.edu.cn','qqq','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:10.849469','2022-03-11 07:13:10.849469'),(4,'119010249@link.cuhk.edu.cn','yyy','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-11 07:13:51.020685','2022-03-11 07:13:51.020720'),(5,'123456789@link.cuhk.edu.cn','nobody','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-17 05:24:12.726320','2022-03-17 05:24:12.726353'),(6,'119011111@link.cuhk.edu.cn','不会起名','caf1a3dfb505ffed0d024130f58c5cfa',NULL,NULL,NULL,'2022-03-17 10:04:44.401660','2022-03-17 10:04:44.401695'),(7,'123456789@link.cuhk.edu.cn','5555','827ccb0eea8a706c4c34a16891f84e7b',NULL,NULL,NULL,'2022-03-17 10:09:53.288498','2022-03-17 10:09:53.288530'),(8,'119010249@link.cuhk.edu.cn','qweqwe','202cb962ac59075b964b07152d234b70',NULL,NULL,NULL,'2022-03-22 14:41:28.790265','2022-03-22 14:41:28.790332');
 /*!40000 ALTER TABLE `Our_project_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +301,7 @@ CREATE TABLE `Our_project_user_follow_question` (
 
 LOCK TABLES `Our_project_user_follow_question` WRITE;
 /*!40000 ALTER TABLE `Our_project_user_follow_question` DISABLE KEYS */;
-INSERT INTO `Our_project_user_follow_question` VALUES (1,1),(5,1),(4,2),(7,2),(1,3),(7,3),(1,4),(2,4),(3,4);
+INSERT INTO `Our_project_user_follow_question` VALUES (1,1),(5,1),(4,2),(7,2),(1,3),(7,3),(2,4),(3,4),(1,5);
 /*!40000 ALTER TABLE `Our_project_user_follow_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -314,10 +314,10 @@ DROP TABLE IF EXISTS `Our_project_user_like_answer`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Our_project_user_like_answer` (
   `id` int NOT NULL,
-  `question_id` int NOT NULL,
-  PRIMARY KEY (`id`,`question_id`),
-  KEY `index_a_id_idx` (`question_id`),
-  CONSTRAINT `index_a_id` FOREIGN KEY (`question_id`) REFERENCES `Our_project_blog_answers` (`id`),
+  `answer_id` int NOT NULL,
+  PRIMARY KEY (`id`,`answer_id`),
+  KEY `index_a_id_idx` (`answer_id`),
+  CONSTRAINT `index_a_id` FOREIGN KEY (`answer_id`) REFERENCES `Our_project_blog_answers` (`id`),
   CONSTRAINT `index_u_id` FOREIGN KEY (`id`) REFERENCES `Our_project_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -328,7 +328,7 @@ CREATE TABLE `Our_project_user_like_answer` (
 
 LOCK TABLES `Our_project_user_like_answer` WRITE;
 /*!40000 ALTER TABLE `Our_project_user_like_answer` DISABLE KEYS */;
-INSERT INTO `Our_project_user_like_answer` VALUES (1,1),(4,1),(5,1),(2,2),(5,2),(3,3),(1,4),(3,4),(4,4);
+INSERT INTO `Our_project_user_like_answer` VALUES (4,1),(5,1),(2,2),(5,2),(3,3),(1,4),(3,4),(4,4);
 /*!40000 ALTER TABLE `Our_project_user_like_answer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +355,7 @@ CREATE TABLE `Our_project_user_like_question` (
 
 LOCK TABLES `Our_project_user_like_question` WRITE;
 /*!40000 ALTER TABLE `Our_project_user_like_question` DISABLE KEYS */;
-INSERT INTO `Our_project_user_like_question` VALUES (1,1),(4,1),(1,2),(3,2),(3,3),(1,4),(6,4),(2,5),(5,5),(6,5);
+INSERT INTO `Our_project_user_like_question` VALUES (4,1),(1,2),(3,2),(3,3),(1,4),(6,4),(2,5),(5,5),(6,5);
 /*!40000 ALTER TABLE `Our_project_user_like_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -636,7 +636,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('tm5f9jwnlhc1dxy3tp5a5505d5l21hrs','eyJ1c2VybmFtZSI6IjU1NTUiLCJ1aWQiOjd9:1nUn4r:AQ3rjvEreeQAneHoqwKDOAb0aPbmpKOLTZGkg-4bIuw','2022-03-31 10:09:53.307199'),('vnhtb1ta5poofxgvhw2beqayrxounqe4','eyJ1c2VybmFtZSI6IjEyMzQiLCJ1aWQiOjJ9:1nSZRp:ZPU_Kmp8qjXcRAqOxMoLsuljaDqP7Bka6kVWpX0Cyjs','2022-03-25 07:12:25.431922'),('zktqnu0h74t9ey8blqae4rtk4el26gcq','eyJ1c2VybmFtZSI6InFxcSIsInVpZCI6M30:1nSZSZ:tNg8UMYRlG_pgZsalVXm3v3HheKXFHgsUJe8n0vmJqg','2022-03-25 07:13:11.065469');
+INSERT INTO `django_session` VALUES ('tm5f9jwnlhc1dxy3tp5a5505d5l21hrs','eyJ1c2VybmFtZSI6InF3ZXF3ZSIsInVpZCI6OH0:1nWfhQ:_iApBo33raHvMsyofTBr3qyv_UYXpW-6gFVdNioJyNg','2022-04-05 14:41:28.811535'),('vnhtb1ta5poofxgvhw2beqayrxounqe4','eyJ1c2VybmFtZSI6IjEyMzQiLCJ1aWQiOjJ9:1nSZRp:ZPU_Kmp8qjXcRAqOxMoLsuljaDqP7Bka6kVWpX0Cyjs','2022-03-25 07:12:25.431922'),('zktqnu0h74t9ey8blqae4rtk4el26gcq','eyJ1c2VybmFtZSI6InFxcSIsInVpZCI6M30:1nSZSZ:tNg8UMYRlG_pgZsalVXm3v3HheKXFHgsUJe8n0vmJqg','2022-03-25 07:13:11.065469');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -649,7 +649,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-22 16:53:23
+-- Dump completed on 2022-03-23  0:22:35
 
 DROP EVENT IF EXISTS refresh_hot; 
 

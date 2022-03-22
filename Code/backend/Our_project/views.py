@@ -5,6 +5,7 @@ from django.shortcuts import HttpResponse
 from django.core.mail import send_mail
 import json
 from django.db import connection    # allow Django to use the original SQL statements
+from datetime import date, datetime
 
 from .models import User
 from .models import Blog_Questions
@@ -13,8 +14,20 @@ from .models import Blog_Answers
 from .models import user_like_question
 from .models import user_follow_question
 from .models import user_follow_group
+from .models import user_like_answer
 from .models import Group
 import hashlib
+
+# 重写python的datetime类型
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
 
 # Create your views here.
 def index(request):  # request means the request sent by front-end
@@ -40,7 +53,7 @@ def register(request):
         print(old_users)
         if (old_users):# if exists
             data['isRegister'] = 0
-            return HttpResponse(json.dumps(data), content_type='application/json')
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         
         ##hash the code
         m = hashlib.md5()
@@ -53,7 +66,7 @@ def register(request):
         except Exception as e:
             print('--create user error%s'%(e))
             data['isRegister'] = 0
-            return HttpResponse(json.dumps(data), content_type='application/json')
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
         #免登录一天 session
         request.session['username'] = username
@@ -62,7 +75,7 @@ def register(request):
 
 
         #return successful information
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 def login(request):
     if request.method == 'GET':
@@ -146,13 +159,14 @@ def main_page(request):
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
         
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 # 根据用户名，返回用户关注的问题
 def my_follow(request):
 
     if request.method == 'POST':
         # getting the username from POST request
+        # username = request.POST.get('username', False)
         username = request.POST['username']
 
         userid = User.objects.filter(username = username).values()[0]['id']
@@ -173,13 +187,25 @@ def my_follow(request):
             # get the full content of the questions
             question = Blog_Questions.objects.filter(id = question_id).values()
 
+            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+                isliked = 1
+
+            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+                isfollowed = 1
+
             # put the url into data, preparing to be sent to frontend
             temp = question[0]
             temp['url'] = url
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 # 根据用户名，返回该用户关注的分组
 def my_group(request):
@@ -205,7 +231,7 @@ def my_group(request):
 
             data['group'+str(i+1)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 
 # /unUnswered: 按关注的数量返回高赞未回答的问题
@@ -255,4 +281,113 @@ def unUnswered(request):
             temp['isfollowed'] = isfollowed
             data['blog'+str(i+i)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+# allow user to like a question/answer
+def like(request):
+    data = {
+        'ok': 0
+    }
+    try:
+        if request.method == 'POST':
+            
+            Question_or_Answer = request.POST['type']
+            username = request.POST['username']
+            target_id = request.POST['id']
+            user_id = User.objects.filter(username=username).values()[0]['id']
+            if (int(Question_or_Answer)):    # means the id belong to an answer
+    
+                already_like = user_like_answer.objects.filter(id= user_id, answer_id = target_id).count()
+                if (already_like):     # if already like, then dislike
+                    user_like_answer.objects.filter(id= user_id, answer_id = target_id).delete()
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 0, follow_or_like = 0, add_or_reduce = 0)
+                else:
+                    user_like_answer.objects.create(id= user_id, answer_id = target_id)
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 0, follow_or_like = 0, add_or_reduce = 1)
+            else:                       # means the id belong to a question
+
+                already_like = user_like_question.objects.filter(id= user_id, question_id = target_id).count()
+                if (already_like):     # if already like, then dislike
+                    user_like_question.objects.filter(id= user_id, question_id = target_id).delete()
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 0, add_or_reduce = 0)
+                else:
+                    user_like_question.objects.create(id= user_id, question_id = target_id)
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 0, add_or_reduce = 1)
+
+            data['ok'] = 1
+    except:
+        pass
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+            
+
+    
+
+# allow user to follow a question
+def follow(request):
+    data = {
+        'ok': 0
+    }
+
+    if request.method == 'POST':
+        
+        username = request.POST['username']
+        target_id = request.POST['id']
+        user_id = User.objects.filter(username=username).values()[0]['id']
+
+        already_like = user_follow_question.objects.filter(id= user_id, question_id = target_id).count()
+        if (already_like):     # if already like, then dislike
+            user_follow_question.objects.filter(id= user_id, question_id = target_id).delete()
+            change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 1, add_or_reduce = 0)
+        else:
+            user_follow_question.objects.create(id= user_id, question_id = target_id)
+            change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 1, add_or_reduce = 1)
+
+        data['ok'] = 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_like, add_or_reduce):
+    if (follow_or_like):  # if it is follow
+        num_follow = Blog_Questions.objects.filter(id=target_id).values()[0]
+        num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
+        update_blog = Blog_Questions.objects.get(id=target_id)
+        if (add_or_reduce):
+            update_blog.follow = num_follow['follow'] + 1
+            update_blog.hot = num_hot['hot'] + 1
+        else:
+            update_blog.follow = num_follow['follow'] - 1
+            update_blog.hot = num_hot['hot'] - 1
+        update_blog.save()
+    else:     # if it is like
+        if (Question_or_Answer):      # if this is a question
+            num_like = Blog_Questions.objects.filter(id=target_id).values()[0]
+            num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
+            update_blog = Blog_Questions.objects.get(id=target_id)
+            if (add_or_reduce):       # if add
+                update_blog.like = num_like['like'] + 1
+                update_blog.hot = num_hot['hot'] + 1
+            else:     # reduce
+                update_blog.like = num_like['like'] - 1
+                update_blog.hot = num_hot['hot'] - 1
+            update_blog.save()
+        else:                         # if this is an answer
+            num_like = Blog_Answers.objects.filter(id=target_id).values()[0]                 
+            update_blog = Blog_Answers.objects.get(id=target_id)
+            if (add_or_reduce):       # if add
+                update_blog.like = num_like['like'] + 1
+            else:     # reduce
+                update_blog.like = num_like['like'] - 1
+            update_blog.save()
+
+def uploadProfile():
+    return 0
+
+def getProfile():
+    return 0
