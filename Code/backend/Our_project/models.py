@@ -50,6 +50,9 @@ class user_follow_question(models.Model):
 class user_follow_group(models.Model):
     group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45, unique = True)
 
+class user_like_answer(models.Model):
+    answer_id = models.IntegerField(verbose_name = "ANSWER_ID")
+
 class Group(models.Model):
     group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45, unique = True)
     description = models.CharField(verbose_name = 'DESCRIPTION', max_length = 1000)
