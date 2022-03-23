@@ -386,6 +386,8 @@ def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_lik
                 update_blog.like = num_like['like'] - 1
             update_blog.save()
 
+
+
 def uploadProfile():
     return 0
 

@@ -360,6 +360,34 @@ INSERT INTO `Our_project_user_like_question` VALUES (4,1),(1,2),(3,2),(3,3),(1,4
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Our_project_user_view_question`
+--
+
+DROP TABLE IF EXISTS `Our_project_user_view_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Our_project_user_view_question` (
+  `id` int NOT NULL,
+  `question_id` int NOT NULL,
+  `time` int(10) unsigned zerofill DEFAULT NULL,
+  PRIMARY KEY (`id`,`question_id`),
+  KEY `iNDEX_QUESTION_idx` (`question_id`),
+  CONSTRAINT `iNDEX_QUESTION` FOREIGN KEY (`question_id`) REFERENCES `Our_project_blog_questions` (`id`),
+  CONSTRAINT `iNDEX_USER` FOREIGN KEY (`id`) REFERENCES `Our_project_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Our_project_user_view_question`
+--
+
+LOCK TABLES `Our_project_user_view_question` WRITE;
+/*!40000 ALTER TABLE `Our_project_user_view_question` DISABLE KEYS */;
+INSERT INTO `Our_project_user_view_question` VALUES (1,1,0000000010),(1,2,0000000004),(1,4,0000000005),(1,5,0000000017),(2,1,0000000003),(2,2,0000000020),(3,1,0000000001),(3,3,0000000004),(4,5,0000000010),(5,5,0000000010);
+/*!40000 ALTER TABLE `Our_project_user_view_question` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auth_group`
 --
 
@@ -649,7 +677,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-23  0:22:35
+-- Dump completed on 2022-03-23 12:05:58
 
 DROP EVENT IF EXISTS refresh_hot; 
 
