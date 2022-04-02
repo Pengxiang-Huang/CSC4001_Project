@@ -65,7 +65,7 @@ export default{
           password: this.password1
         }
         console.log(Qs.stringify(sendData))
-        var url = this.GLOBAL.BASE_URL + '/register/'
+        var url = '/register/'
         axios({
           method: 'post',
           url: url,
@@ -88,7 +88,7 @@ export default{
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('http://175.178.34.84/fs/googleapi.css');
 *{
   margin: 0;
   padding: 0;

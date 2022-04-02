@@ -33,7 +33,8 @@
           <h1>Authentication</h1>
           <input id="username"
                  type="text"
-                 placeholder="Email Address" />
+                 placeholder="username"
+                 v-model="username" />
           <label for="username"
                  class="login-input-icon">
             <i class="fa fa-user"></i>
@@ -62,25 +63,20 @@
         </div>
       </div>
     </div>
-    <div>
-      <select v-model="url" @keyup.enter="confirm">
-        <option value="http://127.0.0.1:8000">Local</option>
-        <option value="http://175.178.34.84">Server</option>
-      </select>
-      <button @click="confirm">confirm</button>
-    </div>
   </div>
 
 </template>
 
 <script>
+import axios from 'axios'
+import Qs from 'qs'
 export default{
   name: 'login',
   data () {
     return {
       showPassword: false,
       showDiv: true,
-      email: '',
+      username: '',
       password: ''
     }
   },
@@ -94,21 +90,34 @@ export default{
       this.showPassword = !this.showPassword
     },
     submit () {
-      var reg = /[0-9]{9}@link\.cuhk\.edu\.cn/
-      if (this.email === '' || !reg.test(this.email)) {
-        this.$message.error('please input the correct email')
+      let sendData = {
+        username: this.username,
+        password: this.password
       }
-      this.$router.push('/design')
-    },
-    confirm () {
-      this.GLOBAL.BASE_URL = this.url
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/login/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (response.data === 'Success Login!') {
+          this.$router.push({
+            path: '/home/:username',
+            name: 'home',
+            params: {
+              username: this.username
+            }
+          })
+        } else {
+          this.$message.error(response.data)
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-@import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("../font-awesome-4.7.0/css/font-awesome.min.css");
 
 * {
   padding: 0;

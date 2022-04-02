@@ -22,7 +22,7 @@
 </div>
 </template>
 
-<style scppe>
+<style scoped>
 html {
   height: 100%;
 }
