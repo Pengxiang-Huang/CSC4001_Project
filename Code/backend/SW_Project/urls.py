@@ -19,11 +19,22 @@ from Our_project import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
+    path('index/', views.index),
     path('register/',views.register),
     path('login/', views.login),
+    path('first/', views.after_login),
+    path('logout/', views.logout),
+    path('sendEmail/', views.sendEmail),
+    path('updateInformation/', views.update),
+    
     path('mainpage/', views.main_page),
     path('myFollow/', views.my_follow),
     path('myGroup/', views.my_group),
-    path('unUnswered', views.unUnswered)
+    path('unUnswered', views.unUnswered),
+    path('api/like/', views.like),
+    path('api/follow/', views.follow),
+    path('api/uploadProfile/', views.uploadProfile),
+    path('api/getProfile/', views.getProfile),
+    path('api/getGroup/', views.getGroup),    # return the basic information of the Group, and the content of subgroups
+    path('api/followGroup/', views.followGroup),  # allow a user to follow the Group
 ]

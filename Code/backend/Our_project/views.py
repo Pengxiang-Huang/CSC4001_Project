@@ -1,10 +1,13 @@
-
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import HttpResponse
+from django.core import mail
 from django.core.mail import send_mail
 import json
 from django.db import connection    # allow Django to use the original SQL statements
+from datetime import date, datetime
+import os
 
 from .models import User
 from .models import Blog_Questions
@@ -13,9 +16,48 @@ from .models import Blog_Answers
 from .models import user_like_question
 from .models import user_follow_question
 from .models import user_follow_group
+from .models import user_like_answer
 from .models import Group
+from .models import sub_group
 import hashlib
 
+# 重写python的datetime类型
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
+#校验登陆状态：装饰器。
+def check_state(fn):# fn is the views
+    def wrap(request, *args, **kwargs): #parameters of views
+        if 'username' not in request.session or 'uid' not in request.session:
+            c_username = request.COOKIES.get('username')
+            c_uid = request.COOKIES.get('uid')
+            if not c_username or not c_uid:
+                return HttpResponseRedirect('/index')
+            else:
+                #write back
+                request.session['username'] = c_username
+                request.session['uid'] = c_uid
+        return fn(request, *args, **kwargs)
+    return wrap
+
+#生成密码
+def code(n = 6):
+    all_code = '012345678mchjsmejrigebriruwioihgdvbhserjebssse9P'
+    index = len(all_code)
+    code = ''
+    for  i in range(n):
+        num = random.randint(0,index-1)
+        code += all_code[num]
+    return code
+
+##############################
 # Create your views here.
 def index(request):  # request means the request sent by front-end
     if request.method == 'GET':  #GET 返回页面
@@ -55,11 +97,11 @@ def register(request):
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
 
+
         #免登录一天 session
         request.session['username'] = username
         request.session['uid'] = user.id
         #TODO 修改session储存时间为一天
-
 
         #return successful information
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -68,7 +110,7 @@ def login(request):
     if request.method == 'GET':
         ##1.检查会话状态session
         if request.session.get('username') and request.session.get('uid'):
-            return HttpResponse('Success Login!')
+            return HttpResponseRedirect('/first')
         ##2.检查会话状态cookies
         c_username = request.COOKIES.get('username')
         c_uid = request.COOKIES.get('uid')
@@ -83,6 +125,8 @@ def login(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        print(username)
+        print(password)
 
         try:  #get the user infor.
             user = User.objects.get(username=username)
@@ -107,6 +151,79 @@ def login(request):
 
         return resp
 
+def logout(request):
+    #delete
+    if 'username' in request.session:
+        del request.session['username']
+    if 'uid' in request.session:
+        del request.session['uid']
+    
+    resp = HttpResponseRedirect('/login')
+    if 'username' in request.COOKIES:
+        resp.delete_cookie('username')
+    if 'uid' in request.COOKIES:
+        resp.delete_cookie('uid')
+    return resp
+
+
+@check_state
+def after_login(request):
+    return render(request, 'after_index.html')
+
+
+def update(request):
+    
+    data = {    #api detail.
+        'isRegister': 1
+    }# control flag
+
+    if request.method == 'POST':
+        _type = request.POST['type']
+        newVal = request.POST['newVal']
+        oldName = request.POST['username']
+        print(_type, newVal, oldName)
+
+        if _type == 'Reset Username':
+            #更新用户名
+            old_users = User.objects.filter(username=newVal)
+            if (old_users):# if exists
+                data['isRegister'] = 0  #need to adjust
+                return HttpResponse('UserName has been taken')
+            else:   #valid username
+                user = User.objects.get(username=oldName)
+                user.username = newVal
+                user.save()
+                return HttpResponse('UserName Reset successfully!')
+        
+        elif _type == 'Reset Password':
+            #更新密码
+            ##hash the code
+            m = hashlib.md5()
+            m.update(newVal.encode())
+            password_m = m.hexdigest()
+
+            user = User.objects.get(username=oldName)
+            user.password = password_m
+            user.save()
+            return HttpResponse('Password Reset successfully!')
+
+
+#not yet
+def sendEmail(request):
+    #send email here
+    #is href a POST or a GET request?
+    if request.method == 'POST':
+        email = request.POST['email']
+        code_send = code()
+        print(code_send)
+        R_list = []
+        R_list.append(email)
+        mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
+        return HttpResponse('')#需要把信息验证码一起用字典传过去、或者设置全局变量。
+
+
+
+##########################################
 # 根据hot排序，返回5个当前热门的问题
 def main_page(request):
     
@@ -119,7 +236,7 @@ def main_page(request):
         # getting the blogs, order by 'hot'
         hot_blogs = Blog_Questions.objects.order_by('-hot').values()
         data = {}
-        for i in range(0,5):
+        for i in range(0, min(5, len(hot_blogs))):
             question_id = hot_blogs[i]['id']
 
             # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
@@ -146,13 +263,14 @@ def main_page(request):
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
         
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 # 根据用户名，返回用户关注的问题
 def my_follow(request):
 
     if request.method == 'POST':
         # getting the username from POST request
+        # username = request.POST.get('username', False)
         username = request.POST['username']
 
         userid = User.objects.filter(username = username).values()[0]['id']
@@ -173,13 +291,25 @@ def my_follow(request):
             # get the full content of the questions
             question = Blog_Questions.objects.filter(id = question_id).values()
 
+            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+                isliked = 1
+
+            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+                isfollowed = 1
+
             # put the url into data, preparing to be sent to frontend
             temp = question[0]
             temp['url'] = url
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 # 根据用户名，返回该用户关注的分组
 def my_group(request):
@@ -205,7 +335,7 @@ def my_group(request):
 
             data['group'+str(i+1)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 
 # /unUnswered: 按关注的数量返回高赞未回答的问题
@@ -255,4 +385,241 @@ def unUnswered(request):
             temp['isfollowed'] = isfollowed
             data['blog'+str(i+i)] = temp
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+# allow user to like a question/answer
+def like(request):
+    data = {
+        'ok': 0
+    }
+    try:
+        if request.method == 'POST':
+            
+            Question_or_Answer = request.POST['type']
+            username = request.POST['username']
+            target_id = request.POST['id']
+            user_id = User.objects.filter(username=username).values()[0]['id']
+            if (int(Question_or_Answer)):    # means the id belong to an answer
+    
+                already_like = user_like_answer.objects.filter(id= user_id, answer_id = target_id).count()
+                if (already_like):     # if already like, then dislike
+                    user_like_answer.objects.filter(id= user_id, answer_id = target_id).delete()
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 0, follow_or_like = 0, add_or_reduce = 0)
+                else:
+                    user_like_answer.objects.create(id= user_id, answer_id = target_id)
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 0, follow_or_like = 0, add_or_reduce = 1)
+            else:                       # means the id belong to a question
+
+                already_like = user_like_question.objects.filter(id= user_id, question_id = target_id).count()
+                if (already_like):     # if already like, then dislike
+                    user_like_question.objects.filter(id= user_id, question_id = target_id).delete()
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 0, add_or_reduce = 0)
+                else:
+                    user_like_question.objects.create(id= user_id, question_id = target_id)
+
+                    change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 0, add_or_reduce = 1)
+
+            data['ok'] = 1
+    except:
+        pass
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+            
+
+    
+
+# allow user to follow a question
+def follow(request):
+    data = {
+        'ok': 0
+    }
+
+    if request.method == 'POST':
+        
+        username = request.POST['username']
+        target_id = request.POST['id']
+        user_id = User.objects.filter(username=username).values()[0]['id']
+
+        already_like = user_follow_question.objects.filter(id= user_id, question_id = target_id).count()
+        if (already_like):     # if already like, then dislike
+            user_follow_question.objects.filter(id= user_id, question_id = target_id).delete()
+            change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 1, add_or_reduce = 0)
+        else:
+            user_follow_question.objects.create(id= user_id, question_id = target_id)
+            change_amount_of_like_or_follow(target_id, Question_or_Answer = 1, follow_or_like = 1, add_or_reduce = 1)
+
+        data['ok'] = 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_like, add_or_reduce):
+    if (follow_or_like):  # if it is follow
+        num_follow = Blog_Questions.objects.filter(id=target_id).values()[0]
+        num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
+        update_blog = Blog_Questions.objects.get(id=target_id)
+        if (add_or_reduce):
+            update_blog.follow = num_follow['follow'] + 1
+            update_blog.hot = num_hot['hot'] + 1
+        else:
+            update_blog.follow = num_follow['follow'] - 1
+            update_blog.hot = num_hot['hot'] - 1
+        update_blog.save()
+    else:     # if it is like
+        if (Question_or_Answer):      # if this is a question
+            num_like = Blog_Questions.objects.filter(id=target_id).values()[0]
+            num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
+            update_blog = Blog_Questions.objects.get(id=target_id)
+            if (add_or_reduce):       # if add
+                update_blog.like = num_like['like'] + 1
+                update_blog.hot = num_hot['hot'] + 1
+            else:     # reduce
+                update_blog.like = num_like['like'] - 1
+                update_blog.hot = num_hot['hot'] - 1
+            update_blog.save()
+        else:                         # if this is an answer
+            num_like = Blog_Answers.objects.filter(id=target_id).values()[0]                 
+            update_blog = Blog_Answers.objects.get(id=target_id)
+            if (add_or_reduce):       # if add
+                update_blog.like = num_like['like'] + 1
+            else:     # reduce
+                update_blog.like = num_like['like'] - 1
+            update_blog.save()
+
+def uploadProfile(request):
+
+    username = request.POST['username']
+    profile = request.FILES.get('profile')
+    profile_dir1 = '../profiles/' + request.POST['id'] + '.jpg'
+    f = open(profile_dir1, 'wb')
+    for line in profile.chunks():
+        f.write(line)
+    f.close()
+    data = {
+        'profile_name': request.POST['id'] + '.jpg'
+    }
+
+    # 判断是否改用户已经有头像了
+    target_user = User.objects.filter(username = username).values()[0]
+    print(target_user)
+    photo_url = target_user['photo']
+    if (photo_url):    # 用户有旧的头像, 则在服务器上删掉
+        prefix_string = ''
+        for i in range(0, len(photo_url)):
+            prefix_string += photo_url[i]
+            if (prefix_string == 'http://175.178.34.84/'):
+                break
+        delete_url = '../' + photo_url[i+1:] 
+        os.remove(delete_url)
+
+    # 将用户头像的url更新到数据库中
+    update_user = User.objects.get(username = username)
+    update_user.photo = 'http://175.178.34.84/profiles/'+ request.POST['id'] + '.jpg'
+    update_user.save()
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+def getProfile(request):
+    username = request.POST['username']
+    
+    target_user = User.objects.filter(username = username).values()
+
+    photo_url = target_user[0]['photo']
+
+    data = {}
+    if (photo_url): # 头像不为空
+        data['url'] = photo_url
+    else:
+        data['url'] = ''
+    
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+'''
+    Receive the POST request about the group_name, username
+    First, return the Group Profile, Group discription, and the number of people that follow this Group
+    In addtition, return the related blogs of each subgroup. 
+'''
+def getGroup(request):
+    group_name = request.POST['group_name']
+    username = request.POST['username']
+    user_id = User.objects.filter(username=username).values()[0]['id']
+
+    group = Group.objects.filter(group_name = group_name).values()
+    
+    pic = picture.objects.filter(group_name = group_name).values()[0]
+    url = pic["url"]
+
+    temp = group[0]
+    temp["url"] = url
+
+    data = {}
+    data["group"] = temp
+
+    sub_groups = sub_group.objects.filter(group_name = group_name).values()
+    for i in range(0, len(sub_groups)):
+        sub = sub_groups[i]
+        sub_group_name = sub["sub_group_name"]
+        sub_group_type = sub["id"]
+        hot_blogs = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_type).order_by('-hot').values()
+
+        contents = {}
+        for j in range(0, min(5, len(hot_blogs))):
+            question_id = hot_blogs[j]['id']
+
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
+                isliked = 1
+
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
+                isfollowed = 1
+
+            url = picture.objects.filter(question = question_id).values()[0]['url']
+
+            amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+
+            temp = hot_blogs[j]
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
+            temp['url'] = url
+            temp['amount_of_answers'] = amount_of_answers
+            contents['blog'+str(j+1)] = temp
+        data[sub_group_name] = contents
+            
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+'''
+    Receive the POST request about the username and group_name
+    If the user has followed, then unfollow. Vice Verse
+    Store/Delete the "user follow group" info into DB, add/delete the number of follow of Group by 1
+    return {ok: 1} if the  
+'''
+def followGroup(request):
+    username = request.POST['username']
+    group_name = request.POST['group_name']
+
+    # get the corresponding user id
+    user_id = User.objects.filter(username=username).values()[0]['id']
+    
+    if (user_follow_group.objects.filter(id = user_id, group_name = group_name)):
+        user_follow_group.objects.filter(id= user_id, group_name = group_name).delete()
+        num_follow = Group.objects.filter(group_name = group_name).values()[0]                  
+        update_group = Group.objects.get(group_name= group_name)
+        update_group.amount_of_follows = num_follow['amount_of_follows'] - 1
+        update_group.save()
+    else:
+        user_follow_group.objects.create(id= user_id, group_name = group_name)
+        num_follow = Group.objects.filter(group_name = group_name).values()[0]                  
+        update_group = Group.objects.get(group_name= group_name)
+        update_group.amount_of_follows = num_follow['amount_of_follows'] + 1
+        update_group.save()
+    data = {}
+    data["ok"] = 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')

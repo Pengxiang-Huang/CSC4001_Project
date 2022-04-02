@@ -23,8 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Our_project',
-    'corsheaders'
+    'corsheaders',
+    'Our_project'
 ]
 
 MIDDLEWARE = [
@@ -106,7 +106,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = ( '*' )
+# CORS_ORIGIN_WHITELIST = ( '*', )
 
 CORS_ALLOW_METHODS = (
         'DELETE',
