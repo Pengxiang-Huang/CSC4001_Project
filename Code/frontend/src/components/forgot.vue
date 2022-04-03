@@ -1,29 +1,28 @@
 <template>
   <div id="app" >
      <div class="wrapper">
-    <h2>Registration</h2>
+    <h2>Password Reset</h2>
     <form action="#">
-      <div class="input-box">
-        <input type="text" placeholder="Enter your username"  v-model="username"  @keyup.enter="submit" required>
-      </div>
       <div class="input-box">
         <input type="email" placeholder="Enter your email" v-model="email"  @keyup.enter="submit" required>
       </div>
       <div class="input-box">
-        <input type="password" placeholder="Create password"  v-model="password1"  @keyup.enter="submit" required>
+        <input type="password" placeholder="Reset password"  v-model="password1"  @keyup.enter="submit" required>
       </div>
       <div class="input-box">
         <input type="password" placeholder="Confirm password" v-model="password2" @keyup.enter="submit" required>
       </div>
-      <div class="policy">
-        <input type="checkbox" v-model="checkbox" @keyup.enter="submit">
-        <h3>I accept all terms & condition</h3>
+      <div class="input-box">
+        <input type="password" placeholder="Verication Code" v-model="password2" @keyup.enter="submit" required>
+      </div>
+      <div class="input-box button1">
+        <input @click="send"  type="Submit" value="Send">
       </div>
       <div class="input-box button">
-        <input @click="submit"  type="Submit" value="Register Now">
+        <input @click="submit"  type="Submit" value="Reset Now">
       </div>
       <div class="text">
-        <h3>Already have an account? <router-link to="/">login in Now </router-link></h3>
+        <h3>Don't have an account? <router-link to="/register">Resiter Now </router-link></h3>
          <router-link to="/contact">contact us?</router-link>
       </div>
     </form>
@@ -32,27 +31,23 @@
 </template>
 
 <script>
-import axios from 'axios'
-import Qs from 'qs'
-import router from '../router'
-import bus from '../assets/bus.js'
 export default{
   name: 'register',
   data () {
     return {
-      username: '',
       email: '',
       password1: '',
-      password2: ''
+      password2: '',
+      verification: ''
     }
   },
   methods: {
+    send () {
+
+    },
     submit () {
-      bus.$emit('asd', this.email)
       var regExp = /[0-9]{9}@link\.cuhk\.edu\.cn/
-      if (this.username === '') {
-        this.$message.error('please input username')
-      } else if (this.email === '' || !regExp.test(this.email)) {
+      if (this.email === '' || !regExp.test(this.email)) {
         this.$message.error('please input the correct email')
       } else if (this.password1 === '') {
         this.$message.error('please set your password')
@@ -60,36 +55,8 @@ export default{
         this.$message.error('please confirm your password')
       } else if (this.password1 !== this.password2) {
         this.$message.error('The passwords are not the same, please check it!')
-      } else if (this.checkbox !== true) {
-        this.$message.error('Please allow the condition to continue!')
       } else {
-        let sendData = {
-          username: this.username,
-          email: this.email,
-          password: this.password1
-        }
-        console.log(Qs.stringify(sendData))
-        var url = this.GLOBAL.BASE_URL + '/register/'
-        axios({
-          method: 'post',
-          url: url,
-          data: Qs.stringify(sendData)
-        }).then((response) => {
-          if (response.data.isRegister) {
-            router.push({ path: '/design' })
-          } else {
-            this.$message.error('The username has already been used, please change it and register again!')
-          }
-        }).catch((error) => {
-          console.log(error)
-        })
-        axios({
-          method: 'POST',
-          url: this.GLOBAL.BASE_URL + '/sendEmail/',
-          data: Qs.stringify(sendData)
-        }).then((response) => {
-          console.log(response)
-        })
+
       }
     }
   }
@@ -191,6 +158,19 @@ form h3{
   display: inline-block;
 }
 .input-box.button input:hover{
+  background: #4871e2;
+}
+.input-box.button1 input{
+  height: 40px;
+  width: 80px;
+  color: rgb(88, 85, 85);
+  letter-spacing: 1px;
+  border-radius: 30px;
+  background: linear-gradient(-218deg, #bff3d3 50%, #a6f1ce 66%);
+  cursor: pointer;
+  display: flex;
+}
+.input-box.button1 input:hover{
   background: #4871e2;
 }
 form .text h3{

@@ -4,6 +4,7 @@ import login from '@/components/login'
 import register from '@/components/register'
 import design from '@/components/design'
 import contact from '@/components/contact'
+import forgot from '@/components/forgot'
 import home from '@/components/home'
 import blank from '@/components/blank'
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/contact',
       name: 'contact',
       component: contact
+    },
+    {
+      path: '/forgot',
+      name: 'forgot',
+      component: forgot
     },
     {
       path: '/home/:username',

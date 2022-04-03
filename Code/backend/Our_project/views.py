@@ -8,7 +8,7 @@ import json
 from django.db import connection    # allow Django to use the original SQL statements
 from datetime import date, datetime
 import os
-
+import random
 from .models import User
 from .models import Blog_Questions
 from .models import picture
@@ -210,7 +210,7 @@ def update(request):
 
 #not yet
 def sendEmail(request):
-    #send email here
+    #send email heres
     #is href a POST or a GET request?
     if request.method == 'POST':
         email = request.POST['email']
@@ -220,7 +220,7 @@ def sendEmail(request):
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
         return HttpResponse('')#需要把信息验证码一起用字典传过去、或者设置全局变量。
-
+  
 
 
 ##########################################
