@@ -4,10 +4,10 @@
       <div class="header-login">
         <div class="header-login-box">
           <span class="header-text-position">
-            <router-link to = "/register"
+            <router-link to="/register"
                id="register">&nbsp;<i class="fa fa-user-plus"></i>&nbsp;&nbsp;Sign Up</router-link>
           </span>
-          <router-link to ="/register"
+          <router-link to="/forgot"
              id="forgetpassword"><i class="fa fa-question"></i>&nbsp;&nbsp;Forgot Password?</router-link>
         </div>
       </div>
@@ -39,12 +39,12 @@
                  class="login-input-icon">
             <i class="fa fa-user"></i>
           </label>
-          <input id = "password" v-if="showPassword" type="text" class="input" v-model="password" />
-          <input id = "password" v-else type="password" class="input" v-model="password" placeholder="Password">
+          <input id="password" v-if="showPassword" type="text" class="input" v-model="password" />
+          <input id="password" v-else type="password" class="input" v-model="password" placeholder="Password">
           <label for="password"
                  class="login-input-icon">
-            <i v-if = "showPassword" class="fa fa-eye" @click="toggleShow"></i>
-            <i v-if = "!showPassword" class="fa fa-eye-slash" @click="toggleShow"></i>
+            <i v-if="showPassword" class="fa fa-eye" @click="toggleShow"></i>
+            <i v-if="!showPassword" class="fa fa-eye-slash" @click="toggleShow"></i>
           </label>
           <div class="login-remember">
             <label class="login-checkbox">
@@ -64,7 +64,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
