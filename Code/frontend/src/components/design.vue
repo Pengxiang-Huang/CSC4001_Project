@@ -11,10 +11,16 @@
         </p>
       </div>
       <div class="verify-box">
-        <input type="text" placeholder="Verification Code"  @keyup.enter="confirm" required>
+        <input type="text"
+               placeholder="Verification Code"
+               v-model="code"
+               @keyup.enter="confirm"
+               required>
       </div>
       <div class="confirm-box">
-        <input @click="confirm"  type="Submit" value="Confirm your account">
+        <input @click="confirm"
+               type="Submit"
+               value="Confirm your account">
       </div>
       <div class="profile-social-links">
         <li>
@@ -30,26 +36,45 @@
 </template>
 
 <script>
-import bus from '../assets/bus.js'
+// import axios from 'axios'
+// import bus from '../assets/bus.js'
 import router from '../router'
-export default{
+// import Qs from 'qs'
+export default {
   name: 'design',
+  data () {
+    return {
+      code: '',
+      correct_code: '',
+      username: ''
+    }
+  },
+  created () {
+    this.correct_code = this.$route.query.code
+    this.username = this.$route.query.username
+  },
   methods: {
     confirm () {
-      var newvar
-      bus.$on('asd', (val) => {
-        console.log('hello')
-        newvar = val
-        console.log(newvar)
-      })
-      router.push({ path: '/home' })
+      if (this.code !== this.correct_code) {
+        this.$message.error('The Verification Code is wrong, please try again')
+      } else {
+        this.$message.success(' Welcome to our community !')
+        router.push({
+          path: '/home/:username',
+          name: 'home',
+          params: {
+            username: this.username
+          }
+        })
+      }
+      // console.log(this.correct_code)
     }
   }
 }
 </script>
 
 <style scoped>
-@import url('http://175.178.34.84/fs/googleapi.css');
+@import url("http://175.178.34.84/fs/googleapi.css");
 html {
   height: 100%;
 }
@@ -63,7 +88,7 @@ html {
   margin: 0px;
   width: 100%;
   height: 100%;
-  font: normal 14px/1.618em 'Poppins', sans-serif;
+  font: normal 14px/1.618em "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -575,7 +600,7 @@ p {
     }
   }
 }
-.verify-box input{
+.verify-box input {
   height: 32px;
   margin: 18px 0;
   outline: none;
@@ -583,30 +608,30 @@ p {
   font-size: 17px;
   font-weight: 400;
   color: #333;
-  border: 1.5px solid #C7BEBE;
+  border: 1.5px solid #c7bebe;
   border-bottom-width: 2.5px;
   border-radius: 6px;
   transition: all 0.3s ease;
-  display:inline-block;
+  display: inline-block;
 }
 .verifyt-box input:focus,
-.verify-box input:valid{
+.verify-box input:valid {
   border-color: #6083e4;
 }
-.confirm-box input{
-  font: 'Poppins', sans-serif;
+.confirm-box input {
+  font: "Poppins", sans-serif;
   font-style: italic;
   height: 40px;
   margin: 20px 0;
   color: rgb(34, 32, 32);
   letter-spacing: 1px;
-  border: 1.5px solid #C7BEBE;
+  border: 1.5px solid #c7bebe;
   border-radius: 8px;
   background: linear-gradient(-218deg, #bfe7f3 50%, #a6dcf1 66%);
   cursor: pointer;
   display: inline-block;
 }
-.confirm-box input:hover{
+.confirm-box input:hover {
   background: #4871e2;
 }
 </style>
