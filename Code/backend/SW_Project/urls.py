@@ -37,4 +37,9 @@ urlpatterns = [
     path('api/getProfile/', views.getProfile),
     path('api/getGroup/', views.getGroup),    # return the basic information of the Group, and the content of subgroups
     path('api/followGroup/', views.followGroup),  # allow a user to follow the Group
+    path('api/Groups/', views.groups),   # return all the groups as well as their basic info 
+    path('api/MyGroups/', views.MyGroups),
+    path('api/GetQuestions', views.GetQuestions),
+    path('api/GetAnswers', views.GetAnswers),
+    path('api/RunCode', views.run_code),
 ]
