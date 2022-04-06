@@ -4,7 +4,9 @@ import login from '@/components/login'
 import register from '@/components/register'
 import design from '@/components/design'
 import contact from '@/components/contact'
+import forgot from '@/components/forgot'
 import home from '@/components/home'
+import blank from '@/components/blank'
 
 Vue.use(Router)
 
@@ -31,9 +33,19 @@ export default new Router({
       component: contact
     },
     {
-      path: '/home',
+      path: '/forgot',
+      name: 'forgot',
+      component: forgot
+    },
+    {
+      path: '/home/:username',
       name: 'home',
       component: home
+    },
+    {
+      path: '/blank',
+      name: 'blank',
+      component: blank
     }
   ]
 })

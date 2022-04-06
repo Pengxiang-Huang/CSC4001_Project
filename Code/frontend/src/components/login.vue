@@ -4,10 +4,10 @@
       <div class="header-login">
         <div class="header-login-box">
           <span class="header-text-position">
-            <router-link to = "/register"
+            <router-link to="/register"
                id="register">&nbsp;<i class="fa fa-user-plus"></i>&nbsp;&nbsp;Sign Up</router-link>
           </span>
-          <router-link to ="/register"
+          <router-link to="/forgot"
              id="forgetpassword"><i class="fa fa-question"></i>&nbsp;&nbsp;Forgot Password?</router-link>
         </div>
       </div>
@@ -33,17 +33,18 @@
           <h1>Authentication</h1>
           <input id="username"
                  type="text"
-                 placeholder="Email Address" />
+                 placeholder="username"
+                 v-model="username" />
           <label for="username"
                  class="login-input-icon">
             <i class="fa fa-user"></i>
           </label>
-          <input id = "password" v-if="showPassword" type="text" class="input" v-model="password" />
-          <input id = "password" v-else type="password" class="input" v-model="password" placeholder="Password">
+          <input id="password" v-if="showPassword" type="text" class="input" v-model="password" />
+          <input id="password" v-else type="password" class="input" v-model="password" placeholder="Password">
           <label for="password"
                  class="login-input-icon">
-            <i v-if = "showPassword" class="fa fa-eye" @click="toggleShow"></i>
-            <i v-if = "!showPassword" class="fa fa-eye-slash" @click="toggleShow"></i>
+            <i v-if="showPassword" class="fa fa-eye" @click="toggleShow"></i>
+            <i v-if="!showPassword" class="fa fa-eye-slash" @click="toggleShow"></i>
           </label>
           <div class="login-remember">
             <label class="login-checkbox">
@@ -62,25 +63,19 @@
         </div>
       </div>
     </div>
-    <div>
-      <select v-model="url" @keyup.enter="confirm">
-        <option value="http://127.0.0.1:8000">Local</option>
-        <option value="http://175.178.34.84">Server</option>
-      </select>
-      <button @click="confirm">confirm</button>
-    </div>
   </div>
-
 </template>
 
 <script>
+import axios from 'axios'
+import Qs from 'qs'
 export default{
   name: 'login',
   data () {
     return {
       showPassword: false,
       showDiv: true,
-      email: '',
+      username: '',
       password: ''
     }
   },
@@ -94,20 +89,34 @@ export default{
       this.showPassword = !this.showPassword
     },
     submit () {
-      var reg = /[0-9]{9}@link\.cuhk\.edu\.cn/
-      if (this.email === '' || !reg.test(this.email)) {
-        this.$message.error('please input the correct email')
+      let sendData = {
+        username: this.username,
+        password: this.password
       }
-    },
-    confirm () {
-      this.GLOBAL.BASE_URL = this.url
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/login/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (response.data === 'Success Login!') {
+          this.$router.push({
+            path: '/home/:username',
+            name: 'home',
+            params: {
+              username: this.username
+            }
+          })
+        } else {
+          this.$message.error(response.data)
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-@import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("../font-awesome-4.7.0/css/font-awesome.min.css");
 
 * {
   padding: 0;

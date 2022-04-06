@@ -1,33 +1,60 @@
 <template>
-  <div class="profile-card">
-  <header>
-    <a target="_blank" href="/login">
-      <img src="http://lorempixel.com/150/150/people/" class="fa-user">
-    </a>
-    <h1>Welcome to our community!</h1>
-    <h2>CSC4001 group</h2>
-  </header>
-  <div class="profile-bio">
-    <p>
-      We have send your a confirmation email, please check you email box. You can also click below to see our source code.
-    </p>
+  <div id="body">
+    <div class="profile-card">
+      <header>
+        <h1>Welcome to our community!</h1>
+        <h2>created by CSC4001 group</h2>
+      </header>
+      <div class="profile-bio">
+        <p>
+          We have send your a confirmation email, please check you email box. You can also click below to see our source code.
+        </p>
+      </div>
+      <div class="verify-box">
+        <input type="text" placeholder="Verification Code"  @keyup.enter="confirm" required>
+      </div>
+      <div class="confirm-box">
+        <input @click="confirm"  type="Submit" value="Confirm your account">
+      </div>
+      <div class="profile-social-links">
+        <li>
+          <a target="_blank"
+             href="https://github.com/Demario-Huang/CSC4001_Project.git">
+            <i class="fa fa-github"></i>
+            <!-- <h1> Remember you need to run command 'npm i font-awesome -S' to intall the fa-github icon or you can not see it</h1> -->
+          </a>
+        </li>
+      </div>
+    </div>
   </div>
-  <ul class="profile-social-links">
-    <li>
-      <a target="_blank" href="https://github.com/Demario-Huang/CSC4001_Project.git">
-        <i class="fa fa-github"></i>
-      </a>
-    </li>
-  </ul>
-</div>
 </template>
 
-<style scppe>
+<script>
+import bus from '../assets/bus.js'
+import router from '../router'
+export default{
+  name: 'design',
+  methods: {
+    confirm () {
+      var newvar
+      bus.$on('asd', (val) => {
+        console.log('hello')
+        newvar = val
+        console.log(newvar)
+      })
+      router.push({ path: '/home' })
+    }
+  }
+}
+</script>
+
+<style scoped>
+@import url('http://175.178.34.84/fs/googleapi.css');
 html {
   height: 100%;
 }
 
-body {
+#body {
   overflow: hidden;
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
   background-size: cover;
@@ -36,11 +63,11 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  font: normal 14px/1.618em "Roboto", sans-serif;
+  font: normal 14px/1.618em 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-body:before {
+#body:before {
   content: "";
   height: 0px;
   padding: 0px;
@@ -54,8 +81,11 @@ body:before {
   border-radius: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  -webkit-animation: puff 0.5s 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards, borderRadius 0.2s 2.3s linear forwards;
-  animation: puff 0.5s 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards, borderRadius 0.2s 2.3s linear forwards;
+  -webkit-animation: puff 0.5s 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19)
+      forwards,
+    borderRadius 0.2s 2.3s linear forwards;
+  animation: puff 0.5s 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards,
+    borderRadius 0.2s 2.3s linear forwards;
 }
 
 h1,
@@ -72,7 +102,7 @@ h2 {
   font-size: 16px;
 }
 
-h5{
+h5 {
   font-size: 10px;
 }
 
@@ -81,7 +111,7 @@ p {
 }
 
 .profile-card {
-  background: #FFB300;
+  background: #ffb300;
   width: 56px;
   height: 106vh;
   position: absolute;
@@ -95,10 +125,18 @@ p {
   transform: translate(-50%, -50%);
   -webkit-border-radius: 50%;
   border-radius: 50%;
-  -webkit-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
+  -webkit-box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16),
+    0px 3px 6px rgba(0, 0, 0, 0.23);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
-  -webkit-animation: init 0.5s 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards, moveDown 1s 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards, moveUp 1s 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, materia 0.5s 2.7s cubic-bezier(0.86, 0, 0.07, 1) forwards;
-  animation: init 0.5s 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards, moveDown 1s 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards, moveUp 1s 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, materia 0.5s 2.7s cubic-bezier(0.86, 0, 0.07, 1) forwards;
+  -webkit-animation: init 0.5s 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19)
+      forwards,
+    moveDown 1s 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards,
+    moveUp 1s 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+    materia 0.5s 2.7s cubic-bezier(0.86, 0, 0.07, 1) forwards;
+  animation: init 0.5s 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards,
+    moveDown 1s 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards,
+    moveUp 1s 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+    materia 0.5s 2.7s cubic-bezier(0.86, 0, 0.07, 1) forwards;
 }
 
 .profile-card header {
@@ -106,8 +144,8 @@ p {
   height: 180px;
   padding: 40px 20px 30px 20px;
   display: inline-block;
-  border-right: 2px dashed #EEEEEE;
-  background: #FFFFFF;
+  border-right: 2px dashed #eeeeee;
+  background: #ffffff;
   color: #000000;
   margin-top: 50px;
   opacity: 0;
@@ -117,7 +155,7 @@ p {
 }
 
 .profile-card header h1 {
-  color: #FF5722;
+  color: #ff5722;
 }
 
 .profile-card header a {
@@ -134,11 +172,22 @@ p {
   right: 3px;
   width: 20px;
   height: 20px;
-  border: 4px solid #FFFFFF;
+  border: 4px solid #ffffff;
   -webkit-transform: scale(0);
   transform: scale(0);
-  background: -webkit-linear-gradient(top, #2196F3 0%, #2196F3 50%, #FFC107 50%, #FFC107 100%);
-  background: linear-gradient(#2196F3 0%, #2196F3 50%, #FFC107 50%, #FFC107 100%);
+  background: -webkit-linear-gradient(
+    top,
+    #2196f3 0%,
+    #2196f3 50%,
+    #ffc107 50%,
+    #ffc107 100%
+  );
+  background: linear-gradient(
+    #2196f3 0%,
+    #2196f3 50%,
+    #ffc107 50%,
+    #ffc107 100%
+  );
   -webkit-border-radius: 50%;
   border-radius: 50%;
   -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
@@ -169,7 +218,7 @@ p {
   display: inline-block;
   float: right;
   padding: 50px 20px 30px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   color: #333333;
   margin-top: 50px;
   text-align: center;
@@ -184,7 +233,7 @@ p {
   float: right;
   margin: 0px;
   padding: 15px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   margin-top: 50px;
   text-align: center;
   opacity: 0;
@@ -199,18 +248,17 @@ p {
   margin: -5px 0px 0px 0px;
   padding: 0px;
   float: left;
-  width: 25%;
+  width: 95%;
   text-align: center;
 }
 
 .profile-social-links li a {
   display: inline-block;
-  color: red;
+  color: rgb(21, 20, 20);
   width: 24px;
   height: 24px;
-  padding: 6px;
+  padding: 16px;
   position: relative;
-  overflow: hidden!important;
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
@@ -218,6 +266,7 @@ p {
 .profile-social-links li a i {
   position: relative;
   z-index: 1;
+  font-size: 30px;
 }
 
 .profile-social-links li a img,
@@ -321,7 +370,7 @@ p {
 
 @-webkit-keyframes moveUp {
   0% {
-    background: #FFB300;
+    background: #ffb300;
     top: 100%;
   }
   50% {
@@ -329,13 +378,13 @@ p {
   }
   100% {
     top: 50%;
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
 }
 
 @keyframes moveUp {
   0% {
-    background: #FFB300;
+    background: #ffb300;
     top: 100%;
   }
   50% {
@@ -343,13 +392,13 @@ p {
   }
   100% {
     top: 50%;
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
 }
 
 @-webkit-keyframes materia {
   0% {
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
   50% {
     -webkit-border-radius: 4px;
@@ -357,14 +406,14 @@ p {
   100% {
     width: 440px;
     height: 280px;
-    background: #FFFFFF;
+    background: #ffffff;
     -webkit-border-radius: 4px;
   }
 }
 
 @keyframes materia {
   0% {
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
   50% {
     border-radius: 4px;
@@ -372,7 +421,7 @@ p {
   100% {
     width: 440px;
     height: 280px;
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 4px;
   }
 }
@@ -499,7 +548,7 @@ p {
   }
   @-webkit-keyframes materia {
     0% {
-      background: #E0E0E0;
+      background: #e0e0e0;
     }
     50% {
       -webkit-border-radius: 4px;
@@ -507,13 +556,13 @@ p {
     100% {
       width: 280px;
       height: 440px;
-      background: #FFFFFF;
+      background: #ffffff;
       -webkit-border-radius: 4px;
     }
   }
   @keyframes materia {
     0% {
-      background: #E0E0E0;
+      background: #e0e0e0;
     }
     50% {
       border-radius: 4px;
@@ -521,9 +570,43 @@ p {
     100% {
       width: 280px;
       height: 440px;
-      background: #FFFFFF;
+      background: #ffffff;
       border-radius: 4px;
     }
   }
+}
+.verify-box input{
+  height: 32px;
+  margin: 18px 0;
+  outline: none;
+  padding: 5px 15px;
+  font-size: 17px;
+  font-weight: 400;
+  color: #333;
+  border: 1.5px solid #C7BEBE;
+  border-bottom-width: 2.5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display:inline-block;
+}
+.verifyt-box input:focus,
+.verify-box input:valid{
+  border-color: #6083e4;
+}
+.confirm-box input{
+  font: 'Poppins', sans-serif;
+  font-style: italic;
+  height: 40px;
+  margin: 20px 0;
+  color: rgb(34, 32, 32);
+  letter-spacing: 1px;
+  border: 1.5px solid #C7BEBE;
+  border-radius: 8px;
+  background: linear-gradient(-218deg, #bfe7f3 50%, #a6dcf1 66%);
+  cursor: pointer;
+  display: inline-block;
+}
+.confirm-box input:hover{
+  background: #4871e2;
 }
 </style>

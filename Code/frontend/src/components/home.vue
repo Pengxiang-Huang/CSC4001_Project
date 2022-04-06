@@ -1,155 +1,421 @@
 <template>
   <div>
+    <div id="mask"></div>
+    <div id="pop-up-reset" class="pop-up">
+      <span id="reset-title"></span>
+      <img src="../assets/close.png" class="closeBtn" @click="close">
+      <input id="inputBox1">
+      <input id="inputBox2" v-model="newVal">
+      <button class="clickBtn" @click="reset">Reset</button>
+    </div>
+    <div id="pop-up-post" class="pop-up">
+      <span id="post-title">Post</span>
+      <img src="../assets/close.png" class="closeBtn" @click="close">
+      <textarea type="text" placeholder="Please enter the title/subject of your question/blog..." id="blog_title"></textarea>
+      <textarea placeholder="Please enter the detailed information..." id="blog_content"></textarea>
+      <el-row>
+        <el-col :span="5" :offset="6" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
+          <el-dropdown trigger="click" placement="bottom" @command="selectPartition">
+            <span style="color: white;">
+              {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
+              <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
+              <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+        <el-col :span="5" :offset="2" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
+          <el-dropdown trigger="click" placement="bottom" @command="selectSubPartition">
+            <span style="color: white;">
+              {{ subPartition }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
+              <el-dropdown-item command="Assignments">Assignments</el-dropdown-item>
+              <el-dropdown-item command="Projects">Projects</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-row>
+      <div id="upload_info">
+          <el-button type="primary" id="loadFile">upload</el-button>
+          <input @change="handleFileChange" type="file" multiple="multiple" id="file" name="attachments">
+          <span id="fileTip">You can upload some attachment here</span>
+      </div>
+      <button class="clickBtn" @click="submitPost">Post</button>
+    </div>
     <el-menu
-      default-active="1"
+      default-active="Main"
       class="el-menu-demo"
       mode="horizontal"
       @select="handleSelect"
       background-color="#545c64"
-      text-color="#fff"
+      text-color="#ffffff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item index="1" class="menu-item">Main</el-menu-item>
-      <el-menu-item index="2" class="menu-item">Partitions</el-menu-item>
+      <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
+      <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
       <el-input
-        v-model="input"
+        v-model="searchContent"
         placeholder="请输入内容"
         class="searchBox"
       ></el-input>
-      <el-button class="searchIcon" icon="el-icon-search" circle></el-button>
-      <el-button class="postIcon" round>Post</el-button>
-      <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
-        <span class="el-dropdown-link">
-          <el-avatar v-if="profileURL" :src="profileURL" class="userIcon"></el-avatar>
-          <el-avatar v-else class="userIcon" icon="el-icon-user-solid"></el-avatar>
+      <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
+      <el-button class="postIcon" @click="showPost" round>Post</el-button>
+      <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
+        <span>
+          <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
+          <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
         </span>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
+          <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
+          <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
           <el-dropdown-item divided>
             <el-upload
               class="avatar-uploader"
               action="/api/getProfile/"
-              :limit="1"
               :show-file-list="false"
+              :http-request="uploadProfile"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload">Upload Profile
             </el-upload>
           </el-dropdown-item>
-          <el-dropdown-item divided command="reset">Reset Password</el-dropdown-item>
-          <el-dropdown-item divided>...</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-menu>
-    <div v-if="index === 'Main'" id="tab">
+    <div v-if="index === 'Main'" class="tab">
       <div id="leftBox"></div>
       <div id="rightBox"></div>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs value="first" @tab-click="handleClick">
         <el-tab-pane></el-tab-pane>
-        <el-tab-pane label="Hot quesitons" name="first">
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
-          <p>hot questions</p>
+        <el-tab-pane label="Hot Blogs" name="first">
+          <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.content }}</p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ item.amount_of_answers }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-view"></i>
+              <span>{{ item.views }}</span>
+            </div>
+          </div>
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
         </el-tab-pane>
-        <el-tab-pane label="Concerned questions" name="second"
-          >concerned questions</el-tab-pane
-        >
-        <el-tab-pane label="Concerned partitions" name="third"
-          >concerned partitions</el-tab-pane
-        >
-        <el-tab-pane label="Excellent answers" name="fourth"
+        <el-tab-pane label="Followed Blogs" name="second">
+          <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.content }}</p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ item.amount_of_answers }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-view"></i>
+              <span>{{ item.views }}</span>
+            </div>
+          </div>
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+        </el-tab-pane>
+        <el-tab-pane label="Followed Partitions" name="third">
+          <div class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartition_'+index">
+            <img :src="item.url" class="partition-icon"/>
+            <h3>{{ item.group_name + ' - ' + item.description }}</h3>
+            <div id="sub-container">
+              <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
+              <el-button type="primary" class="sub-partitions" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+            </div>
+            <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+            </button>
+            <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.amount_of_follows }}</span>
+            </button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Excellent Answers" name="fourth"
           >excellent answers</el-tab-pane
         >
       </el-tabs>
     </div>
-    <div v-if="index === 'Partitions'" id="tab">
+    <div v-if="index === 'Partitions'" class="tab">
       <div id="leftBox"></div>
       <div id="rightBox"></div>
+      <div class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
+        <img :src="item.url" class="partition-icon"/>
+        <h3>{{ item.group_name + ' - ' + item.description }}</h3>
+        <div id="sub-container">
+          <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
+          <el-button type="primary" class="sub-partitions" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+        </div>
+        <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
+          <img src="../assets/follow-click.png" />
+          <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+        </button>
+        <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
+          <img src="../assets/follow.png" />
+          <span style="color: white;">{{ item.amount_of_follows }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import Qs from 'qs'
 export default {
   data () {
     return {
-      input: '',
+      searchContent: '',
       index: 'Main',
-      activeName: 'first',
-      profileURL: ''
+      profileURL: '',
+      hotBlogs: {},
+      followedBlogs: {},
+      partitions: {},
+      followedPartitions: {},
+      partition: 'Partitions', // used in selecting the partition when posting a question
+      subPartition: 'Sub Partitions', // used in selecting the partition when posting a question
+      username: '',
+      newVal: ''
     }
   },
   created () {
-    // axios({
-    //   method: 'POST',
-    //   url: '/api/getProfile/'
-    // }).then((response) => {
-    //   if (response.data.name !== '') {
-    //     this.profileURL = require('../../dist/profiles/' + response.data.name)
-    //   }
-    // })
+    this.username = this.$route.params['username']
+    let sendData = {
+      username: this.username
+    }
+    axios.all([
+      // Initialized the profile
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/getProfile/',
+        data: Qs.stringify(sendData)
+      }),
+      // Initialize the hot blogs
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/mainpage/',
+        data: Qs.stringify(sendData)
+      }),
+      // Initialize the followed blogs
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/myFollow/',
+        data: Qs.stringify(sendData)
+      }),
+      // Initialize the partitions
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/Groups/',
+        data: Qs.stringify(sendData)
+      }),
+      // Initialize the followed partitions
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/MyGroups/',
+        data: Qs.stringify(sendData)
+      })
+    ]).then((response) => {
+      if (response[0].data.url !== '') {
+        this.profileURL = response[0].data.url
+      }
+      this.hotBlogs = response[1].data
+      this.followedBlogs = response[2].data
+      this.partitions = response[3].data
+      this.followedPartitions = response[4].data
+    })
   },
   methods: {
+    // close the pop-up window
+    close () {
+      document.getElementById('mask').style.display = 'none'
+      document.getElementById('pop-up-reset').style.display = 'none'
+      document.getElementById('pop-up-post').style.display = 'none'
+    },
+    // show the pop-up post window
+    showPost () {
+      document.getElementById('mask').style.display = 'block'
+      document.getElementById('pop-up-post').style.display = 'block'
+    },
+    // user select which partition the blog belongs to
+    selectPartition (command) {
+      this.partition = command
+    },
+    // user select which sub partition the blog belongs to
+    selectSubPartition (command) {
+      this.subPartition = command
+    },
+    // user select the file wait for uploading
+    handleFileChange (e) {
+      const input = e.target
+      const files = e.target.files
+      const fileTip = document.getElementById('fileTip')
+      let tips = ''
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > 1024 * 1024 * 3) {
+          alert('文件大小不能超过3M, 请重新选择!')
+          input.value = ''
+          return false
+        }
+        tips += files[i].name
+        tips += ', '
+      }
+      tips = tips.substring(0, tips.length - 2)
+      if (tips.length > 40) {
+        tips = tips.substring(0, 40) + '...'
+      }
+      fileTip.innerHTML = tips
+      this.fileList = files
+    },
+    // user submit the post
+    submitPost () {
+      let fd = new FormData()
+      for (let i = 0; i < this.fileList.length; i++) {
+        fd.append('attachments[' + i + ']', this.fileList[i])
+      }
+      axios({
+        method: 'POST',
+        url: '/api/submitPost/',
+        data: fd,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    },
+    // Determine the page where the user stay on
     handleSelect (key, keyPath) {
-      if (key === '1') {
-        this.index = 'Main'
-      }
-      if (key === '2') {
-        this.index = 'Partitions'
-      }
+      this.index = key
     },
     handleClick (tab, event) {
       console.log(tab, event)
     },
-    handleCommand (command) {
-      if (command === 'reset') {
-        this.$message('click on item ' + command)
+    // Deal with the user functions
+    selectUserFunctions (command) {
+      if (command === 'Reset Username') {
+        document.getElementById('mask').style.display = 'block'
+        document.getElementById('pop-up-reset').style.display = 'block'
+        document.getElementById('reset-title').innerHTML = command
+        document.getElementById('inputBox1').type = 'text'
+        document.getElementById('inputBox1').placeholder = this.username
+        document.getElementById('inputBox1').disabled = true
+        document.getElementById('inputBox2').type = 'text'
+        document.getElementById('inputBox2').placeholder = 'Please enter your new username...'
+      }
+      if (command === 'Reset Password') {
+        document.getElementById('mask').style.display = 'block'
+        document.getElementById('pop-up-reset').style.display = 'block'
+        document.getElementById('reset-title').innerHTML = command
+        document.getElementById('inputBox1').type = 'password'
+        document.getElementById('inputBox1').placeholder = 'Please enter you new password...'
+        document.getElementById('inputBox1').disabled = false
+        document.getElementById('inputBox2').type = 'password'
+        document.getElementById('inputBox2').placeholder = 'Please check your new password...'
       }
     },
-    handleAvatarSuccess (response, file) {
-      this.profileURL = require('../../dist/profiles/' + file.raw.name)
+    // Reset username or password
+    reset () {
+      let type = document.getElementById('reset-title').innerHTML
+      if (type === 'Reset password' && document.getElementById('inputBox1') !== this.newVal) {
+        alert('The passwords are not the same, please check it!')
+        return
+      }
+      let sendData = {
+        type: type,
+        username: this.username,
+        newVal: this.newVal
+      }
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/updateInformation/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (type === 'Reset Username' && response.data === 'UserName has been taken') {
+          alert('The username has already been used, please change it again!')
+        } else {
+          alert(response.data)
+          this.close()
+          if (type === 'Reset Username') {
+            this.username = this.newVal
+            this.$router.replace({
+              path: '/blank',
+              name: 'blank',
+              params: {
+                username: this.username
+              }
+            })
+          } else {
+            this.$router.push({
+              path: '/login',
+              name: 'login'
+            })
+          }
+        }
+      })
     },
+    // Callback when the user successfully upload a profile
+    handleAvatarSuccess (res, file) {
+      this.profileURL = 'http://175.178.34.84/profiles/' + res.data.profile_name
+    },
+    uploadProfile (option) {
+      let fd = new FormData()
+      fd.append('profile', option.file)
+      fd.append('id', fd.get('profile').uid)
+      fd.append('username', this.username)
+      return axios({
+        method: 'POST',
+        url: '/api/uploadProfile/',
+        data: fd,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    },
+    // Execute this before the user upload a profile
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -159,30 +425,225 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      let fd = new FormData()
-      fd.append('profile', file)
-      console.log(fd.get('profile'))
+      return isJPG && isLt2M
+    },
+    // User like the blog if no like, dislike the blog if like
+    like (e, item) {
+      let sendData = {
+        id: item.id,
+        username: this.username,
+        type: 0 // 0 is question, 1 is answer
+      }
       axios({
         method: 'POST',
-        url: '/api/uploadProfile/',
-        data: fd,
-        headers: {
-          'Content-Type': 'multipart/form-data'
+        url: 'http://175.178.34.84/api/like/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (response.data.ok) {
+          let sendData = {
+            username: this.username
+          }
+          axios.all([
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/mainpage/',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/myFollow/',
+              data: Qs.stringify(sendData)
+            })
+          ]).then((response) => {
+            this.hotBlogs = response[0].data
+            this.followedBlogs = response[1].data
+          })
         }
       })
-      return isJPG && isLt2M
+    },
+    // User follow the blog if not follow, unfollow the blog if follow
+    follow (e, item) {
+      let sendData = {
+        id: item.id,
+        username: this.username
+      }
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/follow/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (response.data.ok) {
+          let sendData = {
+            username: this.username
+          }
+          axios.all([
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/mainpage/',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/myFollow/',
+              data: Qs.stringify(sendData)
+            })
+          ]).then((response) => {
+            this.hotBlogs = response[0].data
+            this.followedBlogs = response[1].data
+          })
+        }
+      })
+    },
+    // User follow the partition if not follow, unfollow the partition if follow
+    followGroup (item) {
+      let sendData = {
+        group_name: item.group_name,
+        username: this.username
+      }
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/followGroup/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        if (response.data.ok) {
+          let sendData = {
+            username: this.username
+          }
+          axios.all([
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/Groups/',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/MyGroups/',
+              data: Qs.stringify(sendData)
+            })
+          ]).then((response) => {
+            this.partitions = response[0].data
+            this.followedPartitions = response[1].data
+          })
+        }
+      })
+    },
+    search () {
+      alert(this.searchContent)
     }
   }
 }
 </script>
 
 <style scoped>
+#mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  background-color: #bfbfbf;
+  z-index: 1000;
+  opacity: 0.8;
+  display: none;
+}
+#pop-up-post {
+  height: 55%;
+}
+.pop-up {
+  position: fixed;
+  height: 40%;
+  width: 40%;
+  left: 30%;
+  top: 20%;
+  border-radius: 10px;
+  font-size: 25px;
+  text-align: center;
+  z-index: 1001;
+  background-color: white;
+  display: none;
+}
+.pop-up input {
+  box-sizing: border-box;
+  display: block;
+  height: 12%;
+  width: 60%;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin: 10% auto;
+}
+#reset-title, #post-title {
+  position: relative;
+  width: 60%;
+  top: 5%;
+}
+.clickBtn {
+  height: 12%;
+  width: 60%;
+  cursor: pointer;
+}
+.closeBtn {
+  width: 5%;
+  float: right;
+  cursor: pointer;
+}
+#blog_title {
+  box-sizing: border-box;
+  display: block;
+  height: 12%;
+  width: 60%;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin: 7% auto 0;
+  resize: none;
+  font-size: 16px;
+}
+#blog_content {
+  box-sizing: border-box;
+  display: block;
+  height: 20%;
+  width: 60%;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin: 5% auto;
+  resize: none;
+  font-size: 16px;
+}
+#upload_info {
+  width: 60%;
+  height: 8%;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin: 5% auto;
+  text-align: left;
+  padding-top: 2%;
+}
+#file {
+  box-sizing: border-box;
+  display: block;
+  height: 80%;
+  width: 100%;
+  margin: -10% auto;
+  opacity: 0;
+}
+#loadFile {
+  width: 20%;
+  height: 70%;
+  padding: 0;
+  font-size: 18px;
+  background-color: #82beec;
+  border: 0;
+}
+#fileTip {
+  position: relative;
+  left: 22%;
+  font-size: 14px;
+}
 #leftBox {
   position: fixed;
   width: 20%;
   height: 100%;
   left: 0;
   background-color: #bfbfbf;
+  z-index: -9999;
 }
 #rightBox {
   position: fixed;
@@ -190,6 +651,7 @@ export default {
   height: 100%;
   left: 80%;
   background-color: #bfbfbf;
+  z-index: -9999;
 }
 .menu-item {
   margin-left: 50px;
@@ -221,19 +683,104 @@ export default {
 .userIcon:hover {
   cursor: pointer;
 }
-#tab {
+#user {
+  border: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #606266;
+  width: 100px;
+  text-align: center;
+}
+#user-function {
+  top: 10px !important;
+  left: 1200px !important;
+}
+.tab {
   position: absolute;
   width: 60%;
   height: 100%;
   padding: 0 20%;
-  border: 1px solid gray;
   overflow: auto;
 }
-p {
-  padding-left: 50px;
+.blog {
+  height: 200px;
+  border-bottom: 1px solid gray;
+  padding: 0 50px;
+  font-size: 20px;
+  line-height: 30px;
 }
-.el-dropdown-menu {
-  top: 50px !important;
-  left: 1200px !important;
+.blog>h3:hover, .blog>p:hover {
+  cursor: pointer;
+  color: #82beec;
+}
+.click_icon, .follow-partition {
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+  padding-top: 5px;
+  padding-left: 15px;
+  font-size: 15px;
+  line-height: 25px;
+  border-color: transparent;
+  border-radius: 3px;
+  background-color: #82beec;
+  margin-right: 50px;
+}
+.click_icon img, .follow-partition img{
+  float: left;
+}
+.click_icon:hover, .follow-partition:hover{
+  cursor: pointer;
+  background-color: #b3d8ff;
+}
+.noclick_icon {
+  box-sizing: border-box;
+  width: 100px;
+  color: gray;
+  font-size: 15px;
+  text-align: center;
+  float: right;
+  margin-top: 10px;
+}
+.partition {
+  border-bottom: 1px solid gray;
+  padding: 0 50px;
+  font-size: 20px;
+  line-height: 30px;
+}
+.partition-icon {
+  height: 50px;
+  float: left;
+  margin-right: 20px;
+}
+.partition>h3 {
+  position: relative;
+  top: 10px;
+}
+.sub-partitions {
+  background-color: #82beec;
+  border-color: transparent;
+  width: 100px;
+  padding: 10px 0;
+  margin: 10px 15px;
+}
+.sub-partitions:hover{
+  background-color: #b3d8ff;
+}
+.sub-partitions:first-child:hover{
+  background-color: #82beec;
+  cursor: default;
+}
+#sub-container {
+  display: inline-block;
+  position: relative;
+  top: 10px;
+  width: 75%;
+  margin-bottom: 30px;
+  font-size: 0px;
+}
+.follow-partition {
+  float: right;
+  margin: 0;
 }
 </style>
