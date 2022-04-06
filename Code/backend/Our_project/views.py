@@ -429,7 +429,7 @@ def my_follow(request):
             # put the url into data, preparing to be sent to frontend
             temp = question[0]
 
-            if (question[i]['content_format'] == "Markdown"):
+            if (question[0]['content_format'] == "Markdown"):
                 content = question[0]["content"]
                 raw_content = get_raw(get_HTML(content))
             else:
