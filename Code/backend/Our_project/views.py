@@ -9,8 +9,8 @@ from django.db import connection    # allow Django to use the original SQL state
 from datetime import date, datetime
 import os
 import random
-
-
+import _thread
+import time
 import queue
 from sphere_engine import CompilersClientV4
 from sphere_engine.exceptions import SphereEngineException
@@ -218,19 +218,30 @@ def update(request):
             return HttpResponse('Password Reset successfully!')
 
 
+
 #not yet
 def sendEmail(request):
     #send email heres
     #is href a POST or a GET request?
     if request.method == 'POST':
-        email = request.POST['email']
+        try: 
+            email = request.POST['email']
+        except:        # if it is a WSGIRequest, it don't have .POST[""] method, so we have to retrieve it by ourselves
+            email = request.META["QUERY_STRING"]
+            for i in range(0, len(email)):
+                if (email[i] == "="):
+                    email = email[i+1:]
+                    break
         code_send = code()
         print(code_send)
         R_list = []
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
-        return HttpResponse('')#需要把信息验证码一起用字典传过去、或者设置全局变量。
- 
+
+        data = {}
+        data["code"] = code_send
+        
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')#需要把信息验证码一起用字典传过去、或者设置全局变量。
 
 def setQuestion(request):
     data = {
@@ -379,6 +390,9 @@ def main_page(request):
             else:
                 raw_content = hot_blogs[i]["content"]
 
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
+
             # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
             temp = hot_blogs[i]
             temp['isliked'] = isliked
@@ -429,11 +443,14 @@ def my_follow(request):
             # put the url into data, preparing to be sent to frontend
             temp = question[0]
 
-            if (question[i]['content_format'] == "Markdown"):
+            if (question[0]['content_format'] == "Markdown"):
                 content = question[0]["content"]
                 raw_content = get_raw(get_HTML(content))
             else:
                 raw_content = question[0]["content"]
+
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
 
             temp['url'] = url
             temp['isliked'] = isliked
@@ -519,6 +536,9 @@ def unUnswered(request):
                 raw_content = get_raw(get_HTML(content))
             else:
                 raw_content = temp['content']
+
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
 
             temp['url'] = url
             temp['isliked'] = isliked
@@ -719,6 +739,9 @@ def getGroup(request):
             raw_content = get_raw(get_HTML(content))
         else:
             raw_content = questions[i]["content"]
+
+        if (len(raw_content) > 140):
+            raw_content = raw_content[0:140] + "..."
 
         # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
         temp = questions[i]
