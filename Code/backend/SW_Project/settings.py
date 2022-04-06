@@ -131,3 +131,12 @@ CORS_ALLOW_HEADERS = (
         'x-requested-with',
         'Pragma',
 )
+
+#yfizaouelxwibhbb private!!!!!
+#umpbiyszwfufbage 10922
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '1092298689@qq.com'
+EMAIL_HOST_PASSWORD = 'umpbiyszwfufbage'
+#EMAIL_USE_TLS = False

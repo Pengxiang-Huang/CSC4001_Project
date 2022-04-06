@@ -9,6 +9,14 @@ from django.db import connection    # allow Django to use the original SQL state
 from datetime import date, datetime
 import os
 import random
+
+
+import queue
+from sphere_engine import CompilersClientV4
+from sphere_engine.exceptions import SphereEngineException
+import requests
+import urllib.request
+
 from .models import User
 from .models import Blog_Questions
 from .models import picture
@@ -19,7 +27,9 @@ from .models import user_follow_group
 from .models import user_like_answer
 from .models import Group
 from .models import sub_group
+from .models import file
 import hashlib
+import markdown
 
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
@@ -220,7 +230,116 @@ def sendEmail(request):
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
         return HttpResponse('')#需要把信息验证码一起用字典传过去、或者设置全局变量。
-  
+ 
+
+def setQuestion(request):
+    data = {
+        'isRegister': 1
+    }# control flag
+
+    if request.method == 'POST':
+        title = request.POST['title']
+        author_id = request.POST['author_id']
+        group_type = request.POST['group_type']
+        sub_group_type = request.POST['sub_group_type']
+        content = request.POST['content']
+        content_format = request.POST['content_format']
+        like = request.POST['like']
+        follow = request.POST['follow']
+        hot = request.POST['hot']
+        views = request.POST['views']
+
+        try: 
+        #insert data
+            user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
+                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
+        except Exception as e:
+            print('--Insert question error%s'%(e))
+            data['isRegister'] = 0
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+        #if success
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
+#提出问题并放入数据库
+#需要对接如何返回
+def setQuestion(request):
+    data = {
+        'ok': 1
+    }# control flag
+
+    if request.method == 'POST':
+        title = request.POST['title']
+        author_id = request.POST['author_id']
+        group_type = request.POST['group_type']
+        sub_group_type = request.POST['sub_group_type']
+        content = request.POST['content']
+        content_format = request.POST['content_format']
+        like = request.POST['like']
+        follow = request.POST['follow']
+        hot = request.POST['hot']
+        views = request.POST['views']
+
+        try: 
+        #insert data
+            user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
+                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
+        except Exception as e:
+            print('--Insert question error%s'%(e))
+            data['ok'] = 0
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+        #if success
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
+#基于title相似度写的问题搜索
+def searchQuestion(request):
+    if request.method == 'POST':
+        similarity = 0
+        answerList = []
+        question = request.POST['question']
+        questionElem = question.split(' ')
+        print(questionElem)
+
+        DBlist = []
+        #get the db values
+        titleDB = Blog_Questions.objects.values('titles')
+        for title in titleDB:   
+            DBlist.append(title['titles'])
+
+        # start to search
+        for DBitem in DBlist:
+            similarity = 0
+            for title in questionElem:
+                if title in DBitem:
+                    similarity += 1
+            answerList.append(similarity)
+        #answerList contains all similarity in the order of id
+        print(similarity)
+        
+        maxSimilrty = len(questionElem)
+        positionList = []
+        returnNumberMax = 2 #adjust the #of return answer
+        for i in range(maxSimilrty):
+            searchValue = maxSimilrty - i
+            if (answerList.count(searchValue) > 0):
+                position = answerList.index(searchValue)
+                positionList.append(position)
+                if (len(positionList) == returnNumberMax):
+                    break
+            else:
+                continue
+        
+        #finially, return the searched answer
+        answerTitle = []
+        answerContent = []
+        for i in range(returnNumberMax):
+            answerTitle.append(positionList[i])
+        
+        content = Blog_Questions.objects.values('content')
+        for i in range(returnNumberMax):
+            answerContent.append(content[i]['content'])
+        
 
 
 ##########################################
@@ -228,7 +347,6 @@ def sendEmail(request):
 def main_page(request):
     
     if request.method == 'POST':
-        # getting the username from POST request
         username = request.POST['username']
 
         userid = User.objects.filter(username = username).values()[0]['id']
@@ -255,11 +373,18 @@ def main_page(request):
             # getting the amount of answers regarding to this questions
             amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
+            if (hot_blogs[i]['content_format'] == "Markdown"):
+                content = hot_blogs[i]["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = hot_blogs[i]["content"]
+
             # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
             temp = hot_blogs[i]
             temp['isliked'] = isliked
             temp['isfollowed'] = isfollowed
             temp['url'] = url
+            temp['content'] = raw_content
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
         
@@ -303,9 +428,17 @@ def my_follow(request):
 
             # put the url into data, preparing to be sent to frontend
             temp = question[0]
+
+            if (question[i]['content_format'] == "Markdown"):
+                content = question[0]["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = question[0]["content"]
+
             temp['url'] = url
             temp['isliked'] = isliked
             temp['isfollowed'] = isfollowed
+            temp['content'] = raw_content
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
 
@@ -380,9 +513,17 @@ def unUnswered(request):
 
             # put all the necessary information into the dict
             temp = questions_represent_by_dict[i]
+
+            if (temp['content_format'] == "Markdown"):
+                content = temp["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = temp['content']
+
             temp['url'] = url
             temp['isliked'] = isliked
             temp['isfollowed'] = isfollowed
+            temp['content'] = raw_content
             data['blog'+str(i+i)] = temp
 
         return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
@@ -539,58 +680,55 @@ def getProfile(request):
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 '''
-    Receive the POST request about the group_name, username
-    First, return the Group Profile, Group discription, and the number of people that follow this Group
-    In addtition, return the related blogs of each subgroup. 
+    Receive the POST request about the group_name, username, subgroup_name
+    First, return the blogs related to this group.
 '''
 def getGroup(request):
     group_name = request.POST['group_name']
+    sub_group_name = request.POST['sub_group_name']
     username = request.POST['username']
     user_id = User.objects.filter(username=username).values()[0]['id']
-
-    group = Group.objects.filter(group_name = group_name).values()
     
-    pic = picture.objects.filter(group_name = group_name).values()[0]
-    url = pic["url"]
-
-    temp = group[0]
-    temp["url"] = url
-
     data = {}
-    data["group"] = temp
 
-    sub_groups = sub_group.objects.filter(group_name = group_name).values()
-    for i in range(0, len(sub_groups)):
-        sub = sub_groups[i]
-        sub_group_name = sub["sub_group_name"]
-        sub_group_type = sub["id"]
-        hot_blogs = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_type).order_by('-hot').values()
+    sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
 
-        contents = {}
-        for j in range(0, min(5, len(hot_blogs))):
-            question_id = hot_blogs[j]['id']
+    questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
+    
+    for i in range(0, len(questions)):
+        question_id = questions[i]['id']
 
-            isliked = 0
-            if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
-                isliked = 1
+        # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+        isliked = 0
+        if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
+            isliked = 1
 
-            isfollowed = 0
-            if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
-                isfollowed = 1
+        # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+        isfollowed = 0
+        if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
+            isfollowed = 1
 
-            url = picture.objects.filter(question = question_id).values()[0]['url']
+        # getting the url of picture of the corresponding blog
+        url = picture.objects.filter(question = question_id).values()[0]['url']
 
-            amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+        # getting the amount of answers regarding to this questions
+        amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
-            temp = hot_blogs[j]
-            temp['isliked'] = isliked
-            temp['isfollowed'] = isfollowed
-            temp['url'] = url
-            temp['amount_of_answers'] = amount_of_answers
-            contents['blog'+str(j+1)] = temp
-        data[sub_group_name] = contents
+        if (questions[i]['content_format'] == "Markdown"):
+            content = questions[i]["content"]
+            raw_content = get_raw(get_HTML(content))
+        else:
+            raw_content = questions[i]["content"]
+
+        # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+        temp = questions[i]
+        temp['isliked'] = isliked
+        temp['isfollowed'] = isfollowed
+        temp['url'] = url
+        temp['content'] = raw_content
+        temp['amount_of_answers'] = amount_of_answers
+        data['blog'+str(i+1)] = temp
             
-
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 
@@ -621,5 +759,302 @@ def followGroup(request):
         update_group.save()
     data = {}
     data["ok"] = 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+'''
+    Receive the POST request about the username
+    Return all the groups, as well as each's description, url of picture, 
+    number of follows, and whether the current user follow
+    default own = 0 means return all the groups, own = 1 means only return the groups that current user follows
+'''
+def groups(request, own = 0):
+    data = {}
+    username = request.POST['username']
+    user_id = User.objects.filter(username=username).values()[0]['id']
+
+    groups = Group.objects.values()
+
+    n_group = 0
+    for i in range(0, len(groups)):
+        group = groups[i]
+        group_name = group["group_name"]
+
+        # get the url of picture of this group
+        url = picture.objects.filter(group_name = group_name).values()[0]['url']
+        
+        # check whether the current user has followed this group
+        isFollowed = 0
+        if (user_follow_group.objects.filter(id = user_id, group_name = group_name)):
+            isFollowed = 1
+        else: 
+            if (own == 1):
+                continue
+
+        temp = group
+        temp["isFollowed"] = isFollowed
+        temp["url"] = url
+
+        # get the corresponding sub-groups' name of this group, and assemble them into the return data
+        sub_groups = sub_group.objects.filter(group_name = group_name).values()
+        name_of_subgroups = []
+        sub_groups_names = {}
+        for j in range(0, len(sub_groups)):
+            sub_groups_names["subgroup" + str(j+1)] = sub_groups[j]["sub_group_name"]
+
+        temp["sub_groups"] = sub_groups_names
+        data["group" + str(n_group+1)] = temp
+        n_group += 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+'''
+    Inherit from groups(),
+    return only the groups that the current user is following
+'''
+def MyGroups(request): 
+
+    response = groups(request, own = 1)
+    return response
+
+
+'''
+    Gives the question id and username, 
+    return all the contents of questions. Including convert the mardown format into the HTML one. 
+'''
+def GetQuestions(request):
+    
+    question_id = request.POST["question_id"]
+    username = request.POST["username"]
+    userid = User.objects.filter(username=username).values()[0]['id']
+    
+    question = Blog_Questions.objects.filter(id = question_id).values()[0]
+
+    # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+    isliked = 0
+    if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+        isliked = 1
+
+    # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+    isfollowed = 0
+    if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+        isfollowed = 1
+
+    # getting the url of picture of the corresponding blog
+    pics = picture.objects.filter(question = question_id).values()
+    pic_urls = {}
+    for i in range(0, len(pics)):
+         pic_urls["url" + str(1+i)] = pics[i]["url"]
+
+    # find the files attached to this question
+    files = file.objects.filter(corresponding_question = question_id).values()
+    file_urls = {}
+    for i in range(0, len(files)):
+        file_urls["url" + str(1+i)] = files[i]["url"]
+
+    # getting the amount of answers regarding to this questions
+    amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+
+    content = question["content"]
+    if (question["content_format"] == "Markdown"):
+        html_content = get_HTML(content)
+    else:
+        html_content = content
+
+    # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+    temp = question
+    temp['content'] = html_content
+    temp['isliked'] = isliked
+    temp['isfollowed'] = isfollowed
+    temp['pic_urls'] = pic_urls
+    temp['file_urls'] = file_urls
+    temp['amount_of_answers'] = amount_of_answers
+
+    data = temp
+    
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+'''
+    Gives the content formated by markdown,
+    return the content formated by HTML
+'''
+def get_HTML(md_content):
+    HTML_content = markdown.markdown(md_content, 
+            extensions = [
+                'markdown.extensions.extra',
+                'markdown.extensions.codehilite',
+            ])
+    return HTML_content
+
+'''
+    Get the HTML format of content, return the raw data. 
+'''
+def get_raw(HTML_content):
+    raw_data = ""
+    deleting = False
+    stop_point = 0
+    newline = False
+    for i in range(0, len(HTML_content)):
+        if (HTML_content[i] == "<"):
+            if (deleting == False):
+                deleting = True
+                stop_point = i
+            else:
+                deleting = False
+                raw_data += HTML_content[stop_point:i-1]
+        if (deleting == False):
+            if (HTML_content[i] == "\n"):
+                if (newline == False):
+                    newline = True
+                else:
+                    continue  
+            else:
+                newline = False
+            raw_data += HTML_content[i]
+        if (HTML_content[i] == ">"):
+            if (deleting == True):
+                deleting = False
+
+    return raw_data
+
+'''
+    Given the username, Question ID,
+    gives all the contents related to this question.
+    Specially, maybe there will be answers which answer to another answer, it should be also included
+'''
+def GetAnswers(request):
+
+    data = {}
+
+    username = request.POST['username']
+    userid = User.objects.filter(username=username).values()[0]['id']
+
+    question_id = request.POST['question_id']
+
+    Answers = Blog_Answers.objects.filter(question_id = question_id).order_by("-id").values()
+    index_root_answer = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = None).count()
+
+    fathers = []
+    for i in range(0, len(Answers)):
+        answer = Answers[i]
+        answer_id = answer['id']
+
+        # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+        isliked = 0
+        if (user_like_answer.objects.filter(answer_id = answer_id, id = userid)):
+            isliked = 1
+
+        # getting the url of picture of the corresponding blog
+        pics = picture.objects.filter(answer = answer_id).values()
+        pic_urls = {}
+        for i in range(0, len(pics)):
+            pic_urls["url" + str(1+i)] = pics[i]["url"]
+
+        # find the files attached to this question
+        files = file.objects.filter(corresponding_answer = answer_id).values()
+        file_urls = {}
+        for i in range(0, len(files)):
+            file_urls["url" + str(1+i)] = files[i]["url"]
+
+        content = answer["content"]
+        if (answer["content_format"] == "Markdown"):
+            html_content = get_HTML(content)
+        else:
+            html_content = content
+
+        # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+        answer['content'] = html_content
+        answer['isliked'] = isliked
+        answer['pic_urls'] = pic_urls
+        answer['file_urls'] = file_urls
+
+        if (answer_id in fathers):
+            # then adopt its children
+            children = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = answer_id).order_by("-id").values()
+            father = answer
+            for j in range(0, len(children)):
+                child_name = "Answer" + str(children[j]["id"])
+                child = data[child_name]
+                father["Child" + str(len(children)-j)] = child
+                data.pop(child_name)
+            if (answer["father_answer_id"] == None):
+                data["root"+str(index_root_answer)] = father
+                index_root_answer -= 1
+            else:
+                data["Answer" + str(answer_id)] = father
+            fathers.remove(answer_id)
+        else:
+            if (answer["father_answer_id"] == None):
+                data["root"+str(index_root_answer)] = answer
+                index_root_answer -= 1
+            else:
+                data["Answer" + str(answer_id)] = answer        
+        if (answer["father_answer_id"] != None and (answer["father_answer_id"] not in fathers)):
+            fathers.append(answer["father_answer_id"])
+            
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+'''
+    Reveice piece of code, compile it and run it on internet,
+    return the result back
+'''
+def run_code(request):
+    source = request.POST['source_code']
+    lang = request.POST['lang']
+
+    accessToken = '1963c8460eedcdf0d6aa233a8c6e1021'
+    endpoint = 'a3e69f92.compilers.sphere-engine.com'
+
+    client = CompilersClientV4(accessToken, endpoint)
+
+    compiler = 116   # default python
+    if (lang == "Python"):
+        compiler = 116
+    elif (lang == "Assembler"):
+        compiler = 45
+    elif (lang == "C"):
+        compiler = 11
+    elif (lang == "C#"):
+        compiler = 86
+    elif (lang == "C++"):
+        compiler = 1
+    elif (lang == "Fortran"):
+        compiler = 5
+    elif (lang == "Go"):
+        compiler = 114
+    elif (lang == "Java"):
+        compiler = 10
+    elif (lang == "R"):
+        compiler = 117
+    elif (lang == "Rust"):
+        compiler = 93
+
+    input = '111'
+
+    response = client.submissions.create(source, compiler, input)
+
+    task_id = response.get("id")
+    response = client.submissions.get(task_id)
+
+    executing_status = response.get("executing")
+
+    while (executing_status):
+        response = client.submissions.get(task_id)
+        executing_status = response.get("executing")
+
+    print(response)
+    try:
+        uri=response.get("result").get("streams").get("output").get('uri')
+    except:
+        try:
+            uri=response.get("result").get("streams").get("error").get('uri')
+        except:
+            uri=response.get("result").get("streams").get("cmpinfo").get('uri')
+    contents = urllib.request.urlopen(uri).read().decode('utf-8')
+
+    data = {}
+    data["result"] = contents
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')

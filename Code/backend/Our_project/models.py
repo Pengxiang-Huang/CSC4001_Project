@@ -64,3 +64,9 @@ class Group(models.Model):
 class sub_group(models.Model):
     group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45, unique = True)
     sub_group_name = models.CharField(verbose_name='SUB_GROUP_NAME', max_length = 45, unique = True)
+
+class file(models.Model):
+    url = models.CharField(verbose_name='URL', max_length = 45, unique = True)
+    corresponding_question = models.IntegerField(verbose_name='COR_QUESTION')
+    corresponding_answer = models.IntegerField(verbose_name='COR_ANSWER')
+    create_time = models.DateTimeField('Established Time', auto_now_add=True)
