@@ -1,2 +1,4 @@
 [uWSGI] getting INI configuration from CUHKSZ_STACK_OVERFLOW.ini
 [uwsgi-static] added mapping for /static/ => /data/wwwroot/CSC4001_Project/Code/frontend/dist/static
+[uWSGI] getting INI configuration from CUHKSZ_STACK_OVERFLOW.ini
+[uwsgi-static] added mapping for /static/ => /data/wwwroot/CSC4001_Project/Code/frontend/dist/static
