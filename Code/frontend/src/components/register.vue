@@ -34,7 +34,7 @@
         <div class="policy">
           <input type="checkbox"
                  v-model="checkbox"
-                 @keyup.enter="submit">
+                 >
           <h3>I accept all terms & condition</h3>
         </div>
         <div class="input-box button">
@@ -65,6 +65,7 @@ export default {
       email: '',
       password1: '',
       password2: '',
+      checkbox: '',
       vari_code: ''
     }
   },
@@ -233,5 +234,40 @@ form .text h3 a {
 }
 form .text h3 a:hover {
   text-decoration: underline;
+}
+.policy input{
+  --s: 10px; /* adjust this to control the size*/
+  --_g: radial-gradient(calc(var(--s)/2),#15202a 96%,#0000); /* the color of the circle here */
+  height: var(--s);
+  aspect-ratio: 2.5;
+  width: auto; /* some browsers need this */
+  border-radius: var(--s);
+  padding: calc(var(--s)/10);
+  margin: calc(var(--s)/2);
+  display: grid;
+  cursor: pointer;
+  background:var(--_g) var(--_p,0%) 50%/var(--s) 33% no-repeat content-box, #ff7a7a; /* the red color */
+  box-sizing: content-box;
+  overflow: hidden;
+  transition: .3s .1s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.policy input:before,
+.policy input:after{
+  content: "";
+  grid-area: 1/1;
+  clip-path: inset(0 0 65% 0);
+  transition: .3s;
+  background: var(--_g) var(--_p,0%)/var(--s) 100% no-repeat;
+}
+.policy input:after{
+  transition: .3s .2s;
+  clip-path: inset(65% 0 0 0);
+}
+.policy input:checked{
+  background-color: #85ff7a; /* the green color */
+  --_p: 100%;
 }
 </style>
