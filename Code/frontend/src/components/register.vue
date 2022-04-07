@@ -81,8 +81,6 @@ export default {
         this.$message.error('please confirm your password')
       } else if (this.password1 !== this.password2) {
         this.$message.error('The passwords are not the same, please check it!')
-      } else if (this.checkbox !== true) {
-        this.$message.error('Please allow the condition to continue!')
       } else {
         let sendData = {
           username: this.username,

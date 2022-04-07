@@ -655,7 +655,7 @@ def uploadProfile(request):
 
     username = request.POST['username']
     profile = request.FILES.get('profile')
-    profile_dir1 = '../profiles/' + request.POST['id'] + '.jpg'
+    profile_dir1 = '../../profiles/' + request.POST['id'] + '.jpg'
     f = open(profile_dir1, 'wb')
     for line in profile.chunks():
         f.write(line)
