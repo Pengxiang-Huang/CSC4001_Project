@@ -11,12 +11,17 @@ import 'font-awesome/css/font-awesome.min.css'
 import { faEye, faEyeSlash, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import global from '../config/global'
+import Prism from 'prismjs'
+import { PrismEditor } from 'vue-prism-editor'
+import 'vue-prism-editor/dist/prismeditor.min.css'
+Prism.highlightAll()
 Vue.prototype.GLOBAL = global
 library.add(faEye)
 library.add(faEyeSlash)
 library.add(faArrowLeft)
 library.add(faArrowRight)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('PrismEditor', PrismEditor)
 
 Vue.use(ElementUI)
 

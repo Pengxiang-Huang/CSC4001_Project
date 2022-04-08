@@ -1,6 +1,7 @@
 <template>
   <div>
     <div id="mask"></div>
+    <router-link to="/post"></router-link>
     <div id="pop-up-reset" class="pop-up">
       <span id="reset-title"></span>
       <img src="../assets/close.png" class="closeBtn" @click="close">

@@ -7,6 +7,7 @@ import contact from '@/components/contact'
 import forgot from '@/components/forgot'
 import home from '@/components/home'
 import blank from '@/components/blank'
+import post from '@/components/post'
 
 Vue.use(Router)
 
@@ -46,6 +47,11 @@ export default new Router({
       path: '/blank',
       name: 'blank',
       component: blank
+    },
+    {
+      path: '/post',
+      name: 'post',
+      component: post
     }
   ]
 })
