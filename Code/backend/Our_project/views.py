@@ -986,11 +986,19 @@ def GetAnswers(request):
         else:
             html_content = content
 
+        # according to the author id, return the author's profile url and username
+        author_id = answer["author_id"]
+        author_name = User.objects.filter(id = author_id).values()[0]['username']
+        profile_url = User.objects.filter(id = author_id).values()[0]['photo']
+
         # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
         answer['content'] = html_content
         answer['isliked'] = isliked
         answer['pic_urls'] = pic_urls
         answer['file_urls'] = file_urls
+        answer['author_name'] = author_name
+        answer['author_profile_url'] = profile_url
+        answer['Children'] = {}
 
         if (answer_id in fathers):
             # then adopt its children
@@ -999,8 +1007,10 @@ def GetAnswers(request):
             for j in range(0, len(children)):
                 child_name = "Answer" + str(children[j]["id"])
                 child = data[child_name]
-                father["Child" + str(len(children)-j)] = child
+                Children = answer["Children"]
+                Children["Child" + str(len(children)-j)] = child
                 data.pop(child_name)
+            father["Children"] = Children
             if (answer["father_answer_id"] == None):
                 data["root"+str(index_root_answer)] = father
                 index_root_answer -= 1
