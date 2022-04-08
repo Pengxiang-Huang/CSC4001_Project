@@ -6,6 +6,7 @@ import design from '@/components/design'
 import contact from '@/components/contact'
 import forgot from '@/components/forgot'
 import home from '@/components/home'
+import blog from '@/components/blog'
 import blank from '@/components/blank'
 
 Vue.use(Router)
@@ -46,6 +47,11 @@ export default new Router({
       path: '/blank',
       name: 'blank',
       component: blank
+    },
+    {
+      path: '/blog',
+      name: 'blog',
+      component: blog
     }
   ]
 })
