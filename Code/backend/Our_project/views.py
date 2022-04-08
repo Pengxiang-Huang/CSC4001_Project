@@ -885,6 +885,10 @@ def GetQuestions(request):
     else:
         html_content = content
 
+    # get the sub_group_name
+
+    sub_group_name = sub_group.objects.filter(id = question["sub_group_type"]).values()[0]["sub_group_name"]
+
     # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
     temp = question
     temp['content'] = html_content
@@ -893,6 +897,7 @@ def GetQuestions(request):
     temp['pic_urls'] = pic_urls
     temp['file_urls'] = file_urls
     temp['amount_of_answers'] = amount_of_answers
+    temp["sub_group_name"] = sub_group_name
 
     data = temp
     
