@@ -55,18 +55,32 @@
     >
       <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
       <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
-      <el-input
-        v-model="searchContent"
-        placeholder="请输入内容"
-        class="searchBox"
-      ></el-input>
+      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
+        <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 130px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
+        <el-dropdown slot="suffix" trigger="click">
+          <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
+          <el-dropdown-menu slot="dropdown" style="width: 440px;height: 100px;">
+            <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
+            <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+              <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
+              <el-dropdown-menu slot="dropdown" style="width: 160px;height: 150px;overflow: auto;">
+                <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+              <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
+              <el-dropdown-menu slot="dropdown" style="width: 270px;height: 150px;overflow: auto;">
+                <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-input>
       <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
       <el-button class="postIcon" @click="showPost" round>Post</el-button>
       <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
-        <span>
-          <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
-          <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
-        </span>
+        <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
+        <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
           <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
@@ -91,8 +105,8 @@
         <el-tab-pane></el-tab-pane>
         <el-tab-pane label="Hot Blogs" name="first">
           <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.content }}</p>
+            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+            <p @click="skipToBlog(item)">{{ item.content }}</p>
             <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
               <img src="../assets/like-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
@@ -126,8 +140,8 @@
         </el-tab-pane>
         <el-tab-pane label="Followed Blogs" name="second">
           <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.content }}</p>
+            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+            <p @click="skipToBlog(item)">{{ item.content }}</p>
             <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
               <img src="../assets/like-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
@@ -160,12 +174,13 @@
           <div style="height: 200px;"></div> <!-- Used to leave some blank -->
         </el-tab-pane>
         <el-tab-pane label="Followed Partitions" name="third">
-          <div class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartition_'+index">
+          <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
+          <div v-if="p_type" class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartitions_'+index">
             <img :src="item.url" class="partition-icon"/>
             <h3>{{ item.group_name + ' - ' + item.description }}</h3>
             <div id="sub-container">
               <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-              <el-button type="primary" class="sub-partitions" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+              <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
             </div>
             <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
               <img src="../assets/follow-click.png" />
@@ -176,21 +191,55 @@
               <span style="color: white;">{{ item.amount_of_follows }}</span>
             </button>
           </div>
+          <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+            <p @click="skipToBlog(item)">{{ item.content }}</p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ item.amount_of_answers }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-view"></i>
+              <span>{{ item.views }}</span>
+            </div>
+          </div>
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
         </el-tab-pane>
-        <el-tab-pane label="Excellent Answers" name="fourth"
-          >excellent answers</el-tab-pane
-        >
+        <el-tab-pane label="My Blogs" name="fourth">
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+        </el-tab-pane>
       </el-tabs>
     </div>
     <div v-if="index === 'Partitions'" class="tab">
       <div id="leftBox"></div>
       <div id="rightBox"></div>
-      <div class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
+      <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
+      <div v-if="p_type" class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
         <img :src="item.url" class="partition-icon"/>
         <h3>{{ item.group_name + ' - ' + item.description }}</h3>
         <div id="sub-container">
           <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-          <el-button type="primary" class="sub-partitions" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+          <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
         </div>
         <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
           <img src="../assets/follow-click.png" />
@@ -201,6 +250,39 @@
           <span style="color: white;">{{ item.amount_of_follows }}</span>
         </button>
       </div>
+      <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+        <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+        <p @click="skipToBlog(item)">{{ item.content }}</p>
+        <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+          <img src="../assets/like-click.png" />
+          <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+        </button>
+        <button v-else class="click_icon" @click="like($event,item)">
+          <img src="../assets/like.png" />
+          <span style="color: white;">{{ item.like }}</span>
+        </button>
+        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+          <img src="../assets/follow-click.png" />
+          <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+        </button>
+        <button v-else class="click_icon" @click="follow($event,item)">
+          <img src="../assets/follow.png" />
+          <span style="color: white;">{{ item.follow }}</span>
+        </button>
+        <div class="noclick_icon">
+          <i class="el-icon-collection-tag"></i>
+          <span>{{ item.group_type }}</span>
+        </div>
+        <div class="noclick_icon">
+          <i class="el-icon-chat-line-round"></i>
+          <span>{{ item.amount_of_answers }}</span>
+        </div>
+        <div class="noclick_icon">
+          <i class="el-icon-view"></i>
+          <span>{{ item.views }}</span>
+        </div>
+      </div>
+      <div style="height: 200px;"></div> <!-- Used to leave some blank -->
     </div>
   </div>
 </template>
@@ -212,6 +294,7 @@ export default {
   data () {
     return {
       searchContent: '',
+      searchCondition: 'All',
       index: 'Main',
       profileURL: '',
       hotBlogs: {},
@@ -220,8 +303,21 @@ export default {
       followedPartitions: {},
       partition: 'Partitions', // used in selecting the partition when posting a question
       subPartition: 'Sub Partitions', // used in selecting the partition when posting a question
+      p_type: true, // true => partition, false => sub-partition
+      subBlogs: {},
       username: '',
       newVal: ''
+    }
+  },
+  computed: {
+    filterCondition: function () {
+      var arr = []
+      for (let item in this.partitions) {
+        for (let subitem in this.partitions[item].sub_groups) {
+          arr.push(this.partitions[item].group_name + ' ' + this.partitions[item].sub_groups[subitem])
+        }
+      }
+      return arr
     }
   },
   created () {
@@ -527,8 +623,48 @@ export default {
         }
       })
     },
+    // User click the link to skip to the sub-partition
+    skipToSub (event, item) {
+      let sendData = {
+        username: this.username,
+        group_name: item.group_name,
+        sub_group_name: event.target.innerHTML
+      }
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/getGroup/',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        this.p_type = false
+        this.subBlogs = response.data
+      })
+    },
+    // User click to back to the partition
+    back () {
+      this.p_type = true
+    },
+    // User cancel the filter condition
+    cancel (event) {
+      event.target.parentNode.parentNode.style.display = 'none'
+      this.searchCondition = 'All'
+    },
+    // User select the search condition
+    selectSearchCondition (condition) {
+      if (condition !== 'Partition' && condition !== 'Sub-Partition') {
+        this.searchCondition = condition
+      }
+    },
     search () {
       alert(this.searchContent)
+    },
+    skipToBlog (item) {
+      this.$router.push({
+        path: '/blog',
+        query: {
+          question_id: item.id,
+          username: this.username
+        }
+      })
     }
   }
 }
@@ -658,9 +794,9 @@ export default {
 }
 .searchBox {
   position: fixed;
-  width: 400px;
+  width: 450px;
   top: 10px;
-  left: 410px;
+  left: 360px;
 }
 .searchIcon {
   position: fixed;
