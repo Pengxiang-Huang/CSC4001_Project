@@ -17,14 +17,37 @@
             <li></li>
       </ul>
     </div >
+    <div class="editarea">
+      <div class="text-area">
+        <div class="textcode">
+          <froala :tag="'textarea'" :config="config" v-model="model" class="mytexteditor height-400"></froala>
+        </div>
+      </div>
+    </div>
     <div class="codearea">
       <div class="language-js">
-      <span class="copy-btn">Run</span>
+      <el-dropdown @command="SelectLanguage" class="dropdown">
+        <span style="color: white;">
+              {{ Language }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="cpp">cpp</el-dropdown-item>
+          <el-dropdown-item command="c">c</el-dropdown-item>
+          <el-dropdown-item command="java">java</el-dropdown-item>
+          <el-dropdown-item command="python">python</el-dropdown-item>
+          <el-dropdown-item command="html">html</el-dropdown-item>
+          <el-dropdown-item command="css">css</el-dropdown-item>
+          <el-dropdown-item command="javascript">javascript</el-dropdown-item>
+          <el-dropdown-item command="markdown">markdown</el-dropdown-item>
+          <el-dropdown-item command="bash">bash</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <span class="copy-btn" @click="runcode">Run</span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
     </div>
-    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre> -->
-    <!-- <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor> -->
+    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre>
+    <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor> -->
   </div>
 </template>
 
@@ -36,21 +59,62 @@ import { highlight, languages } from 'prismjs/components/prism-core'
 import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/themes/prism-okaidia.css'
+import editor from '@/components/editor.vue'
+import VueUeditorWrap from 'vue-ueditor-wrap'
+import VueFroala from 'vue-froala-wysiwyg'
+
 export default {
   components: {
-    PrismEditor
+    PrismEditor,
+    editor,
+    VueUeditorWrap,
+    VueFroala
   },
   data: () => ({
-    code: 'printf("Hello World")\n\n',
-    lineNumbers: true
+    code: '#! /bin/bash \necho "hello world"',
+    lineNumbers: true,
+    Language: 'bash',
+    content: `<p>这是 vue-quill-editor 的内容！</p>`
   }),
   mounted () {
     Prism.highlightAll()
   },
   methods: {
     highlighter (code) {
-      return highlight(code, languages.cpp)
-    }
+      var lang = this.Language
+      if (lang === 'cpp') {
+        return highlight(code, languages.cpp)
+      } else if (lang === 'c') {
+        return highlight(code, languages.c)
+      } else if (lang === 'java') {
+        return highlight(code, languages.java)
+      } else if (lang === 'python') {
+        return highlight(code, languages.python)
+      } else if (lang === 'html') {
+        return highlight(code, languages.html)
+      } else if (lang === 'css') {
+        return highlight(code, languages.css)
+      } else if (lang === 'javascript') {
+        return highlight(code, languages.javascript)
+      } else if (lang === 'markdown') {
+        return highlight(code, languages.markdown)
+      } else {
+        return highlight(code, languages.bash)
+      }
+    },
+    SelectLanguage (command) {
+      this.Language = command
+      console.log(this.Language)
+    },
+    runcode () {
+      console.log(this.code)
+      console.log(this.Language)
+    },
+    onEditorBlur () {
+      console.log('onEditorBlur')
+    },
+    onEditorFocus () {},
+    onEditorChange () {}
   }
 }
 </script>
@@ -65,7 +129,7 @@ export default {
   margin-top: 30px;
   background-color: #201919;
   color: #ccc;
-  border-left: 10px solid #d5dfe5;
+  border-left: 10px solid #656c70;
   font-family: Fira code, Fira Mono, Consolas, Menlo,Courier, monospace;
   font-size: 14px;
   line-height: 1.5;
@@ -77,21 +141,30 @@ export default {
 .height-300{
   height: 300px;
 }
+/*background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);*/
 #app {
+  background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
   font-family: 'Exo', sans-serif;
   min-height: 450px;
-  height: 150vh;
+  height: 180vh;
   text-align: center;
   overflow-x: hidden;
 }
 .codearea{
   position: absolute;
-  top: 20rem;
+  top: 40rem;
+  width: 100%;
+  margin-left: auto;
+}
+.editarea{
+  position: absolute;
+  top: 10rem;
   width: 100%;
   margin-left: auto;
 }
 div[class^="language-"] {
 position: relative;
+width: 100%;
 background: #282c34;
 padding: 1.25rem 1.5rem;
 margin: 0.85rem auto;
@@ -99,7 +172,6 @@ border-radius: 16px;
 max-width: 40rem;
 }
 div[class$="js"]::before {
-content: "cpp";
 display: block;
 position: absolute;
 top: 1rem;
@@ -154,12 +226,6 @@ color: rgba(255, 255, 255, 0.6);
     text-align: center;
     color: #fff;
     font-size: 50px;
-}
-.area{
-    background: #4e54c8;
-    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
-    width: 100%;
-    height:100%;
 }
 .circles{
     position: absolute;
@@ -263,5 +329,53 @@ color: rgba(255, 255, 255, 0.6);
       opacity: 0;
       border-radius: 50%;
   }
+}
+.dropdown{
+  font-family: Menlo;
+  display: block;
+  position: absolute;
+  top: 1rem;
+  left: 4.5rem;
+  font-size: 0.75rem;
+  color: #ccc;
+}
+div[class^="text-"] {
+position: relative;
+background: #dee1e6;
+padding: 2rem 1.5rem;
+margin: 0.85rem auto;
+border-radius: 16px;
+max-width: 80rem;
+height: 20rem;
+}
+div[class$="area"]::before {
+display: block;
+position: absolute;
+top: 1rem;
+left: 4.5rem;
+font-size: 0.75rem;
+color: rgba(255, 255, 255, 0.4);
+}
+div[class^="text"]::after {
+position: absolute;
+top: 1rem;
+left: 1rem;
+content: "";
+width: 11px;
+height: 11px;
+border-radius: 50%;
+background-color: #ff5f56;
+/*后面两个小圆点 */
+-webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
+box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
+}
+.textcode{
+  height: 20rem;
+}
+.fr-toolbar .fr-command.fr-btn{
+  width: auto !important;
+}
+.fr-toolbar .fr-command.fr-btn i{
+  width: auto !important;
 }
 </style>

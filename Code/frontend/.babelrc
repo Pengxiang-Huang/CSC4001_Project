@@ -11,7 +11,7 @@
   "plugins": ["transform-vue-jsx", "transform-runtime", [
     "prismjs",
     {
-      "languages": ["javascript", "css", "html", "cpp", "python", "markdown", "java"],
+      "languages": ["javascript", "css", "html", "cpp", "c", "bash","python", "markdown", "java"],
       "plugins": ["line-numbers"],
       "theme": "okaidia",
       "css": true

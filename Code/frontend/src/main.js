@@ -14,8 +14,21 @@ import global from '../config/global'
 import Prism from 'prismjs'
 import { PrismEditor } from 'vue-prism-editor'
 import 'vue-prism-editor/dist/prismeditor.min.css'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import 'froala-editor/js/plugins.pkgd.min.js'
+import 'froala-editor/js/third_party/embedly.min'
+import 'froala-editor/js/third_party/spell_checker.min'
+import 'froala-editor/js/third_party/font_awesome.min'
+import 'froala-editor/js/third_party/image_tui.min'
+import 'froala-editor/css/froala_editor.pkgd.min.css'
+
+import VueFroala from 'vue-froala-wysiwyg'
 Prism.highlightAll()
 Vue.prototype.GLOBAL = global
+Vue.use(VueFroala)
 library.add(faEye)
 library.add(faEyeSlash)
 library.add(faArrowLeft)
@@ -24,6 +37,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('PrismEditor', PrismEditor)
 
 Vue.use(ElementUI)
+Vue.use(VueQuillEditor)
 
 Vue.config.productionTip = false
 
