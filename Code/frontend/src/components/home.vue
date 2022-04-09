@@ -1,7 +1,6 @@
 <template>
   <div>
     <div id="mask"></div>
-    <router-link to="/post"></router-link>
     <div id="pop-up-reset" class="pop-up">
       <span id="reset-title"></span>
       <img src="../assets/close.png" class="closeBtn" @click="close">
@@ -108,19 +107,19 @@
           <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
             <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
             <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
               <img src="../assets/like-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
             </button>
-            <button v-else class="click_icon" @click="like($event,item)">
+            <button v-else class="click_icon" @click="like($event,item,0,false)">
               <img src="../assets/like.png" />
               <span style="color: white;">{{ item.like }}</span>
             </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
               <img src="../assets/follow-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
             </button>
-            <button v-else class="click_icon" @click="follow($event,item)">
+            <button v-else class="click_icon" @click="follow($event,item,false)">
               <img src="../assets/follow.png" />
               <span style="color: white;">{{ item.follow }}</span>
             </button>
@@ -143,19 +142,19 @@
           <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
             <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
             <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
               <img src="../assets/like-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
             </button>
-            <button v-else class="click_icon" @click="like($event,item)">
+            <button v-else class="click_icon" @click="like($event,item,0,false)">
               <img src="../assets/like.png" />
               <span style="color: white;">{{ item.like }}</span>
             </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
               <img src="../assets/follow-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
             </button>
-            <button v-else class="click_icon" @click="follow($event,item)">
+            <button v-else class="click_icon" @click="follow($event,item,false)">
               <img src="../assets/follow.png" />
               <span style="color: white;">{{ item.follow }}</span>
             </button>
@@ -195,19 +194,19 @@
           <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
             <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
             <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
               <img src="../assets/like-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
             </button>
-            <button v-else class="click_icon" @click="like($event,item)">
+            <button v-else class="click_icon" @click="like($event,item,0,true)">
               <img src="../assets/like.png" />
               <span style="color: white;">{{ item.like }}</span>
             </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
               <img src="../assets/follow-click.png" />
               <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
             </button>
-            <button v-else class="click_icon" @click="follow($event,item)">
+            <button v-else class="click_icon" @click="follow($event,item,true)">
               <img src="../assets/follow.png" />
               <span style="color: white;">{{ item.follow }}</span>
             </button>
@@ -254,19 +253,19 @@
       <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
         <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
         <p @click="skipToBlog(item)">{{ item.content }}</p>
-        <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+        <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
           <img src="../assets/like-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
         </button>
-        <button v-else class="click_icon" @click="like($event,item)">
+        <button v-else class="click_icon" @click="like($event,item,0,true)">
           <img src="../assets/like.png" />
           <span style="color: white;">{{ item.like }}</span>
         </button>
-        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
           <img src="../assets/follow-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
         </button>
-        <button v-else class="click_icon" @click="follow($event,item)">
+        <button v-else class="click_icon" @click="follow($event,item,true)">
           <img src="../assets/follow.png" />
           <span style="color: white;">{{ item.follow }}</span>
         </button>
@@ -525,11 +524,11 @@ export default {
       return isJPG && isLt2M
     },
     // User like the blog if no like, dislike the blog if like
-    like (e, item) {
+    like (e, item, t, inPartition) {
       let sendData = {
         id: item.id,
         username: this.username,
-        type: 0 // 0 is question, 1 is answer
+        type: t // 0 is question, 1 is answer
       }
       axios({
         method: 'POST',
@@ -555,11 +554,25 @@ export default {
             this.hotBlogs = response[0].data
             this.followedBlogs = response[1].data
           })
+          if (inPartition) {
+            let sendData = {
+              username: this.username,
+              group_name: item.group_type,
+              sub_group_name: item.sub_group_name
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/getGroup/',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.subBlogs = response.data
+            })
+          }
         }
       })
     },
     // User follow the blog if not follow, unfollow the blog if follow
-    follow (e, item) {
+    follow (e, item, inPartition) {
       let sendData = {
         id: item.id,
         username: this.username
@@ -588,6 +601,20 @@ export default {
             this.hotBlogs = response[0].data
             this.followedBlogs = response[1].data
           })
+          if (inPartition) {
+            let sendData = {
+              username: this.username,
+              group_name: item.group_type,
+              sub_group_name: item.sub_group_name
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/getGroup/',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.subBlogs = response.data
+            })
+          }
         }
       })
     },

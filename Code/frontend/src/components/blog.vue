@@ -107,19 +107,19 @@
         <p v-html="blog.content"></p>
         <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="display: block;margin-bottom: 20px;" :preview-src-list="previewArr">
         </el-image>
-        <button v-if="blog.isliked" class="click_icon" @click="like($event,blog)">
+        <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
           <img src="../assets/like-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
         </button>
-        <button v-else class="click_icon" @click="like($event,blog)">
+        <button v-else class="click_icon" @click="like($event,blog,0,false)">
           <img src="../assets/like.png" />
           <span style="color: white;">{{ blog.like }}</span>
         </button>
-        <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog)">
+        <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog,false)">
           <img src="../assets/follow-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ blog.follow }}</span>
         </button>
-        <button v-else class="click_icon" @click="follow($event,blog)">
+        <button v-else class="click_icon" @click="follow($event,blog,false)">
           <img src="../assets/follow.png" />
           <span style="color: white;">{{ blog.follow }}</span>
         </button>
@@ -176,6 +176,7 @@
     <div v-if="index === 'Partitions'" class="tab">
       <div id="leftBox"></div>
       <div id="rightBox"></div>
+      <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
       <div v-if="p_type" class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
         <img :src="item.url" class="partition-icon"/>
         <h3>{{ item.group_name + ' - ' + item.description }}</h3>
@@ -193,21 +194,21 @@
         </button>
       </div>
       <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.content }}</p>
-        <button v-if="item.isliked" class="click_icon" @click="like($event,item)">
+        <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+        <p @click="skipToBlog(item)">{{ item.content }}</p>
+        <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
           <img src="../assets/like-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
         </button>
-        <button v-else class="click_icon" @click="like($event,item)">
+        <button v-else class="click_icon" @click="like($event,item,0,true)">
           <img src="../assets/like.png" />
           <span style="color: white;">{{ item.like }}</span>
         </button>
-        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item)">
+        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
           <img src="../assets/follow-click.png" />
           <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
         </button>
-        <button v-else class="click_icon" @click="follow($event,item)">
+        <button v-else class="click_icon" @click="follow($event,item,true)">
           <img src="../assets/follow.png" />
           <span style="color: white;">{{ item.follow }}</span>
         </button>
@@ -464,11 +465,11 @@ export default {
       return isJPG && isLt2M
     },
     // User like the blog if no like, dislike the blog if like
-    like (e, item) {
+    like (e, item, t, inPartition) {
       let sendData = {
         id: item.id,
         username: this.username,
-        type: 0 // 0 is question, 1 is answer
+        type: t // 0 is question, 1 is answer
       }
       axios({
         method: 'POST',
@@ -477,28 +478,35 @@ export default {
       }).then((response) => {
         if (response.data.ok) {
           let sendData = {
-            username: this.username
+            username: this.username,
+            question_id: item.id
           }
-          axios.all([
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/mainpage/',
-              data: Qs.stringify(sendData)
-            }),
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/myFollow/',
-              data: Qs.stringify(sendData)
-            })
-          ]).then((response) => {
-            this.hotBlogs = response[0].data
-            this.followedBlogs = response[1].data
+          axios({
+            method: 'POST',
+            url: 'http://175.178.34.84/api/GetQuestions',
+            data: Qs.stringify(sendData)
+          }).then((response) => {
+            this.blog = response.data
           })
+          if (inPartition) {
+            let sendData = {
+              username: this.username,
+              group_name: item.group_type,
+              sub_group_name: item.sub_group_name
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/getGroup/',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.subBlogs = response.data
+            })
+          }
         }
       })
     },
     // User follow the blog if not follow, unfollow the blog if follow
-    follow (e, item) {
+    follow (e, item, inPartition) {
       let sendData = {
         id: item.id,
         username: this.username
@@ -510,23 +518,30 @@ export default {
       }).then((response) => {
         if (response.data.ok) {
           let sendData = {
-            username: this.username
+            username: this.username,
+            question_id: item.id
           }
-          axios.all([
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/mainpage/',
-              data: Qs.stringify(sendData)
-            }),
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/myFollow/',
-              data: Qs.stringify(sendData)
-            })
-          ]).then((response) => {
-            this.hotBlogs = response[0].data
-            this.followedBlogs = response[1].data
+          axios({
+            method: 'POST',
+            url: 'http://175.178.34.84/api/GetQuestions',
+            data: Qs.stringify(sendData)
+          }).then((response) => {
+            this.blog = response.data
           })
+          if (inPartition) {
+            let sendData = {
+              username: this.username,
+              group_name: item.group_type,
+              sub_group_name: item.sub_group_name
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/getGroup/',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.subBlogs = response.data
+            })
+          }
         }
       })
     },
