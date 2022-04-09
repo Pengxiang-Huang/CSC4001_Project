@@ -655,7 +655,7 @@ def uploadProfile(request):
 
     username = request.POST['username']
     profile = request.FILES.get('profile')
-    profile_dir1 = '../profiles/' + request.POST['id'] + '.jpg'
+    profile_dir1 = '../../profiles/' + request.POST['id'] + '.jpg'
     f = open(profile_dir1, 'wb')
     for line in profile.chunks():
         f.write(line)
@@ -734,6 +734,9 @@ def getGroup(request):
         # getting the amount of answers regarding to this questions
         amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
+        # getting the sub_group_name according to the sub_group_type
+        sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
+
         if (questions[i]['content_format'] == "Markdown"):
             content = questions[i]["content"]
             raw_content = get_raw(get_HTML(content))
@@ -749,6 +752,7 @@ def getGroup(request):
         temp['isfollowed'] = isfollowed
         temp['url'] = url
         temp['content'] = raw_content
+        temp['sub_group_name'] = sub_group_name
         temp['amount_of_answers'] = amount_of_answers
         data['blog'+str(i+1)] = temp
             
@@ -885,6 +889,10 @@ def GetQuestions(request):
     else:
         html_content = content
 
+    # get the sub_group_name
+
+    sub_group_name = sub_group.objects.filter(id = question["sub_group_type"]).values()[0]["sub_group_name"]
+
     # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
     temp = question
     temp['content'] = html_content
@@ -893,6 +901,7 @@ def GetQuestions(request):
     temp['pic_urls'] = pic_urls
     temp['file_urls'] = file_urls
     temp['amount_of_answers'] = amount_of_answers
+    temp["sub_group_name"] = sub_group_name
 
     data = temp
     
@@ -986,11 +995,19 @@ def GetAnswers(request):
         else:
             html_content = content
 
+        # according to the author id, return the author's profile url and username
+        author_id = answer["author_id"]
+        author_name = User.objects.filter(id = author_id).values()[0]['username']
+        profile_url = User.objects.filter(id = author_id).values()[0]['photo']
+
         # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
         answer['content'] = html_content
         answer['isliked'] = isliked
         answer['pic_urls'] = pic_urls
         answer['file_urls'] = file_urls
+        answer['author_name'] = author_name
+        answer['author_profile_url'] = profile_url
+        answer['Children'] = {}
 
         if (answer_id in fathers):
             # then adopt its children
@@ -999,8 +1016,10 @@ def GetAnswers(request):
             for j in range(0, len(children)):
                 child_name = "Answer" + str(children[j]["id"])
                 child = data[child_name]
-                father["Child" + str(len(children)-j)] = child
+                Children = answer["Children"]
+                Children["Child" + str(len(children)-j)] = child
                 data.pop(child_name)
+            father["Children"] = Children
             if (answer["father_answer_id"] == None):
                 data["root"+str(index_root_answer)] = father
                 index_root_answer -= 1

@@ -6,6 +6,7 @@ import design from '@/components/design'
 import contact from '@/components/contact'
 import forgot from '@/components/forgot'
 import home from '@/components/home'
+import blog from '@/components/blog'
 import blank from '@/components/blank'
 import post from '@/components/post'
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/post',
       name: 'post',
       component: post
+    },
+    }
+      path: '/blog',
+      name: 'blog',
+      component: blog
     }
   ]
 })
