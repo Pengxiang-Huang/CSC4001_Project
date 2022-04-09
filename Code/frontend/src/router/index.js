@@ -8,6 +8,7 @@ import forgot from '@/components/forgot'
 import home from '@/components/home'
 import blog from '@/components/blog'
 import blank from '@/components/blank'
+import post from '@/components/post'
 
 Vue.use(Router)
 
@@ -49,6 +50,11 @@ export default new Router({
       component: blank
     },
     {
+      path: '/post',
+      name: 'post',
+      component: post
+    },
+    }
       path: '/blog',
       name: 'blog',
       component: blog
