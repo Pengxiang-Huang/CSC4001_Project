@@ -1,39 +1,27 @@
 <template>
   <div id="app">
-    <div class="stage">
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
-      <div class="layer"></div>
+    <div class="context">
+        <h1>Post Your Blog Here</h1>
     </div>
+    <div class="area" >
+      <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+      </ul>
+    </div >
     <div class="codearea">
       <div class="language-js">
-      <span class="copy-btn">复制</span>
+      <span class="copy-btn">Run</span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
-      <div class="copy-tooltip">
-        点击复制
       </div>
-    </div>
-    <div class="copy-success">
-      <span class="right">&radic;</span>
-      复制成功!
-    </div>
     </div>
     <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre> -->
     <!-- <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor> -->
@@ -68,9 +56,11 @@ export default {
 </script>
 
 <style scoped>
-@import url("//fonts.googleapis.com/css?family=Pacifico&text=Pure");
-@import url("//fonts.googleapis.com/css?family=Roboto:700&text=css");
-@import url("//fonts.googleapis.com/css?family=Kaushan+Script&text=!");
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+*{
+    margin: 0px;
+    padding: 0px;
+}
 .my-editor {
   margin-top: 30px;
   background-color: #201919;
@@ -88,10 +78,17 @@ export default {
   height: 300px;
 }
 #app {
+  font-family: 'Exo', sans-serif;
   min-height: 450px;
   height: 150vh;
-  margin: 0;
-  background: radial-gradient(circle, #0077ea, #1f4f96, #1b2949, #000);
+  text-align: center;
+  overflow-x: hidden;
+}
+.codearea{
+  position: absolute;
+  top: 20rem;
+  width: 100%;
+  margin-left: auto;
 }
 div[class^="language-"] {
 position: relative;
@@ -128,14 +125,13 @@ position: absolute;
 z-index: 3;
 top: 1rem;
 right: 1rem;
-font-size: 0.75rem;
+font-size: 1rem;
 cursor: pointer;
 color: rgba(255, 255, 255, 0.4);
 }
 span.copy-btn:hover {
 color: rgba(255, 255, 255, 0.6);
 }
-
 div.copy-code {
 width: 100%;
 background: #282c34;
@@ -147,253 +143,125 @@ line-height: 1.5;
 font-weight: normal;
 color: rgba(255, 255, 255, 0.6);
 }
-/*code area end*/
-/*copy tooltip start*/
-div.copy-tooltip {
-opacity: 0;
-position: absolute;
-top: 2.5rem;
-right: 0.5rem;
-background: #bdbdbd;
-padding: 0.5rem;
-border-radius: 4px;
-font-size: 0.8rem;
-color: #333;
-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-}
-div.copy-tooltip::before {
-content: "";
-width: 0;
-height: 0;
-border: 0.5rem solid transparent;
-border-bottom-color: #bdbdbd;
-position: absolute;
-top: -1rem;
-left: 50%;
-transition: opacity 1s ease-in-out;
+/*Background begin here*/
+.context {
+    width: 100%;
+    position: absolute;
+    top:3vh;
 }
 
-/*copy tooltip end*/
-/*copy success modal*/
-.copy-success {
-opacity: 0;
-font-size: 1.2rem;
-letter-spacing: 5px;
-background: #27c93f;
-color: white;
-width: 20rem;
-height: 6rem;
-line-height: 6rem;
-border-radius: 1rem;
-text-align: center;
-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-/*动画:借鉴Animate.css */
--webkit-animation-duration: 1s;
-animation-duration: 1s;
--webkit-animation-fill-mode: both;
-animation-fill-mode: both;
-/*居中定位*/
-position: fixed;
-top: -20%;
-left: 0;
-bottom: 0;
-right: 0;
-margin: auto;
+.context h1{
+    text-align: center;
+    color: #fff;
+    font-size: 50px;
 }
-.copy-success .right {
-border-radius: 50%;
-border: 2px solid whitesmoke;
-font-size: 1.5rem;
-font-weight: 700;
-width: 1.8rem;
-height: 1.8rem;
-line-height: 1.8rem;
-text-align: center;
-display: inline-block;
+.area{
+    background: #4e54c8;
+    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
+    width: 100%;
+    height:100%;
 }
-/*动画*/
-@keyframes jackInTheBox {
-from {
-  opacity: 0;
-  -webkit-transform: scale(0.1) rotate(30deg);
-  transform: scale(0.1) rotate(30deg);
-  -webkit-transform-origin: center bottom;
-  transform-origin: center bottom;
+.circles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
-50% {
-  -webkit-transform: rotate(-10deg);
-  transform: rotate(-10deg);
+.circles li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -250px;
 }
 
-70% {
-  -webkit-transform: rotate(3deg);
-  transform: rotate(3deg);
+.circles li:nth-child(1){
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
 }
 
-to {
-  opacity: 1;
-  -webkit-transform: scale(1);
-  transform: scale(1);
-}
-}
-/*动画*/
-.jackInTheBox {
-  -webkit-animation-name: jackInTheBox;
-  animation-name: jackInTheBox;
+.circles li:nth-child(2){
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
 }
 
-.stage {
-  height: 300px;
-  width: 500px;
-  margin-top: 50px;
-  margin-left: 250px ;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0;
-  left: 0px;
-  perspective: 9999px;
-  transform-style: preserve-3d;
+.circles li:nth-child(3){
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
 }
 
-.layer {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform-style: preserve-3d;
-  animation: ಠ_ಠ 7s infinite alternate ease-in-out -7.5s;
-  animation-fill-mode: forwards;
-  transform: rotateY(40deg) rotateX(33deg) translateZ(0);
+.circles li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
 }
 
-.layer:after {
-  font: 50px/0.65 "Pacifico", "Kaushan Script", Futura, "Roboto", "Trebuchet MS", Helvetica, sans-serif;
-  content: "Post\a    here!";
-  white-space: pre;
-  text-align: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 50px;
-  color: whitesmoke;
-  letter-spacing: -2px;
-  text-shadow: 4px 0 10px rgba(0, 0, 0, 0.13);
+.circles li:nth-child(5){
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
 }
 
-.layer:nth-child(1):after {
-  transform: translateZ(0px);
+.circles li:nth-child(6){
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
 }
 
-.layer:nth-child(2):after {
-  transform: translateZ(-1.5px);
+.circles li:nth-child(7){
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
 }
 
-.layer:nth-child(3):after {
-  transform: translateZ(-3px);
+.circles li:nth-child(8){
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
 }
-
-.layer:nth-child(4):after {
-  transform: translateZ(-4.5px);
+.circles li:nth-child(9){
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
 }
-
-.layer:nth-child(5):after {
-  transform: translateZ(-6px);
+.circles li:nth-child(10){
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
 }
-
-.layer:nth-child(6):after {
-  transform: translateZ(-7.5px);
-}
-
-.layer:nth-child(7):after {
-  transform: translateZ(-9px);
-}
-
-.layer:nth-child(8):after {
-  transform: translateZ(-10.5px);
-}
-
-.layer:nth-child(9):after {
-  transform: translateZ(-12px);
-}
-
-.layer:nth-child(10):after {
-  transform: translateZ(-13.5px);
-}
-
-.layer:nth-child(11):after {
-  transform: translateZ(-15px);
-}
-
-.layer:nth-child(12):after {
-  transform: translateZ(-16.5px);
-}
-
-.layer:nth-child(13):after {
-  transform: translateZ(-18px);
-}
-
-.layer:nth-child(14):after {
-  transform: translateZ(-19.5px);
-}
-
-.layer:nth-child(15):after {
-  transform: translateZ(-21px);
-}
-
-.layer:nth-child(16):after {
-  transform: translateZ(-22.5px);
-}
-
-.layer:nth-child(17):after {
-  transform: translateZ(-24px);
-}
-
-.layer:nth-child(18):after {
-  transform: translateZ(-25.5px);
-}
-
-.layer:nth-child(19):after {
-  transform: translateZ(-27px);
-}
-
-.layer:nth-child(20):after {
-  transform: translateZ(-28.5px);
-}
-
-.layer:nth-child(n+10):after {
-  -webkit-text-stroke: 3px rgba(0, 0, 0, 0.25);
-}
-
-.layer:nth-child(n+11):after {
-  -webkit-text-stroke: 15px dodgerblue;
-  text-shadow: 6px 0 6px #00366b, 5px 5px 5px #002951, 0 6px 6px #00366b;
-}
-
-.layer:nth-child(n+12):after {
-  -webkit-text-stroke: 15px #0077ea;
-}
-
-.layer:last-child:after {
-  -webkit-text-stroke: 17px rgba(0, 0, 0, 0.1);
-}
-
-.layer:first-child:after {
-  color: #fff;
-  text-shadow: none;
-}
-
-.codearea{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 300px;
-  left: 0;
-}
-
-@keyframes ಠ_ಠ {
-  100% {
-    transform: rotateY(-40deg) rotateX(-43deg);
+@keyframes animate {
+  0%{
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+      border-radius: 0;
+  }
+  100%{
+      transform: translateY(-1000px) rotate(720deg);
+      opacity: 0;
+      border-radius: 50%;
   }
 }
 </style>
