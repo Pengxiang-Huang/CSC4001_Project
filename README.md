@@ -1,8 +1,6 @@
 # CSC4001_Project
 This is the CUHKSZ software engineering project. 
 
-run the command `npm i font-awesome -S` in front end to install the package or some icons won't appear.  
-
 项目文件：
 
 ```bash
@@ -20,6 +18,11 @@ run the command `npm i font-awesome -S` in front end to install the package or s
 + To get the up-to-state code, please run `git pull origin main`
 + When you change the source code, you can reset the whole project by `sh reset_backend.sh`
 
+
+## Frontend Environment Configuration
+if you want to run the code in local computer, you should configure your environment such below:
+
+run the command `npm i font-awesome -S` in front end to install the package or some icons won't appear.  
 To run the online-code editor `prismjs` on your own computer, you should run the following command:
 `npm install prismjs`
 `npm install babel-plugin-prismjs`
