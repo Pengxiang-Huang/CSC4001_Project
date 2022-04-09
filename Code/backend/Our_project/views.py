@@ -734,6 +734,9 @@ def getGroup(request):
         # getting the amount of answers regarding to this questions
         amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
+        # getting the sub_group_name according to the sub_group_type
+        sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
+
         if (questions[i]['content_format'] == "Markdown"):
             content = questions[i]["content"]
             raw_content = get_raw(get_HTML(content))
@@ -749,6 +752,7 @@ def getGroup(request):
         temp['isfollowed'] = isfollowed
         temp['url'] = url
         temp['content'] = raw_content
+        temp['sub_group_name'] = sub_group_name
         temp['amount_of_answers'] = amount_of_answers
         data['blog'+str(i+1)] = temp
             
