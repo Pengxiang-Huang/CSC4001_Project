@@ -78,6 +78,7 @@
       <span class="copy-btn" @click="runcode">Run</span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
+      <div class="result-area"></div>
     </div>
 
     <div class="sendbtn">
@@ -107,13 +108,18 @@ export default {
     VueFroala
   },
   data: () => ({
-    code: '#! /bin/bash \necho "hello world"',
+    code: '#! /bin/bash \n# You can write and test your code here\necho "hello world"',
     lineNumbers: true,
     Language: 'bash',
     content: 'dsa',
     partition: 'partition',
     subpartition: 'subpartition',
-    html: '<text></text>'
+    html: '<text></text>',
+    config: {
+      heightMax: 330,
+      heightMin: 330,
+      placeholderText: 'Type your blog...'
+    }
   }),
   mounted () {
     Prism.highlightAll()
@@ -190,8 +196,7 @@ export default {
 }
 /*background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);*/
 #app {
-  background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
-  font-family: 'Exo', sans-serif;
+ background: linear-gradient(253deg, #0cc898, #1797d2, #864fe1);  font-family: 'Exo', sans-serif;
   min-height: 450px;
   height: 180vh;
   text-align: center;
@@ -199,7 +204,7 @@ export default {
 }
 .codearea{
   position: absolute;
-  top: 40rem;
+  top: 45rem;
   width: 100%;
   margin-left: auto;
 }
@@ -393,7 +398,7 @@ padding: 2rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
 max-width: 80rem;
-height: 20rem;
+height: 25rem;
 }
 div[class$="area"]::before {
 display: block;
@@ -453,7 +458,7 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   }
 }
 .sendbtn {
-  height: 100%;
+  height: 190%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -474,12 +479,43 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease 0s;
   cursor: pointer;
-  }
+}
 
 .btn:hover {
-  background-color: #ff5722;
-  box-shadow: 0px 15px 20px rgba(119, 29, 0, 0.73);
+  background-color: #227aff;
+  box-shadow: 0px 15px 20px rgba(0, 91, 119, 0.73);
   color: #fff;
   transform: translateY(-7px);
+}
+
+div[class^="result-"] {
+position: relative;
+background: #dee1e6;
+padding: 2rem 1.5rem;
+margin: 0.85rem auto;
+border-radius: 16px;
+max-width: 40rem;
+height: 10rem;
+}
+div[class$="area"]::before {
+display: block;
+position: absolute;
+top: 1rem;
+left: 4.5rem;
+font-size: 0.75rem;
+color: rgba(255, 255, 255, 0.4);
+}
+div[class^="result"]::after {
+position: absolute;
+top: 1rem;
+left: 1rem;
+content: "";
+width: 11px;
+height: 11px;
+border-radius: 50%;
+background-color: #ff5f56;
+/*后面两个小圆点 */
+-webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
+box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
 </style>
