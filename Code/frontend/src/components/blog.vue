@@ -101,134 +101,77 @@
     <div v-if="index === 'Main'" class="tab">
       <div id="leftBox"></div>
       <div id="rightBox"></div>
-      <el-tabs value="first" @tab-click="handleClick">
-        <el-tab-pane></el-tab-pane>
-        <el-tab-pane label="Hot Blogs" name="first">
-          <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
-            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
-            <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
+      <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+      <div style="padding: 0 50px;">
+        <h2>{{ blog.title }}</h2>
+        <p v-html="blog.content"></p>
+        <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="display: block;margin-bottom: 20px;" :preview-src-list="previewArr">
+        </el-image>
+        <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
+          <img src="../assets/like-click.png" />
+          <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
+        </button>
+        <button v-else class="click_icon" @click="like($event,blog,0,false)">
+          <img src="../assets/like.png" />
+          <span style="color: white;">{{ blog.like }}</span>
+        </button>
+        <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog,false)">
+          <img src="../assets/follow-click.png" />
+          <span style="color: #409EFF;font-weight: bold;">{{ blog.follow }}</span>
+        </button>
+        <button v-else class="click_icon" @click="follow($event,blog,false)">
+          <img src="../assets/follow.png" />
+          <span style="color: white;">{{ blog.follow }}</span>
+        </button>
+        <div class="noclick_icon">
+          <i class="el-icon-collection-tag"></i>
+          <span>{{ blog.sub_group_name }}</span>
+        </div>
+        <div class="noclick_icon">
+          <i class="el-icon-collection-tag"></i>
+          <span>{{ blog.group_type }}</span>
+        </div>
+      </div>
+      <hr style="color: gray;margin: 20px 0;"/>
+      <div class="comments-container">
+        <ul id="comments-list" class="comments-list" style="list-style-type: none;">
+          <li v-for="(item,index) in answers" :key="'answer_'+index">
+            <div class="comment-main-level">
+              <div class="comment-avatar">
+                  <el-avatar v-if="item.author_profile_url" :src="item.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                  <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+              </div>
+              <div class="comment-box">
+                <div class="comment-head">
+                  <h6 class="comment-name">{{ item.author_name }}</h6>
+                  <span>hace 20 minutos</span>
+                  <i class="fa fa-reply"></i>
+                  <i class="fa fa-heart"></i>
+                </div>
+                <div class="comment-content" v-html="item.content"></div>
+              </div>
             </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="Followed Blogs" name="second">
-          <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
-            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
-            <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="Followed Partitions" name="third">
-          <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
-          <div v-if="p_type" class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartitions_'+index">
-            <img :src="item.url" class="partition-icon"/>
-            <h3>{{ item.group_name + ' - ' + item.description }}</h3>
-            <div id="sub-container">
-              <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-              <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
-            </div>
-            <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
-            </button>
-            <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.amount_of_follows }}</span>
-            </button>
-          </div>
-          <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
-            <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
-            <p @click="skipToBlog(item)">{{ item.content }}</p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,true)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,true)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="My Blogs" name="fourth">
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-      </el-tabs>
+            <ul class="comments-list reply-list" style="list-style-type: none;">
+              <li v-for="(child,index) in item.Children" :key="'child_'+index">
+                <div class="comment-avatar">
+                  <el-avatar v-if="child.author_profile_url" :src="child.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                  <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                </div>
+                <div class="comment-box">
+                  <div class="comment-head">
+                      <h6 class="comment-name">{{ child.author_name }}</h6>
+                      <span>hace 10 minutos</span>
+                      <i class="fa fa-reply"></i>
+                      <i class="fa fa-heart"></i>
+                  </div>
+                  <div class="comment-content" v-html="child.content"></div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div style="height: 200px;"></div> <!-- Used to leave some blank -->
     </div>
     <div v-if="index === 'Partitions'" class="tab">
       <div id="leftBox"></div>
@@ -297,16 +240,15 @@ export default {
       searchCondition: 'All',
       index: 'Main',
       profileURL: '',
-      hotBlogs: {},
-      followedBlogs: {},
       partitions: {},
-      followedPartitions: {},
       partition: 'Partitions', // used in selecting the partition when posting a question
       subPartition: 'Sub Partitions', // used in selecting the partition when posting a question
       p_type: true, // true => partition, false => sub-partition
       subBlogs: {},
       username: '',
-      newVal: ''
+      newVal: '',
+      blog: {},
+      answers: {}
     }
   },
   computed: {
@@ -318,11 +260,19 @@ export default {
         }
       }
       return arr
+    },
+    previewArr: function () {
+      var arr = []
+      for (let url in this.blog.pic_urls) {
+        arr.push(this.blog.pic_urls[url])
+      }
+      return arr
     }
   },
   created () {
-    this.username = this.$route.params['username']
+    this.username = this.$route.query.username
     let sendData = {
+      question_id: this.$route.query.question_id,
       username: this.username
     }
     axios.all([
@@ -332,38 +282,32 @@ export default {
         url: 'http://175.178.34.84/api/getProfile/',
         data: Qs.stringify(sendData)
       }),
-      // Initialize the hot blogs
-      axios({
-        method: 'POST',
-        url: 'http://175.178.34.84/mainpage/',
-        data: Qs.stringify(sendData)
-      }),
-      // Initialize the followed blogs
-      axios({
-        method: 'POST',
-        url: 'http://175.178.34.84/myFollow/',
-        data: Qs.stringify(sendData)
-      }),
       // Initialize the partitions
       axios({
         method: 'POST',
         url: 'http://175.178.34.84/api/Groups/',
         data: Qs.stringify(sendData)
       }),
-      // Initialize the followed partitions
+      // Initialize the blog
       axios({
         method: 'POST',
-        url: 'http://175.178.34.84/api/MyGroups/',
+        url: 'http://175.178.34.84/api/GetQuestions',
+        data: Qs.stringify(sendData)
+      }),
+      // Initialize the answer of the blog
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/GetAnswers',
         data: Qs.stringify(sendData)
       })
     ]).then((response) => {
       if (response[0].data.url !== '') {
         this.profileURL = response[0].data.url
       }
-      this.hotBlogs = response[1].data
-      this.followedBlogs = response[2].data
-      this.partitions = response[3].data
-      this.followedPartitions = response[4].data
+      this.partitions = response[1].data
+      this.blog = response[2].data
+      this.answers = response[3].data
+      console.log(this.answers)
     })
   },
   methods: {
@@ -426,9 +370,6 @@ export default {
     // Determine the page where the user stay on
     handleSelect (key, keyPath) {
       this.index = key
-    },
-    handleClick (tab, event) {
-      console.log(tab, event)
     },
     // Deal with the user functions
     selectUserFunctions (command) {
@@ -537,22 +478,15 @@ export default {
       }).then((response) => {
         if (response.data.ok) {
           let sendData = {
-            username: this.username
+            username: this.username,
+            question_id: item.id
           }
-          axios.all([
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/mainpage/',
-              data: Qs.stringify(sendData)
-            }),
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/myFollow/',
-              data: Qs.stringify(sendData)
-            })
-          ]).then((response) => {
-            this.hotBlogs = response[0].data
-            this.followedBlogs = response[1].data
+          axios({
+            method: 'POST',
+            url: 'http://175.178.34.84/api/GetQuestions',
+            data: Qs.stringify(sendData)
+          }).then((response) => {
+            this.blog = response.data
           })
           if (inPartition) {
             let sendData = {
@@ -584,22 +518,15 @@ export default {
       }).then((response) => {
         if (response.data.ok) {
           let sendData = {
-            username: this.username
+            username: this.username,
+            question_id: item.id
           }
-          axios.all([
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/mainpage/',
-              data: Qs.stringify(sendData)
-            }),
-            axios({
-              method: 'POST',
-              url: 'http://175.178.34.84/myFollow/',
-              data: Qs.stringify(sendData)
-            })
-          ]).then((response) => {
-            this.hotBlogs = response[0].data
-            this.followedBlogs = response[1].data
+          axios({
+            method: 'POST',
+            url: 'http://175.178.34.84/api/GetQuestions',
+            data: Qs.stringify(sendData)
+          }).then((response) => {
+            this.blog = response.data
           })
           if (inPartition) {
             let sendData = {
@@ -667,7 +594,7 @@ export default {
         this.subBlogs = response.data
       })
     },
-    // User click to back to the partition
+    // User click to go back to the partition
     back () {
       this.p_type = true
     },
@@ -685,14 +612,23 @@ export default {
     search () {
       alert(this.searchContent)
     },
-    skipToBlog (item) {
+    // User click to go back to main
+    backToMain () {
       this.$router.push({
-        path: '/blog',
-        query: {
-          question_id: item.id,
+        name: 'home',
+        params: {
           username: this.username
         }
       })
+    },
+    timeDiff (start) {
+      var staytimeGap = new Date().getTime() - new Date(start).getTime()
+      var stayHour = Math.floor(staytimeGap / (3600 * 1000))
+      var leave1 = staytimeGap % (3600 * 1000)
+      var stayMin = Math.floor(leave1 / (60 * 1000))
+      var leave2 = leave1 % (60 * 1000)
+      var staySec = Math.floor(leave2 / 1000)
+      return stayHour + ':' + stayMin + ':' + staySec
     }
   }
 }
@@ -899,7 +835,7 @@ export default {
 }
 .noclick_icon {
   box-sizing: border-box;
-  width: 100px;
+  width: 120px;
   color: gray;
   font-size: 15px;
   text-align: center;
@@ -946,5 +882,111 @@ export default {
 .follow-partition {
   float: right;
   margin: 0;
+}
+.comments-container {
+  padding-right: 50px;
+}
+.comments-list li {
+  margin-bottom: 15px;
+  display: block;
+  position: relative;
+}
+.comments-list li:after {
+  content: '';
+  display: block;
+  clear: both;
+  height: 0;
+  width: 0;
+}
+.reply-list {
+  padding-left: 88px;
+  clear: both;
+  margin-top: 15px;
+}
+.comments-list .comment-avatar {
+  width: 65px;
+  height: 65px;
+  position: relative;
+  z-index: 99;
+  float: left;
+  border: 3px solid #FFF;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.reply-list .comment-avatar {
+  width: 50px;
+  height: 50px;
+}
+.comment-main-level:after {
+  content: '';
+  width: 0;
+  height: 0;
+  display: block;
+  clear: both;
+}
+.comments-list .comment-box {
+  width: 630px;
+  float: right;
+  position: relative;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+}
+.comments-list .comment-box:before, .comments-list .comment-box:after {
+  content: '';
+  height: 0;
+  width: 0;
+  position: absolute;
+  display: block;
+  border-width: 10px 12px 10px 0;
+  border-style: solid;
+  border-color: transparent #bfbfbf;
+  top: 8px;
+  left: -11px;
+}
+.comments-list .comment-box:before {
+  border-width: 11px 13px 11px 0;
+  border-color: transparent rgba(0,0,0,0.05);
+  left: -12px;
+}
+.reply-list .comment-box {
+  width: 560px;
+}
+.comment-box .comment-head {
+  background: #bfbfbf;
+  padding: 10px 12px;
+  border-bottom: 1px solid #E5E5E5;
+  overflow: hidden;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+.comment-box .comment-name {
+  color: #283035;
+  font-size: 14px;
+  font-weight: 700;
+  float: left;
+  margin: 0 10px 0 0;
+}
+.comment-box .comment-head span {
+  float: left;
+  color: #999;
+  font-size: 13px;
+  position: relative;
+  top: 1px;
+}
+.comment-box .comment-content {
+  background: #FFF;
+  padding: 12px;
+  font-size: 15px;
+  color: #595959;
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 0 0 4px 4px;
 }
 </style>
