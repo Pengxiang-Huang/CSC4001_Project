@@ -1,7 +1,12 @@
 <template>
   <div id="app">
     <div class="context">
-        <h1>Post Your Blog Here</h1>
+        <!-- <h1>Post Your Blog Here</h1> -->
+        <div class="wrapper">
+          <div class="typing-demo">
+            Encode Your Blog Here.
+          </div>
+        </div>
     </div>
     <div class="area" >
       <ul class="circles">
@@ -23,13 +28,41 @@
           <froala :tag="'textarea'" :config="config" v-model="model" class="mytexteditor height-400"></froala>
         </div>
       </div>
+      <div class="select-area">
+        <el-dropdown @command="SelectPartition">
+          <span style="color: white;">
+                {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
+            <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
+            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
+            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
+            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+      <div class="subselect-area">
+        <el-dropdown @command="SubSelectPartition">
+          <span style="color: white;">
+                {{ subpartition }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="Proejct">Project</el-dropdown-item>
+            <el-dropdown-item command="Homework">Homeworkd</el-dropdown-item>
+            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
+            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
+            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
     <div class="codearea">
       <div class="language-js">
       <el-dropdown @command="SelectLanguage" class="dropdown">
         <span style="color: white;">
               {{ Language }}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
+        </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="cpp">cpp</el-dropdown-item>
           <el-dropdown-item command="c">c</el-dropdown-item>
@@ -46,8 +79,11 @@
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
     </div>
-    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre>
-    <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor> -->
+
+    <div class="sendbtn">
+      <button class="btn">POST</button>
+    </div>
+    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre> -->
   </div>
 </template>
 
@@ -74,7 +110,10 @@ export default {
     code: '#! /bin/bash \necho "hello world"',
     lineNumbers: true,
     Language: 'bash',
-    content: `<p>这是 vue-quill-editor 的内容！</p>`
+    content: 'dsa',
+    partition: 'partition',
+    subpartition: 'subpartition',
+    html: '<text></text>'
   }),
   mounted () {
     Prism.highlightAll()
@@ -105,6 +144,14 @@ export default {
     SelectLanguage (command) {
       this.Language = command
       console.log(this.Language)
+    },
+    SelectPartition (command) {
+      this.partition = command
+      console.log(this.partition)
+    },
+    SubSelectPartition (command) {
+      this.subpartition = command
+      console.log(this.subpartition)
     },
     runcode () {
       console.log(this.code)
@@ -377,5 +424,62 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
 .fr-toolbar .fr-command.fr-btn i{
   width: auto !important;
+}
+.wrapper {
+  /*This part is important for centering*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typing-demo {
+  width: 22ch;
+  animation: typing 3s steps(22), blink .5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  font-family: Courier;
+  font-size: 50px;;
+  color: white;
+}
+@keyframes typing {
+  from {
+    width: 0
+  }
+}
+@keyframes blink {
+  50% {
+    border-color: transparent
+  }
+}
+.sendbtn {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn {
+  width: 140px;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  }
+
+.btn:hover {
+  background-color: #ff5722;
+  box-shadow: 0px 15px 20px rgba(119, 29, 0, 0.73);
+  color: #fff;
+  transform: translateY(-7px);
 }
 </style>

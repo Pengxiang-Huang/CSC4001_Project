@@ -75,18 +75,24 @@ export default {
   },
   methods: {
     send () {
-      let mysendData = {
-        email: this.email
+      var check = /[0-9]{9}@link\.cuhk\.edu\.cn/
+      if (this.email === '' || !check.test(this.email)) {
+        this.$message.error('Please enter your correct email')
+      } else {
+        let mysendData = {
+          email: this.email
+        }
+        axios({
+          method: 'post',
+          url: 'http://175.178.34.84' + '/sendEmail/',
+          data: Qs.stringify(mysendData)
+        }).then((response) => {
+          this.correct_code = response.data.code
+        }).catch((error) => {
+          console.log(error)
+        })
+        this.$message.success('Verification code has been sent to your account')
       }
-      axios({
-        method: 'post',
-        url: this.GLOBAL.BASE_URL + '/sendEmail/',
-        data: Qs.stringify(mysendData)
-      }).then((response) => {
-        this.correct_code = response.data.code
-      }).catch((error) => {
-        console.log(error)
-      })
     },
     submit () {
       var regExp = /[0-9]{9}@link\.cuhk\.edu\.cn/
@@ -108,7 +114,7 @@ export default {
         }
         axios({
           method: 'POST',
-          url: this.GLOBAL.BASE_URL + '/updateInformation/',
+          url: 'http://175.178.34.84' + '/updateInformation/',
           data: Qs.stringify(senddata)
         }).then((response) => {
           if (response.data === 'Password Reset successfully!') {
