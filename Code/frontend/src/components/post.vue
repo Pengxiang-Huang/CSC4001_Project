@@ -59,7 +59,7 @@
     </div>
     <div class="codearea">
       <div class="language-js">
-      <el-dropdown @command="SelectLanguage" class="dropdown">
+      <el-dropdown @command="SelectLanguage" class="dropdowns">
         <span style="color: white;">
               {{ Language }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
@@ -78,13 +78,34 @@
       <span class="copy-btn" @click="runcode">Run</span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
-      <div class="result-area"></div>
+      <div class="result-area">
+        <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="codeResult"></code></pre>
+        <!-- <loading /> -->
+      </div>
     </div>
-
+    <div class="chose">
+    <section class="containers">
+        <div class="dropdown">
+          <select name="one" class="dropdown-select">
+          <option value="">Select…</option>
+          <option value="1">Option #1</option>
+          <option value="2">Option #2</option>
+          <option value="3">Option #3</option>
+          </select>
+        </div>
+      <div class="dropdown dropdown-dark">
+        <select name="two" class="dropdown-select">
+          <option value="">Select…</option>
+          <option value="1">Option #1</option>
+          <option value="2">Option #2</option>
+          <option value="3">Option #3</option>
+        </select>
+      </div>
+    </section>
+    </div>
     <div class="sendbtn">
-      <button class="btn">POST</button>
+      <button class="btn" @click="submit">POST</button>
     </div>
-    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre> -->
   </div>
 </template>
 
@@ -99,22 +120,27 @@ import 'prismjs/themes/prism-okaidia.css'
 import editor from '@/components/editor.vue'
 import VueUeditorWrap from 'vue-ueditor-wrap'
 import VueFroala from 'vue-froala-wysiwyg'
-
+import axios from 'axios'
+import Qs from 'qs'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 export default {
   components: {
     PrismEditor,
     editor,
     VueUeditorWrap,
-    VueFroala
+    VueFroala,
+    Loading
   },
   data: () => ({
-    code: '#! /bin/bash \n# You can write and test your code here\necho "hello world"',
+    code: 'print("Hello World!")',
     lineNumbers: true,
-    Language: 'bash',
+    Language: 'python',
     content: 'dsa',
     partition: 'partition',
     subpartition: 'subpartition',
-    html: '<text></text>',
+    codeResult: '<text></text>',
+    isLoading: false,
     config: {
       heightMax: 330,
       heightMin: 330,
@@ -160,14 +186,28 @@ export default {
       console.log(this.subpartition)
     },
     runcode () {
-      console.log(this.code)
-      console.log(this.Language)
+      let sendData = {
+        lang: this.Language,
+        source_code: this.code
+      }
+      axios({
+        method: 'post',
+        url: 'http://175.178.34.84/api/RunCode',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        console.log(response.data.result)
+        this.codeResult = response.data.result
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     onEditorBlur () {
       console.log('onEditorBlur')
     },
     onEditorFocus () {},
-    onEditorChange () {}
+    onEditorChange () {},
+    submit () {
+    }
   }
 }
 </script>
@@ -382,7 +422,7 @@ color: rgba(255, 255, 255, 0.6);
       border-radius: 50%;
   }
 }
-.dropdown{
+.dropdowns{
   font-family: Menlo;
   display: block;
   position: absolute;
@@ -517,5 +557,154 @@ background-color: #ff5f56;
 /*后面两个小圆点 */
 -webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
+}
+.containers {
+  margin: 650px auto;
+  width: 400px;
+  text-align: center;
+}
+
+.containers > .dropdown {
+  margin: 0 20px;
+  vertical-align: top;
+}
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 28px;
+  width: 150px;
+  background: #f2f2f2;
+  border: 1px solid;
+  border-color: white #f7f7f7 whitesmoke;
+  border-radius: 3px;
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: -moz-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: -o-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.06));
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown:before, .dropdown:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 4px dashed;
+  border-color: #888888 transparent;
+  pointer-events: none;
+}
+
+.dropdown:before {
+  border-bottom-style: solid;
+  border-top: none;
+}
+
+.dropdown:after {
+  margin-top: 7px;
+  border-top-style: solid;
+  border-bottom: none;
+}
+
+.dropdown-select {
+  position: relative;
+  width: 130%;
+  margin: 0;
+  padding: 6px 8px 6px 10px;
+  height: 28px;
+  line-height: 14px;
+  font-size: 12px;
+  color: #62717a;
+  text-shadow: 0 1px white;
+  background: #f2f2f2; /* Fallback for IE 8 */
+  background: rgba(0, 0, 0, 0) !important; /* "transparent" doesn't work with Opera */
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+.dropdown-select:focus {
+  z-index: 3;
+  width: 100%;
+  color: #394349;
+  outline: 2px solid #49aff2;
+  outline: 2px solid -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.dropdown-select > option {
+  margin: 3px;
+  padding: 6px 8px;
+  text-shadow: none;
+  background: #f2f2f2;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* Fix for IE 8 putting the arrows behind the select element. */
+
+.lt-ie9 .dropdown {
+  z-index: 1;
+}
+
+.lt-ie9 .dropdown-select {
+  z-index: -1;
+}
+
+.lt-ie9 .dropdown-select:focus {
+  z-index: 3;
+}
+
+/* Dirty fix for Firefox adding padding where it shouldn't. */
+
+@-moz-document url-prefix() {
+  .dropdown-select {
+    padding-left: 6px;
+  }
+}
+
+.dropdown-dark {
+  background: #444;
+  border-color: #111111 #0a0a0a black;
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: -moz-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: -o-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.4));
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-dark:before {
+  border-bottom-color: #aaa;
+}
+
+.dropdown-dark:after {
+  border-top-color: #aaa;
+}
+
+.dropdown-dark .dropdown-select {
+  color: #aaa;
+  text-shadow: 0 1px black;
+  background: #444;  /* Fallback for IE 8 */
+}
+
+.dropdown-dark .dropdown-select:focus {
+  color: #ccc;
+}
+
+.dropdown-dark .dropdown-select > option {
+  background: #444;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+}
+.chose {
+  top: 20rem;
+  margin: 0 auto;
+  width: 400px;
+  text-align: center;
 }
 </style>
