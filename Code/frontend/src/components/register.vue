@@ -91,7 +91,7 @@ export default {
           password: this.password1
         }
         console.log(Qs.stringify(sendData))
-        var url = this.GLOBAL.BASE_URL + '/register/'
+        var url = 'http://175.178.34.84' + '/register/'
         axios.all([
           axios({
             method: 'post',
@@ -100,7 +100,7 @@ export default {
           }),
           axios({
             method: 'post',
-            url: this.GLOBAL.BASE_URL + '/sendEmail/',
+            url: 'http://175.178.34.84' + '/sendEmail/',
             data: Qs.stringify(sendData)
           })
         ]).then((response) => {

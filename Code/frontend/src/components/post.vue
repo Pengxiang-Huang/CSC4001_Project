@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <div class="context">
-        <!-- <h1>Post Your Blog Here</h1> -->
         <div class="wrapper">
           <div class="typing-demo">
             Encode Your Blog Here.
@@ -25,36 +24,8 @@
     <div class="editarea">
       <div class="text-area">
         <div class="textcode">
-          <froala :tag="'textarea'" :config="config" v-model="model" class="mytexteditor height-400"></froala>
+          <froala :tag="'textarea'" :config="config" v-model="blogtext" class="mytexteditor height-400"></froala>
         </div>
-      </div>
-      <div class="select-area">
-        <el-dropdown @command="SelectPartition">
-          <span style="color: white;">
-                {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
-            <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
-            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
-            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
-            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-      <div class="subselect-area">
-        <el-dropdown @command="SubSelectPartition">
-          <span style="color: white;">
-                {{ subpartition }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="Proejct">Project</el-dropdown-item>
-            <el-dropdown-item command="Homework">Homeworkd</el-dropdown-item>
-            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
-            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
-            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </div>
     <div class="codearea">
@@ -64,41 +35,40 @@
               {{ Language }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="cpp">cpp</el-dropdown-item>
-          <el-dropdown-item command="c">c</el-dropdown-item>
-          <el-dropdown-item command="java">java</el-dropdown-item>
-          <el-dropdown-item command="python">python</el-dropdown-item>
-          <el-dropdown-item command="html">html</el-dropdown-item>
-          <el-dropdown-item command="css">css</el-dropdown-item>
-          <el-dropdown-item command="javascript">javascript</el-dropdown-item>
-          <el-dropdown-item command="markdown">markdown</el-dropdown-item>
-          <el-dropdown-item command="bash">bash</el-dropdown-item>
+          <el-dropdown-item command="C++">C++</el-dropdown-item>
+          <el-dropdown-item command="C">C</el-dropdown-item>
+          <el-dropdown-item command="Java">Java</el-dropdown-item>
+          <el-dropdown-item command="Python">Python</el-dropdown-item>
+          <el-dropdown-item command="Javascript">Javascript</el-dropdown-item>
+          <el-dropdown-item command="Go">Go</el-dropdown-item>
+          <el-dropdown-item command="Bash">Bash</el-dropdown-item>
+          <el-dropdown-item command="Rust">Rust</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span class="copy-btn" @click="runcode">Run</span>
+      <span class="copy-btn" v-if="!isloading" @click="runcode">Run</span>
+      <span class="copy-btn" v-else> <vue-mzc-loading title="Code Running..."> </vue-mzc-loading> </span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
       <div class="result-area">
         <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="codeResult"></code></pre>
-        <!-- <loading /> -->
       </div>
     </div>
     <div class="chose">
     <section class="containers">
         <div class="dropdown">
-          <select name="one" class="dropdown-select">
-          <option value="">Select…</option>
-          <option value="1">Option #1</option>
-          <option value="2">Option #2</option>
-          <option value="3">Option #3</option>
+          <select v-model="partition" name="one" class="dropdown-select">
+          <option value="">Partition</option>
+          <option value="CSC4001">CSC4001</option>
+          <option value="CSC3150">CSC3150</option>
+          <option value="CSC4005">CSC4005</option>
           </select>
         </div>
       <div class="dropdown dropdown-dark">
-        <select name="two" class="dropdown-select">
-          <option value="">Select…</option>
-          <option value="1">Option #1</option>
-          <option value="2">Option #2</option>
-          <option value="3">Option #3</option>
+        <select v-model="subpartition" name="two" class="dropdown-select">
+          <option value="">Sub-Partition</option>
+          <option value="1">Project1</option>
+          <option value="2">Project2</option>
+          <option value="3">Hoemworks</option>
         </select>
       </div>
     </section>
@@ -118,29 +88,26 @@ import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/themes/prism-okaidia.css'
 import editor from '@/components/editor.vue'
-import VueUeditorWrap from 'vue-ueditor-wrap'
 import VueFroala from 'vue-froala-wysiwyg'
+import VueMzcLoading from 'vue-mzc-loading'
 import axios from 'axios'
 import Qs from 'qs'
-import Loading from 'vue-loading-overlay'
-import 'vue-loading-overlay/dist/vue-loading.css'
 export default {
   components: {
     PrismEditor,
     editor,
-    VueUeditorWrap,
     VueFroala,
-    Loading
+    VueMzcLoading
   },
   data: () => ({
     code: 'print("Hello World!")',
     lineNumbers: true,
-    Language: 'python',
-    content: 'dsa',
-    partition: 'partition',
-    subpartition: 'subpartition',
-    codeResult: '<text></text>',
-    isLoading: false,
+    Language: 'Python',
+    partition: '',
+    subpartition: '',
+    codeResult: 'Hello World!',
+    isloading: false,
+    blogtext: '',
     config: {
       heightMax: 330,
       heightMin: 330,
@@ -153,19 +120,19 @@ export default {
   methods: {
     highlighter (code) {
       var lang = this.Language
-      if (lang === 'cpp') {
+      if (lang === 'C++') {
         return highlight(code, languages.cpp)
-      } else if (lang === 'c') {
+      } else if (lang === 'C') {
         return highlight(code, languages.c)
-      } else if (lang === 'java') {
+      } else if (lang === 'Java') {
         return highlight(code, languages.java)
-      } else if (lang === 'python') {
+      } else if (lang === 'Python') {
         return highlight(code, languages.python)
-      } else if (lang === 'html') {
-        return highlight(code, languages.html)
-      } else if (lang === 'css') {
-        return highlight(code, languages.css)
-      } else if (lang === 'javascript') {
+      } else if (lang === 'Rust') {
+        return highlight(code, languages.rust)
+      } else if (lang === 'Go') {
+        return highlight(code, languages.go)
+      } else if (lang === 'Javascript') {
         return highlight(code, languages.javascript)
       } else if (lang === 'markdown') {
         return highlight(code, languages.markdown)
@@ -177,19 +144,17 @@ export default {
       this.Language = command
       console.log(this.Language)
     },
-    SelectPartition (command) {
-      this.partition = command
-      console.log(this.partition)
-    },
-    SubSelectPartition (command) {
-      this.subpartition = command
-      console.log(this.subpartition)
-    },
     runcode () {
+      console.log(this.partition)
+      this.isloading = true
+      var langchose = this.Language
+      var codechose = this.code
       let sendData = {
-        lang: this.Language,
-        source_code: this.code
+        lang: langchose,
+        source_code: codechose
       }
+      console.log(langchose)
+      console.log(codechose)
       axios({
         method: 'post',
         url: 'http://175.178.34.84/api/RunCode',
@@ -197,16 +162,19 @@ export default {
       }).then((response) => {
         console.log(response.data.result)
         this.codeResult = response.data.result
+        this.isloading = false
       }).catch((error) => {
         console.log(error)
       })
     },
-    onEditorBlur () {
-      console.log('onEditorBlur')
-    },
-    onEditorFocus () {},
-    onEditorChange () {},
     submit () {
+      // let senddata = {
+      //   partition: this.partition,
+      //   subpartition: this.subpartition,
+      //   code: this.code,
+      //   content: this.blogtext
+      // }
+      console.log(this.blogtext)
     }
   }
 }
@@ -261,7 +229,7 @@ background: #282c34;
 padding: 1.25rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 40rem;
+max-width: 45rem;
 }
 div[class$="js"]::before {
 display: block;
@@ -437,7 +405,7 @@ background: #dee1e6;
 padding: 2rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 80rem;
+max-width: 60rem;
 height: 25rem;
 }
 div[class$="area"]::before {
@@ -498,7 +466,7 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   }
 }
 .sendbtn {
-  height: 190%;
+  height: 10%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -530,11 +498,11 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 
 div[class^="result-"] {
 position: relative;
-background: #dee1e6;
+background: #282c34;
 padding: 2rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 40rem;
+max-width: 45rem;
 height: 10rem;
 }
 div[class$="area"]::before {
@@ -706,5 +674,8 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   margin: 0 auto;
   width: 400px;
   text-align: center;
+}
+.line-numbers {
+  height: 140px;
 }
 </style>
