@@ -724,3 +724,48 @@ Not Found: /
 Not Found: /favicon.ico
 [pid: 2249910|app: 0|req: 56/412] 58.250.174.75 () {46 vars in 937 bytes} [Fri Apr 15 09:48:03 2022] GET /favicon.ico => generated 4664 bytes in 4 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 1)
 [pid: 2249912|app: 0|req: 227/413] 58.250.174.75 () {46 vars in 996 bytes} [Fri Apr 15 09:48:07 2022] GET /index/ => generated 566 bytes in 2 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+Not Found: /
+[pid: 2249912|app: 0|req: 228/414] 58.250.174.75 () {46 vars in 984 bytes} [Fri Apr 15 10:02:39 2022] GET / => generated 4613 bytes in 5 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 229/415] 58.250.174.75 () {46 vars in 996 bytes} [Fri Apr 15 10:02:42 2022] GET /index/ => generated 566 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+qpr
+Q@@@pr294118
+[pid: 2249912|app: 0|req: 230/416] 58.250.174.75 () {52 vars in 1052 bytes} [Fri Apr 15 10:02:52 2022] POST /login/ => generated 41 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 311 bytes (1 switches on core 1)
+qpr
+Q@@pr294118
+[pid: 2249912|app: 0|req: 231/417] 58.250.174.75 () {52 vars in 1052 bytes} [Fri Apr 15 10:02:58 2022] POST /login/ => generated 14 bytes in 89 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
+[pid: 2249910|app: 0|req: 58/418] 58.250.174.75 () {52 vars in 1070 bytes} [Fri Apr 15 10:02:58 2022] POST /api/getProfile/ => generated 58 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+url: %s http://175.178.34.84/pics/CSC3002.jpg
+url: %s http://175.178.34.84/pics/CSC3002.jpg
+[pid: 2249909|app: 0|req: 81/419] 58.250.174.75 () {52 vars in 1058 bytes} [Fri Apr 15 10:02:58 2022] POST /mainpage/ => generated 2727 bytes in 186 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 2249909|app: 0|req: 81/420] 58.250.174.75 () {52 vars in 1066 bytes} [Fri Apr 15 10:02:58 2022] POST /api/MyGroups/ => generated 1157 bytes in 212 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 2249910|app: 0|req: 58/421] 58.250.174.75 () {52 vars in 1058 bytes} [Fri Apr 15 10:02:58 2022] POST /myFollow/ => generated 2250 bytes in 234 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 232/422] 58.250.174.75 () {52 vars in 1062 bytes} [Fri Apr 15 10:02:58 2022] POST /api/Groups/ => generated 4459 bytes in 248 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+Not Found: /
+[pid: 2249912|app: 0|req: 233/423] 58.250.174.75 () {46 vars in 984 bytes} [Fri Apr 15 10:10:13 2022] GET / => generated 4613 bytes in 4 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 0)
+[pid: 2249909|app: 0|req: 82/424] 58.250.174.75 () {46 vars in 996 bytes} [Fri Apr 15 10:10:17 2022] GET /index/ => generated 566 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
+[pid: 2249909|app: 0|req: 83/425] 58.250.174.75 () {48 vars in 1063 bytes} [Fri Apr 15 10:10:35 2022] GET /index/? => generated 566 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+1233332 119010249@link.cuhk.edu.cn 123
+0cgs0r
+<QuerySet []>
+[pid: 2249912|app: 0|req: 234/426] 58.250.174.75 () {52 vars in 1059 bytes} [Fri Apr 15 10:11:09 2022] POST /register/ => generated 17 bytes in 106 msecs (HTTP/1.1 200) 10 headers in 456 bytes (1 switches on core 1)
+[pid: 2249911|app: 0|req: 52/427] 58.250.174.75 () {52 vars in 1061 bytes} [Fri Apr 15 10:11:09 2022] POST /sendEmail/ => generated 18 bytes in 1039 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 2249909|app: 0|req: 84/428] 58.250.174.75 () {52 vars in 1071 bytes} [Fri Apr 15 10:12:04 2022] POST /api/getProfile/ => generated 11 bytes in 54 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 236/429] 58.250.174.75 () {52 vars in 1059 bytes} [Fri Apr 15 10:12:04 2022] POST /myFollow/ => generated 2 bytes in 61 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 0)
+url: %s http://175.178.34.84/pics/CSC3002.jpg
+url: %s http://175.178.34.84/pics/CSC3002.jpg
+[pid: 2249911|app: 0|req: 53/430] 58.250.174.75 () {52 vars in 1059 bytes} [Fri Apr 15 10:12:04 2022] POST /mainpage/ => generated 2727 bytes in 175 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 236/431] 58.250.174.75 () {52 vars in 1067 bytes} [Fri Apr 15 10:12:04 2022] POST /api/MyGroups/ => generated 2 bytes in 169 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 2249910|app: 0|req: 59/432] 58.250.174.75 () {52 vars in 1063 bytes} [Fri Apr 15 10:12:04 2022] POST /api/Groups/ => generated 4459 bytes in 254 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+Not Found: /
+[pid: 2249912|app: 0|req: 237/433] 58.250.174.75 () {46 vars in 984 bytes} [Fri Apr 15 10:17:28 2022] GET / => generated 4613 bytes in 4 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 0)
+[pid: 2249912|app: 0|req: 238/434] 58.250.174.75 () {48 vars in 1042 bytes} [Fri Apr 15 10:17:30 2022] GET /admin/ => generated 11668 bytes in 102 msecs (HTTP/1.1 200) 9 headers in 343 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 239/435] 58.250.174.75 () {46 vars in 1018 bytes} [Fri Apr 15 10:17:31 2022] GET /admin/ => generated 11668 bytes in 84 msecs (HTTP/1.1 200) 9 headers in 343 bytes (1 switches on core 0)
+[pid: 2249910|app: 0|req: 60/436] 58.250.174.75 () {48 vars in 1158 bytes} [Fri Apr 15 10:17:40 2022] GET /admin/Our_project/blog_answers/ => generated 13376 bytes in 161 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 240/437] 58.250.174.75 () {46 vars in 933 bytes} [Fri Apr 15 10:17:40 2022] GET /admin/jsi18n/ => generated 3343 bytes in 58 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 241/438] 58.250.174.75 () {46 vars in 1018 bytes} [Fri Apr 15 10:17:42 2022] GET /admin/ => generated 11668 bytes in 76 msecs (HTTP/1.1 200) 9 headers in 343 bytes (1 switches on core 0)
+[pid: 2249912|app: 0|req: 242/439] 58.250.174.75 () {48 vars in 1115 bytes} [Fri Apr 15 10:17:43 2022] GET /admin/Our_project/blog_questions/ => generated 14084 bytes in 125 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 243/440] 58.250.174.75 () {46 vars in 935 bytes} [Fri Apr 15 10:17:43 2022] GET /admin/jsi18n/ => generated 3343 bytes in 63 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 2249909|app: 0|req: 85/441] 58.250.174.75 () {46 vars in 1018 bytes} [Fri Apr 15 10:17:44 2022] GET /admin/ => generated 11668 bytes in 86 msecs (HTTP/1.1 200) 9 headers in 343 bytes (1 switches on core 0)
+[pid: 2249912|app: 0|req: 244/442] 58.250.174.75 () {48 vars in 1121 bytes} [Fri Apr 15 10:17:46 2022] GET /admin/Our_project/user_follow_group/ => generated 12218 bytes in 125 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 2249912|app: 0|req: 245/443] 58.250.174.75 () {46 vars in 938 bytes} [Fri Apr 15 10:17:46 2022] GET /admin/jsi18n/ => generated 3343 bytes in 54 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 2249909|app: 0|req: 86/444] 58.250.174.75 () {46 vars in 1018 bytes} [Fri Apr 15 10:17:47 2022] GET /admin/ => generated 11668 bytes in 86 msecs (HTTP/1.1 200) 9 headers in 343 bytes (1 switches on core 1)
