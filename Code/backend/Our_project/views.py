@@ -1191,6 +1191,8 @@ def run_code(request):
                 executing_status = response.get("executing")
 
             print(response)
+            time = response.get("result").get("time")
+            memory = response.get("result").get("memory")
             try:
                 uri=response.get("result").get("streams").get("output").get('uri')
             except:
@@ -1202,10 +1204,97 @@ def run_code(request):
 
             data = {}
             data["result"] = contents
+            data["time"] = time
+            data["memory"] = memory
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         else:
             return HttpResponse("Only POST-request is accepted!")
     except:
         return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
+    
+'''
+    Given username
+    return the blogs this user post before. 
+'''
+def MyBlogs(request):
+    data = {}
+    if request.method == "POST":
+        username = request.POST["username"]
+        userid = User.objects.filter(username = username).values()[0]['id']
+        questions = Blog_Questions.objects.filter(author_id = userid).values()
+        for i in range(0, len(questions)):
 
+            question_id = questions[i]['id']
+
+            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+                isliked = 1
+
+            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+                isfollowed = 1
+
+            # getting the url of picture of the corresponding blog
+            url = picture.objects.filter(question = question_id).values()[0]['url']
+
+            # getting the amount of answers regarding to this questions
+            amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+
+            if (questions[i]['content_format'] == "Markdown"):
+                content = questions[i]["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = questions[i]["content"]
+
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
+
+            # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+            temp = questions[i]
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
+            temp['url'] = url
+            temp['content'] = raw_content
+            temp['amount_of_answers'] = amount_of_answers
+            data['blog'+str(i+1)] = temp
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json') 
+
+'''
+    Given the username, question_id, father_answer_id, content, code, lang, content_format.
+    Store all of this informations into the DB
+'''          
+def Reply(request):
+    data = {}
+    data["ok"] = 0
+    if request.method == "POST":
+        username = request.POST["username"]
+
+        # store the user_id instead of the username
+        userid = User.objects.filter(username = username).values()[0]["id"]
+
+        question_id = request.POST["question_id"]
+        if (question_id == ""):
+            question_id = None
+        else:
+            question_id = int(question_id)
+
+        father_answer_id = request.POST["father_answer_id"]
+        if (father_answer_id == ""):
+            father_answer_id = None
+        else:
+            father_answer_id = int(question_id)
+        
+        content = request.POST["content"]
+        code = request.POST["code"]
+        lang = request.POST["lang"]
+        content_format = request.POST["content_format"]
+
+        Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
+
+        data["ok"] = 1
+
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  

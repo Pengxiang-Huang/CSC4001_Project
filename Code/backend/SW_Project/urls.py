@@ -42,4 +42,6 @@ urlpatterns = [
     path('api/GetQuestions', views.GetQuestions),
     path('api/GetAnswers', views.GetAnswers),
     path('api/RunCode', views.run_code),
+    path('api/MyBlogs', views.MyBlogs),
+    path('api/Reply', views.Reply),
 ]
