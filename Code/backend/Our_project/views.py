@@ -1172,6 +1172,10 @@ def run_code(request):
                 compiler = 117
             elif (lang == "Rust"):
                 compiler = 93
+            elif (lang == "Javascript"):
+                compiler = 35
+            elif (lang == "Bash"):
+                compiler = 28
 
             input = '111'
 

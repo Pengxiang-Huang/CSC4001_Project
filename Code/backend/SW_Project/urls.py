@@ -26,7 +26,7 @@ urlpatterns = [
     path('logout/', views.logout),
     path('sendEmail/', views.sendEmail),
     path('updateInformation/', views.update),
-    
+    path('search', views.searchQuestion),
     path('mainpage/', views.main_page),
     path('myFollow/', views.my_follow),
     path('myGroup/', views.my_group),
