@@ -70,6 +70,21 @@ def code(n = 6):
 ##############################
 # Create your views here.
 def index(request):  # request means the request sent by front-end
+#     code = """
+# DATABASES = {
+#     'default':{
+#         'ENGINE':'django.db.backends.mysql',
+#         'NAME':'CSC4001',
+#         'USER':'root',
+#         'PASSWORD':'Q@@pr294118',
+#         'HOST':'175.178.34.84',
+#         'PORT':'3306',
+#     }
+# }
+#     """
+#     question = Blog_Questions.objects.get(id=1)
+#     question.code = code
+#     question.save()
     if request.method == 'GET':  #GET 返回页面
         return render(request, 'index.html')
 
@@ -1159,6 +1174,8 @@ def run_code(request):
                 executing_status = response.get("executing")
 
             print(response)
+            time = response.get("result").get("time")
+            memory = response.get("result").get("memory")
             try:
                 uri=response.get("result").get("streams").get("output").get('uri')
             except:
@@ -1170,6 +1187,8 @@ def run_code(request):
 
             data = {}
             data["result"] = contents
+            data["time"] = time
+            data["memory"] = memory
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         else:
