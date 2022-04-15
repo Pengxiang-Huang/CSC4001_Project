@@ -305,6 +305,9 @@ def setQuestion(request):
 
 #基于title相似度写的问题搜索
 def searchQuestion(request):
+    if request.method == 'GET':  #GET 返回页面
+        return render(request, 'search.html')
+
     if request.method == 'POST':
         similarity = 0
         answerList = []
@@ -314,19 +317,22 @@ def searchQuestion(request):
 
         DBlist = []
         #get the db values
-        titleDB = Blog_Questions.objects.values('titles')
+        titleDB = Blog_Questions.objects.values('title')
         for title in titleDB:   
-            DBlist.append(title['titles'])
+            DBlist.append(title['title'])
+        print(DBlist)
 
         # start to search
         for DBitem in DBlist:
             similarity = 0
             for title in questionElem:
                 if title in DBitem:
+                    #print(title)
                     similarity += 1
+                    #print(similarity)
             answerList.append(similarity)
         #answerList contains all similarity in the order of id
-        print(similarity)
+        #print(answerList)
         
         maxSimilrty = len(questionElem)
         positionList = []
@@ -340,20 +346,30 @@ def searchQuestion(request):
                     break
             else:
                 continue
-        
+
+        print(positionList)
         #finially, return the searched answer
         answerTitle = []
         answerContent = []
+
         for i in range(returnNumberMax):
             answerTitle.append(positionList[i])
         
-        content = Blog_Questions.objects.values('content')
+        contentDB = Blog_Questions.objects.values('content')
+        DBcontent = []
+        for content in contentDB:   
+            DBcontent.append(content['content'])
+        #print(DBcontent)
+
         for i in range(returnNumberMax):
-            answerContent.append(content[i]['content'])
+            answerContent.append(DBcontent[i])
+        
+        #print(answerTitle)
+        print(answerContent) #list of return contents
+
+        return  HttpResponse('')
         
 
-
-##########################################
 # 根据hot排序，返回5个当前热门的问题
 def main_page(request):
     try:
@@ -842,7 +858,6 @@ def followGroup(request):
     default own = 0 means return all the groups, own = 1 means only return the groups that current user follows
 '''
 def groups(request, own = 0):
-
     try:
         if request.method == "POST":
             data = {}
@@ -857,7 +872,13 @@ def groups(request, own = 0):
                 group_name = group["group_name"]
 
                 # get the url of picture of this group
-                url = picture.objects.filter(group_name = group_name).values()[0]['url']
+                try:
+                    url = picture.objects.filter(group_name = group_name).values()[0]['url']
+                except:
+                    url = ""
+
+                if group_name == "CSC3002":
+                    print("url: %s", url)
                 
                 # check whether the current user has followed this group
                 isFollowed = 0
@@ -887,7 +908,6 @@ def groups(request, own = 0):
             return HttpResponse("Only POST-request is accepted!")
     except:
         return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
-
 
 
 '''
@@ -952,6 +972,12 @@ def GetQuestions(request):
 
             sub_group_name = sub_group.objects.filter(id = question["sub_group_type"]).values()[0]["sub_group_name"]
 
+            author_id = question["author_id"]
+            author = User.objects.filter(id = author_id).values()[0]
+            author_name = author["username"]
+            author_profile = author["photo"]
+            
+
             # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
             temp = question
             temp['content'] = html_content
@@ -961,6 +987,8 @@ def GetQuestions(request):
             temp['file_urls'] = file_urls
             temp['amount_of_answers'] = amount_of_answers
             temp["sub_group_name"] = sub_group_name
+            temp["author_name"] = author_name
+            temp["author_profile"] = author_profile
 
             data = temp
             
@@ -1144,6 +1172,10 @@ def run_code(request):
                 compiler = 117
             elif (lang == "Rust"):
                 compiler = 93
+            elif (lang == "Javascript"):
+                compiler = 35
+            elif (lang == "Bash"):
+                compiler = 28
 
             input = '111'
 
