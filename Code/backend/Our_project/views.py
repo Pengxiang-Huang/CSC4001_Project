@@ -1191,6 +1191,9 @@ def run_code(request):
                 executing_status = response.get("executing")
 
             print(response)
+            
+            time = response.get("result").get("time")
+            memory = response.get("result").get("memory")
             try:
                 uri=response.get("result").get("streams").get("output").get('uri')
             except:
@@ -1202,6 +1205,8 @@ def run_code(request):
 
             data = {}
             data["result"] = contents
+            data["time"] = time
+            data["memory"] = memory
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         else:
