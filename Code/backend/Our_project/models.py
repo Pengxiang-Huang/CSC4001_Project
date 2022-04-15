@@ -15,7 +15,7 @@ class Blog_Questions(models.Model):
     title = models.CharField(verbose_name='TITLE', max_length=200)
     author_id = models.IntegerField(verbose_name = 'AUTHOR_ID')
     group_type = models.CharField(verbose_name = 'GROUP_ID', max_length=45)
-    sub_group_type = models.IntegerField(verbose_name='SUB_GROUP_ID')
+    sub_group_type = models.IntegerField(verbose_name='SUB_GROUP_ID', blank = True)
     content = models.CharField(verbose_name='CONTENT', max_length=20000)
     code = models.CharField(verbose_name='CODE', max_length=1400)
     lang = models.CharField(verbose_name="Language", max_length = 45)
@@ -44,9 +44,9 @@ class Blog_Answers(models.Model):
 
 class picture(models.Model):
     url = models.CharField(verbose_name='URL', max_length = 100, unique = True)
-    answer = models.IntegerField(verbose_name=' Corresponding ANSWER')
-    question = models.IntegerField(verbose_name='Corresponding QUESTION')
-    group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45)
+    answer = models.IntegerField(verbose_name=' Corresponding ANSWER', blank = True)
+    question = models.IntegerField(verbose_name='Corresponding QUESTION', blank = True)
+    group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45, blank = True)
     create_time = models.DateTimeField('Established Time', auto_now_add=True)
     def __str__(self):
         if (self.answer):
@@ -87,16 +87,16 @@ class Group(models.Model):
 
 
 class sub_group(models.Model):
-    group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45, unique = True)
-    sub_group_name = models.CharField(verbose_name='SUB_GROUP_NAME', max_length = 45, unique = True)
+    group_name = models.CharField(verbose_name='GROUP_NAME', max_length = 45)
+    sub_group_name = models.CharField(verbose_name='SUB_GROUP_NAME', max_length = 45)
     def __str__(self):
         return self.sub_group_name
 
 class file(models.Model):
     url = models.CharField(verbose_name='URL', max_length = 45, unique = True)
-    corresponding_question = models.IntegerField(verbose_name='Corresponding_QUESTION')
-    corresponding_answer = models.IntegerField(verbose_name='Corresponding_ANSWER')
-    create_time = models.DateTimeField('Established Time', auto_now_add=True)
+    corresponding_question = models.IntegerField(verbose_name='Corresponding_QUESTION', blank = True)
+    corresponding_answer = models.IntegerField(verbose_name='Corresponding_ANSWER', blank = True)
+    create_time = models.DateTimeField('Established Time', auto_now_add=True, blank = True)
     def __str__(self):
         if (self.corresponding_answer):
             return "file of answer (" + str(self.corresponding_answer) + ")"
