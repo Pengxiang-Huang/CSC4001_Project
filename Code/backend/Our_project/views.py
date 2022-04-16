@@ -243,34 +243,34 @@ def sendEmail(request):
         
         return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')#需要把信息验证码一起用字典传过去、或者设置全局变量。
 
-def setQuestion(request):
-    data = {
-        'isRegister': 1
-    }# control flag
+# def setQuestion(request):
+#     data = {
+#         'isRegister': 1
+#     }# control flag
 
-    if request.method == 'POST':
-        title = request.POST['title']
-        author_id = request.POST['author_id']
-        group_type = request.POST['group_type']
-        sub_group_type = request.POST['sub_group_type']
-        content = request.POST['content']
-        content_format = request.POST['content_format']
-        like = request.POST['like']
-        follow = request.POST['follow']
-        hot = request.POST['hot']
-        views = request.POST['views']
+#     if request.method == 'POST':
+#         title = request.POST['title']
+#         author_id = request.POST['author_id']
+#         group_type = request.POST['group_type']
+#         sub_group_type = request.POST['sub_group_type']
+#         content = request.POST['content']
+#         content_format = request.POST['content_format']
+#         like = request.POST['like']
+#         follow = request.POST['follow']
+#         hot = request.POST['hot']
+#         views = request.POST['views']
 
-        try: 
-        #insert data
-            user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
-                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
-        except Exception as e:
-            print('--Insert question error%s'%(e))
-            data['isRegister'] = 0
-            return HttpResponse(json.dumps(data), content_type='application/json')
+#         try: 
+#         #insert data
+#             user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
+#                                                 content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
+#         except Exception as e:
+#             print('--Insert question error%s'%(e))
+#             data['isRegister'] = 0
+#             return HttpResponse(json.dumps(data), content_type='application/json')
 
-        #if success
-        return HttpResponse(json.dumps(data), content_type='application/json')
+#         #if success
+#         return HttpResponse(json.dumps(data), content_type='application/json')
 
 #提出问题并放入数据库
 #需要对接如何返回
@@ -281,20 +281,31 @@ def setQuestion(request):
 
     if request.method == 'POST':
         title = request.POST['title']
-        author_id = request.POST['author_id']
+
+        author_name = request.POST['author_name']
+        author_id = User.objects.filter(username = author_name).values()[0]['id']
+
         group_type = request.POST['group_type']
-        sub_group_type = request.POST['sub_group_type']
+
+        sub_group_type_name = request.POST['sub_group_type']
+        sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
+
         content = request.POST['content']
-        content_format = request.POST['content_format']
-        like = request.POST['like']
-        follow = request.POST['follow']
-        hot = request.POST['hot']
-        views = request.POST['views']
+        content_format = "HTML"
+
+        code = request.POST['code']
+        lang = request.POST['lang']
+
+        like = 0
+        follow = 0
+        hot = 0
+        views = 0
 
         try: 
         #insert data
             user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
-                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
+                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
+                                                code = code, lang = lang)
         except Exception as e:
             print('--Insert question error%s'%(e))
             data['ok'] = 0
@@ -1298,3 +1309,5 @@ def Reply(request):
         data["ok"] = 1
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  
+
+
