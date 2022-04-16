@@ -8,42 +8,6 @@
       <input id="inputBox2" v-model="newVal">
       <button class="clickBtn" @click="reset">Reset</button>
     </div>
-    <div id="pop-up-post" class="pop-up">
-      <span id="post-title">Post</span>
-      <img src="../assets/close.png" class="closeBtn" @click="close">
-      <textarea type="text" placeholder="Please enter the title/subject of your question/blog..." id="blog_title"></textarea>
-      <textarea placeholder="Please enter the detailed information..." id="blog_content"></textarea>
-      <el-row>
-        <el-col :span="5" :offset="6" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
-          <el-dropdown trigger="click" placement="bottom" @command="selectPartition">
-            <span style="color: white;">
-              {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
-              <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
-              <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-        <el-col :span="5" :offset="2" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
-          <el-dropdown trigger="click" placement="bottom" @command="selectSubPartition">
-            <span style="color: white;">
-              {{ subPartition }}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
-              <el-dropdown-item command="Assignments">Assignments</el-dropdown-item>
-              <el-dropdown-item command="Projects">Projects</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-      </el-row>
-      <div id="upload_info">
-          <el-button type="primary" id="loadFile">upload</el-button>
-          <input @change="handleFileChange" type="file" multiple="multiple" id="file" name="attachments">
-          <span id="fileTip">You can upload some attachment here</span>
-      </div>
-      <button class="clickBtn" @click="submitPost">Post</button>
-    </div>
     <el-menu
       default-active="Main"
       class="el-menu-demo"
@@ -56,7 +20,7 @@
       <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
       <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
       <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
-        <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 130px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
+        <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
         <el-dropdown slot="suffix" trigger="click">
           <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
           <el-dropdown-menu slot="dropdown" style="width: 440px;height: 100px;">
@@ -77,7 +41,7 @@
         </el-dropdown>
       </el-input>
       <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
-      <el-button class="postIcon" @click="showPost" round>Post</el-button>
+      <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
       <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
         <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
         <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
@@ -104,8 +68,12 @@
       <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
       <div style="padding: 0 50px;">
         <h2>{{ blog.title }}</h2>
+        <span v-show="JSON.stringify(blog.file_urls) !== '{}'">Attachments:</span>
+        <a v-for="(url,index) in blog.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+        <hr />
         <p v-html="blog.content"></p>
-        <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="display: block;margin-bottom: 20px;" :preview-src-list="previewArr">
+        <p v-html="blog.code"></p>
+        <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="margin-bottom: 20px;" :preview-src-list="previewArr">
         </el-image>
         <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
           <img src="../assets/like-click.png" />
@@ -144,11 +112,26 @@
               <div class="comment-box">
                 <div class="comment-head">
                   <h6 class="comment-name">{{ item.author_name }}</h6>
-                  <span>hace 20 minutos</span>
-                  <i class="fa fa-reply"></i>
-                  <i class="fa fa-heart"></i>
+                  <span v-show="item.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                  <span style="color: white;margin: 0 10px">reply</span>
+                  <h6 class="comment-name">{{ blog.author_name }}</h6>
+                  <span style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                  <div v-if="item.isliked">
+                    <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: #409EFF;">{{ item.like }}</span>
+                    <img src="../assets/like-click.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
+                  </div>
+                  <div v-else>
+                    <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: white;">{{ item.like }}</span>
+                    <img src="../assets/like.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
+                  </div>
                 </div>
-                <div class="comment-content" v-html="item.content"></div>
+                <div class="comment-content">
+                  <div v-html="item.content"></div>
+                  <el-image v-for="(pic,index) in item.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(item)">
+                  </el-image>
+                  <span v-show="JSON.stringify(item.file_urls) !== '{}'">Attachments:</span>
+                  <a v-for="(url,index) in item.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+                </div>
               </div>
             </div>
             <ul class="comments-list reply-list" style="list-style-type: none;">
@@ -160,11 +143,26 @@
                 <div class="comment-box">
                   <div class="comment-head">
                       <h6 class="comment-name">{{ child.author_name }}</h6>
-                      <span>hace 10 minutos</span>
-                      <i class="fa fa-reply"></i>
-                      <i class="fa fa-heart"></i>
+                      <span v-show="child.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                      <span style="color: white;margin: 0 10px">reply</span>
+                      <h6 class="comment-name">{{ item.author_name }}</h6>
+                      <span v-show="item.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                      <div v-if="child.isliked">
+                        <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: #409EFF;">{{ child.like }}</span>
+                        <img src="../assets/like-click.png" style="float: right;cursor: pointer;" @click="like($event,child,1,false)"/>
+                      </div>
+                      <div v-else>
+                        <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: white;">{{ child.like }}</span>
+                        <img src="../assets/like.png" style="float: right;cursor: pointer;" @click="like($event,child,1,false)"/>
+                      </div>
                   </div>
-                  <div class="comment-content" v-html="child.content"></div>
+                  <div class="comment-content">
+                    <div v-html="child.content"></div>
+                    <el-image v-for="(pic,index) in child.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(child)">
+                    </el-image>
+                    <span v-show="JSON.stringify(child.file_urls) !== '{}'">Attachments:</span>
+                    <a v-for="(url,index) in child.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -238,6 +236,9 @@ export default {
     return {
       searchContent: '',
       searchCondition: 'All',
+      srPage: [], // used to show the search results page
+      srBlogs: {}, // used to store the blogs resulting from the search
+      inSearch: false, // true => show the search results, false => not show
       index: 'Main',
       profileURL: '',
       partitions: {},
@@ -267,10 +268,22 @@ export default {
         arr.push(this.blog.pic_urls[url])
       }
       return arr
+    },
+    answerImages: function () {
+      return function (item) {
+        var arr = []
+        for (let url in item.pic_urls) {
+          arr.push(item.pic_urls[url])
+        }
+        return arr
+      }
     }
   },
   created () {
     this.username = this.$route.query.username
+    this.searchContent = this.$route.query.searchContent
+    this.searchCondition = this.$route.query.searchCondition
+    this.inSearch = this.$route.query.inSearch
     let sendData = {
       question_id: this.$route.query.question_id,
       username: this.username
@@ -310,17 +323,23 @@ export default {
       console.log(this.answers)
     })
   },
+  mounted: function () {
+    document.body.style = 'overflow: hidden;'
+  },
   methods: {
     // close the pop-up window
     close () {
       document.getElementById('mask').style.display = 'none'
       document.getElementById('pop-up-reset').style.display = 'none'
-      document.getElementById('pop-up-post').style.display = 'none'
     },
-    // show the pop-up post window
-    showPost () {
-      document.getElementById('mask').style.display = 'block'
-      document.getElementById('pop-up-post').style.display = 'block'
+    // skip to the post page
+    skipToPost () {
+      this.$router.push({
+        name: 'post',
+        params: {
+          username: this.username
+        }
+      })
     },
     // user select which partition the blog belongs to
     selectPartition (command) {
@@ -479,14 +498,22 @@ export default {
         if (response.data.ok) {
           let sendData = {
             username: this.username,
-            question_id: item.id
+            question_id: this.$route.query.question_id
           }
-          axios({
-            method: 'POST',
-            url: 'http://175.178.34.84/api/GetQuestions',
-            data: Qs.stringify(sendData)
-          }).then((response) => {
-            this.blog = response.data
+          axios.all([
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/GetQuestions',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/GetAnswers',
+              data: Qs.stringify(sendData)
+            })
+          ]).then((response) => {
+            this.blog = response[0].data
+            this.answers = response[1].data
           })
           if (inPartition) {
             let sendData = {
@@ -610,14 +637,17 @@ export default {
       }
     },
     search () {
-      alert(this.searchContent)
+      alert('You have already click the search button, please click the back button if you want to search!')
     },
     // User click to go back to main
     backToMain () {
       this.$router.push({
         name: 'home',
         params: {
-          username: this.username
+          username: this.username,
+          inSearch: this.inSearch,
+          searchCondition: this.searchCondition,
+          searchContent: this.searchContent
         }
       })
     },
@@ -670,7 +700,7 @@ export default {
   border: 1px solid gray;
   margin: 10% auto;
 }
-#reset-title, #post-title {
+#reset-title {
   position: relative;
   width: 60%;
   top: 5%;
@@ -684,58 +714,6 @@ export default {
   width: 5%;
   float: right;
   cursor: pointer;
-}
-#blog_title {
-  box-sizing: border-box;
-  display: block;
-  height: 12%;
-  width: 60%;
-  border-radius: 5px;
-  border: 1px solid gray;
-  margin: 7% auto 0;
-  resize: none;
-  font-size: 16px;
-}
-#blog_content {
-  box-sizing: border-box;
-  display: block;
-  height: 20%;
-  width: 60%;
-  border-radius: 5px;
-  border: 1px solid gray;
-  margin: 5% auto;
-  resize: none;
-  font-size: 16px;
-}
-#upload_info {
-  width: 60%;
-  height: 8%;
-  border-radius: 5px;
-  border: 1px solid gray;
-  margin: 5% auto;
-  text-align: left;
-  padding-top: 2%;
-}
-#file {
-  box-sizing: border-box;
-  display: block;
-  height: 80%;
-  width: 100%;
-  margin: -10% auto;
-  opacity: 0;
-}
-#loadFile {
-  width: 20%;
-  height: 70%;
-  padding: 0;
-  font-size: 18px;
-  background-color: #82beec;
-  border: 0;
-}
-#fileTip {
-  position: relative;
-  left: 22%;
-  font-size: 14px;
 }
 #leftBox {
   position: fixed;
@@ -971,7 +949,7 @@ export default {
   font-size: 14px;
   font-weight: 700;
   float: left;
-  margin: 0 10px 0 0;
+  margin: 0;
 }
 .comment-box .comment-head span {
   float: left;
