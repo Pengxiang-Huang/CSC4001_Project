@@ -65,6 +65,14 @@
           <option value="CSC4001">CSC4001</option>
           <option value="CSC3150">CSC3150</option>
           <option value="CSC4005">CSC4005</option>
+          <option value="CSC1001">CSC1001</option>
+          <option value="CSC1002">CSC1002</option>
+          <option value="CSC3001">CSC3001</option>
+          <option value="CSC3100">CSC3100</option>
+          <option value="CSC3170">CSC3170</option>
+          <option value="CSC4160">CSC4160</option>
+          <option value="EIE2050">EIE2050</option>
+          <option value="EIE3080">EIE3080</option>
           </select>
         </div>
       <div class="dropdown dropdown-dark">
@@ -72,6 +80,13 @@
           <option value="">Sub-Partition</option>
           <option value="Project1">Project1</option>
           <option value="Project2">Project2</option>
+          <option value="Project3">Project3</option>
+          <option value="Project4">Project4</option>
+          <option value="Homework1">Homework1</option>
+          <option value="Homework2">Homework2</option>
+          <option value="Homework3">Homework3</option>
+          <option value="Homework4">Homework4</option>
+          <option value="Midterm">Midterm</option>
           <option value="Final">Final</option>
         </select>
       </div>
@@ -119,11 +134,17 @@ export default {
     config: {
       heightMax: 330,
       heightMin: 330,
-      placeholderText: 'Type your blog...'
+      placeholderText: 'Type your blog...',
+      fileUploadURL: 'http://localhost:8080/',
+      fileUploadParams: {
+        id: 'file'
+      },
+      imageUploadURL: 'http://175.178.34.84/pictures/pics'
     }
   }),
   mounted () {
     Prism.highlightAll()
+    document.body.style = 'overflow: auto;'
   },
   methods: {
     highlighter (code) {
@@ -179,6 +200,7 @@ export default {
       this.$router.go(-1)
     },
     submit () {
+      console.log(this.blogtext)
       if (this.title === '') {
         this.$message.error('Please conclude your title!')
       } else if (this.partition === '') {
@@ -197,21 +219,20 @@ export default {
           author_name: 'Huang1234',
           lang: this.Language
         }
-        console.log(this.blogtext)
-        console.log(this.partition)
-        console.log(this.subpartition)
-        console.log(this.title)
-        console.log(this.code)
-        console.log(this.Language)
         axios({
           method: 'post',
           url: 'http://175.178.34.84/SetQuestion',
           data: Qs.stringify(senddata)
         }).then((response) => {
-          this.$message.success('Post Successfully!')
-          console.log(response)
+          if (response.data.ok === 0) {
+            this.$message.error('can not found the corresponding subpartition, please try again!')
+          } else {
+            this.$message.success('Post Successfully!')
+            this.$router.go(-1)
+            console.log(response)
+          }
         }).catch((error) => {
-          this.$message.error('Post Failed')
+          this.$message.error('Post Failed, try again!')
           console.log(error)
         })
       }
@@ -789,5 +810,11 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   box-shadow: 0px 15px 20px rgba(56, 163, 163, 0.73);
   color: #fff;
   transform: translateY(-7px);
+}
+.fr-wrapper > div[style*='z-index: 9999']{
+  position: absolute;
+  top: -10000px;
+  opacity: 0;
+  display: none;
 }
 </style>
