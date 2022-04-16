@@ -50,7 +50,7 @@ export default new Router({
       component: blank
     },
     {
-      path: '/post',
+      path: '/post/:username',
       name: 'post',
       component: post
     },
