@@ -2,7 +2,7 @@
   <div id="app">
     <div class="wrapper">
       <h2>Registration</h2>
-      <form action="#">
+      <div class="formBox">
         <div class="input-box">
           <input type="text"
                  placeholder="Enter your username"
@@ -47,7 +47,7 @@
           </h3>
           <router-link to="/contact">contact us?</router-link>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -110,7 +110,9 @@ export default {
               path: '/design',
               query: {
                 code: this.veri_code,
-                username: this.username
+                username: this.username,
+                email: this.email,
+                password: this.password1
               }
             })
           } else {
@@ -140,6 +142,7 @@ export default {
   align-items: center;
   justify-content: center;
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
+  text-align: center;
 }
 .wrapper {
   position: relative;
@@ -177,14 +180,14 @@ export default {
   border-radius: 12px;
   background: #4070f4;
 }
-.wrapper form {
+.wrapper .formBox {
   margin-top: 30px;
 }
-.wrapper form .input-box {
+.wrapper .formBox .input-box {
   height: 52px;
   margin: 18px 0;
 }
-form .input-box input {
+.formBox .input-box input {
   height: 100%;
   width: 100%;
   outline: none;
@@ -202,11 +205,11 @@ form .input-box input {
 .input-box input:valid {
   border-color: #6083e4;
 }
-form .policy {
+.formBox .policy {
   display: flex;
   align-items: center;
 }
-form h3 {
+.formBox h3 {
   color: #160303;
   font-size: 14px;
   font-weight: 500;
@@ -223,16 +226,16 @@ form h3 {
 .input-box.button input:hover {
   background: #4871e2;
 }
-form .text h3 {
+.formBox .text h3 {
   color: #333;
   width: 100%;
   text-align: center;
 }
-form .text h3 a {
+.formBox .text h3 a {
   color: #4070f4;
   text-decoration: none;
 }
-form .text h3 a:hover {
+.formBox .text h3 a:hover {
   text-decoration: underline;
 }
 .policy input{

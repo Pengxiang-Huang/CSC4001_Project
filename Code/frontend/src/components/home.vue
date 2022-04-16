@@ -8,42 +8,6 @@
       <input id="inputBox2" v-model="newVal">
       <button class="clickBtn" @click="reset">Reset</button>
     </div>
-    <div id="pop-up-post" class="pop-up">
-      <span id="post-title">Post</span>
-      <img src="../assets/close.png" class="closeBtn" @click="close">
-      <textarea type="text" placeholder="Please enter the title/subject of your question/blog..." id="blog_title"></textarea>
-      <textarea placeholder="Please enter the detailed information..." id="blog_content"></textarea>
-      <el-row>
-        <el-col :span="5" :offset="6" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
-          <el-dropdown trigger="click" placement="bottom" @command="selectPartition">
-            <span style="color: white;">
-              {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
-              <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
-              <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-        <el-col :span="5" :offset="2" style="cursor: pointer;background-color: #82beec;border-radius: 5px;height: 10%;">
-          <el-dropdown trigger="click" placement="bottom" @command="selectSubPartition">
-            <span style="color: white;">
-              {{ subPartition }}<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" style="height: 130px;overflow: auto;">
-              <el-dropdown-item command="Assignments">Assignments</el-dropdown-item>
-              <el-dropdown-item command="Projects">Projects</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-      </el-row>
-      <div id="upload_info">
-          <el-button type="primary" id="loadFile">upload</el-button>
-          <input @change="handleFileChange" type="file" multiple="multiple" id="file" name="attachments">
-          <span id="fileTip">You can upload some attachment here</span>
-      </div>
-      <button class="clickBtn" @click="submitPost">Post</button>
-    </div>
     <el-menu
       default-active="Main"
       class="el-menu-demo"
@@ -77,7 +41,7 @@
         </el-dropdown>
       </el-input>
       <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
-      <el-button class="postIcon" @click="showPost" round>Post</el-button>
+      <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
       <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
         <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
         <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
@@ -371,12 +335,15 @@ export default {
     close () {
       document.getElementById('mask').style.display = 'none'
       document.getElementById('pop-up-reset').style.display = 'none'
-      document.getElementById('pop-up-post').style.display = 'none'
     },
-    // show the pop-up post window
-    showPost () {
-      document.getElementById('mask').style.display = 'block'
-      document.getElementById('pop-up-post').style.display = 'block'
+    // skip to the post page
+    skipToPost () {
+      this.$router.push({
+        name: 'post',
+        params: {
+          username: this.username
+        }
+      })
     },
     // user select which partition the blog belongs to
     selectPartition (command) {

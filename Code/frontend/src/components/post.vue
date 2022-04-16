@@ -21,6 +21,10 @@
             <li></li>
       </ul>
     </div >
+    <div class="title-input" >
+      <input type="text" v-model="title" id="input1" placeholder="Typing your tilte in here!">
+      <label for="input1">Title:</label>
+    </div>
     <div class="editarea">
       <div class="text-area">
         <div class="textcode">
@@ -66,15 +70,18 @@
       <div class="dropdown dropdown-dark">
         <select v-model="subpartition" name="two" class="dropdown-select">
           <option value="">Sub-Partition</option>
-          <option value="1">Project1</option>
-          <option value="2">Project2</option>
-          <option value="3">Hoemworks</option>
+          <option value="Project1">Project1</option>
+          <option value="Project2">Project2</option>
+          <option value="Final">Final</option>
         </select>
       </div>
     </section>
     </div>
     <div class="sendbtn">
       <button class="btn" @click="submit">POST</button>
+    </div>
+    <div class="goback">
+      <button class="btnback" @click="goback">Go back</button>
     </div>
   </div>
 </template>
@@ -108,6 +115,7 @@ export default {
     codeResult: 'Hello World!',
     isloading: false,
     blogtext: '',
+    title: '',
     config: {
       heightMax: 330,
       heightMin: 330,
@@ -167,14 +175,46 @@ export default {
         console.log(error)
       })
     },
+    goback () {
+      this.$router.go(-1)
+    },
     submit () {
-      // let senddata = {
-      //   partition: this.partition,
-      //   subpartition: this.subpartition,
-      //   code: this.code,
-      //   content: this.blogtext
-      // }
-      console.log(this.blogtext)
+      if (this.title === '') {
+        this.$message.error('Please conclude your title!')
+      } else if (this.partition === '') {
+        this.$message.error('Please choose your partition!')
+      } else if (this.subpartition === '') {
+        this.$message.error('Please chose your sub-partition!')
+      } else if (this.blogtext === '') {
+        this.$message.error('Please write your blog!')
+      } else {
+        let senddata = {
+          title: this.title,
+          group_type: this.partition,
+          sub_group_type: this.subpartition,
+          code: this.code,
+          content: this.blogtext,
+          author_name: 'Huang1234',
+          lang: this.Language
+        }
+        console.log(this.blogtext)
+        console.log(this.partition)
+        console.log(this.subpartition)
+        console.log(this.title)
+        console.log(this.code)
+        console.log(this.Language)
+        axios({
+          method: 'post',
+          url: 'http://175.178.34.84/SetQuestion',
+          data: Qs.stringify(senddata)
+        }).then((response) => {
+          this.$message.success('Post Successfully!')
+          console.log(response)
+        }).catch((error) => {
+          this.$message.error('Post Failed')
+          console.log(error)
+        })
+      }
     }
   }
 }
@@ -277,9 +317,10 @@ color: rgba(255, 255, 255, 0.6);
 }
 /*Background begin here*/
 .context {
-    width: 100%;
-    position: absolute;
-    top:3vh;
+  left: 25%;
+  width: 50%;
+  position: absolute;
+  top:3vh;
 }
 
 .context h1{
@@ -466,7 +507,10 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   }
 }
 .sendbtn {
-  height: 10%;
+  position: absolute;
+  height: 10rem;
+  top: 160%;
+  left: 45%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -527,7 +571,6 @@ background-color: #ff5f56;
 box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
 .containers {
-  margin: 650px auto;
   width: 400px;
   text-align: center;
 }
@@ -670,12 +713,81 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   text-shadow: 0 1px rgba(0, 0, 0, 0.4);
 }
 .chose {
-  top: 20rem;
+  position: absolute;
+  top: 80%;
+  left: 35%;
   margin: 0 auto;
   width: 400px;
   text-align: center;
 }
 .line-numbers {
   height: 140px;
+}
+.title-input {
+  position: absolute;
+  top: 8rem;
+  left: 52%;
+  width: 50%;
+  transform: translate(-50%,-50%);
+}
+.title-input input {
+  display: inline-block;
+  left: 50%;
+  width: 480px;
+  height: 40px;
+  box-sizing: border-box;
+  outline: none;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 10px 10px 10px 100px;
+  font-family: 'PingFang SC';
+  font-size: 16px;
+}
+.title-input input + label {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  bottom: 0;
+  height: 40px;
+  line-height: 40px;
+  color: white;
+  border-radius: 15px ;
+  padding: 0 50px;
+  background: linear-gradient(253deg, #0cc898, #1797d2, #864fe1);
+}
+.title-input input[type="text"]:focus + label{
+  border-radius: 10px;
+}
+.goback{
+  position: absolute;
+  height: 10rem;
+  top: 2%;
+  left: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnback {
+  width: 80px;
+  height: 30px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: rgb(113, 223, 190);
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+}
+
+.btnback:hover {
+  background-color: #17ce94;
+  box-shadow: 0px 15px 20px rgba(56, 163, 163, 0.73);
+  color: #fff;
+  transform: translateY(-7px);
 }
 </style>
