@@ -102,6 +102,7 @@ def register(request):
         try: #Multi-thread considerration:唯一索引，并发写入问题。
         #insert data
             user = User.objects.create(username=username, password=password_m, email=email)
+            print(user)
         except Exception as e:
             print('--create user error%s'%(e))
             data['isRegister'] = 0
@@ -366,9 +367,13 @@ def searchQuestion(request):
             data = {}
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
+                rawContent = temp['content']
+                if (len(rawContent) > 140):
+                    rawContent = rawContent[0:140] + '...'
+                    temp['content'] = rawContent
+                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-
-            print(data)
+            #print(data)
 
             return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
@@ -412,9 +417,13 @@ def searchQuestion(request):
             data = {}
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
+                rawContent = temp['content']
+                if (len(rawContent) > 140):
+                    rawContent = rawContent[0:140] + '...'
+                    temp['content'] = rawContent
+                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-
-            print(data)
+            #print(data)
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
@@ -470,9 +479,13 @@ def searchQuestion(request):
             data = {}
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
+                rawContent = temp['content']
+                if (len(rawContent) > 140):
+                    rawContent = rawContent[0:140] + '...'
+                    temp['content'] = rawContent
+                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-
-            print(data)
+            #print(data)
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
     
