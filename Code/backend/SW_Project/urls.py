@@ -31,7 +31,7 @@ urlpatterns = [
     path('mainpage/', views.main_page),
     path('myFollow/', views.my_follow),
     path('myGroup/', views.my_group),
-    path('unUnswered', views.unUnswered),
+    path('unAnswered/', views.unAnswered),
     path('api/like/', views.like),
     path('api/follow/', views.follow),
     path('api/uploadProfile/', views.uploadProfile),

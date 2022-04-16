@@ -316,71 +316,163 @@ def setQuestion(request):
 
 #基于title相似度写的问题搜索
 def searchQuestion(request):
-    if request.method == 'GET':  #GET 返回页面
-        return render(request, 'search.html')
-
+    if request.method == 'GET':
+        return render(request, 'search.html') ##需修改html
+    
     if request.method == 'POST':
         similarity = 0
         answerList = []
-        question = request.POST['question']
+        #get the infor
+        question = request.POST['content'] #question in test
+        question = question.upper()
+        print(question)
         questionElem = question.split(' ')
-        print(questionElem)
-
+        scope = request.POST['scope']
+        
         DBlist = []
-        #get the db values
+        #get the db values of all contents
         titleDB = Blog_Questions.objects.values('title')
         for title in titleDB:   
-            DBlist.append(title['title'])
+            DBlist.append(title['title'].upper())
         print(DBlist)
 
-        # start to search
-        for DBitem in DBlist:
-            similarity = 0
-            for title in questionElem:
-                if title in DBitem:
-                    #print(title)
-                    similarity += 1
-                    #print(similarity)
-            answerList.append(similarity)
-        #answerList contains all similarity in the order of id
-        #print(answerList)
-        
-        maxSimilrty = len(questionElem)
-        positionList = []
-        returnNumberMax = 2 #adjust the #of return answer
-        for i in range(maxSimilrty):
-            searchValue = maxSimilrty - i
-            if (answerList.count(searchValue) > 0):
-                position = answerList.index(searchValue)
-                positionList.append(position)
-                if (len(positionList) == returnNumberMax):
-                    break
-            else:
-                continue
+        if (scope=='All'):
+            # start to search
+            for DBitem in DBlist:
+                similarity = 0
+                for title in questionElem:
+                    if title in DBitem:
+                        similarity += 1
+                answerList.append(similarity)
+            #answerList contains all similarity in the order of id
+            
+            maxSimilrty = len(questionElem)
+            positionList = []
+            searchValue = maxSimilrty
+            while(searchValue != 0):
+            # positionlist contains the index of content, descending by similarity.
+                for i in range(len(answerList)):    #here i is the index of the similarity list.
+                    if (answerList[i] == searchValue):
+                        positionList.append(i)
+                #update the similarity
+                searchValue -= 1
 
-        print(positionList)
-        #finially, return the searched answer
-        answerTitle = []
-        answerContent = []
+            print(positionList)
+            #finially, return the searched answer
+            ALL_blogs = Blog_Questions.objects.values()
+            data = {}
+            for i in range(len(positionList)):
+                temp = ALL_blogs[positionList[i]]
+                data['blog'+str(i+1)] = temp
 
-        for i in range(returnNumberMax):
-            answerTitle.append(positionList[i])
-        
-        contentDB = Blog_Questions.objects.values('content')
-        DBcontent = []
-        for content in contentDB:   
-            DBcontent.append(content['content'])
-        #print(DBcontent)
+            print(data)
 
-        for i in range(returnNumberMax):
-            answerContent.append(DBcontent[i])
-        
-        #print(answerTitle)
-        print(answerContent) #list of return contents
+            return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
-        return  HttpResponse('')
-        
+        elif ('|' not in scope):    #CSC3150   group_type
+            # idea, set the non-type to 0 so that not effectively return
+            DBScope = []
+            #get the db values
+            DBtype = Blog_Questions.objects.values('group_type')
+            for type in DBtype:   
+                DBScope.append(type['group_type'])
+            print(scope)
+            print(DBScope)
 
+            # start to search
+            for DBitem in DBlist:
+                similarity = 0
+                for title in questionElem:
+                    if title in DBitem:
+                        similarity += 1
+                answerList.append(similarity) #answerList contains all similarity in the order of id
+            
+            # set non-type's similarity to 0
+            for i in range(len(DBScope)):
+                if (DBScope[i] != scope):
+                    answerList[i] = 0
+
+            maxSimilrty = len(questionElem)
+            positionList = []
+            searchValue = maxSimilrty
+            while(searchValue != 0):
+            # positionlist contains the index of content, descending by similarity.
+                for i in range(len(answerList)):    #here i is the index of the similarity list.
+                    if (answerList[i] == searchValue):
+                        positionList.append(i)
+                #update the similarity
+                searchValue -= 1
+
+            print(positionList)
+            #finially, return the searched answer
+            ALL_blogs = Blog_Questions.objects.values()
+            data = {}
+            for i in range(len(positionList)):
+                temp = ALL_blogs[positionList[i]]
+                data['blog'+str(i+1)] = temp
+
+            print(data)
+
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+        else:   #CSC3150|project1   sub_group_type and group_type
+            scopeItem = scope.split('|')
+            print (scopeItem)
+            groupType = scopeItem[0]
+            subGroupType = scopeItem[1]
+            sub_group_type = sub_group.objects.filter(sub_group_name = subGroupType, group_name = groupType).values()[0]['id']
+            print(sub_group_type)
+
+            DBScope = []
+            #get the db values
+            DBtype = Blog_Questions.objects.values('group_type')
+            for type in DBtype:   
+                DBScope.append(type['group_type'])
+            print(DBScope)
+
+            DBsub = []
+            #get the db values
+            DBsubid = Blog_Questions.objects.values('sub_group_type')
+            for subid in DBsubid:   
+                DBsub.append(subid['sub_group_type'])
+            print(DBsub)
+
+            # start to search
+            for DBitem in DBlist:
+                similarity = 0
+                for title in questionElem:
+                    if title in DBitem:
+                        similarity += 1
+                answerList.append(similarity) #answerList contains all similarity in the order of id
+            
+            # set non-type's similarity to 0
+            for i in range(len(DBScope)):
+                if (DBScope[i] != groupType or DBsub[i] != sub_group_type):
+                    answerList[i] = 0
+            # print('answerlist: ' , answerList)
+            maxSimilrty = len(questionElem)
+            positionList = []
+            searchValue = maxSimilrty
+            while(searchValue != 0):
+            # positionlist contains the index of content, descending by similarity.
+                for i in range(len(answerList)):    #here i is the index of the similarity list.
+                    if (answerList[i] == searchValue):
+                        positionList.append(i)
+                #update the similarity
+                searchValue -= 1
+
+            print(positionList)
+            #finially, return the searched answer
+            ALL_blogs = Blog_Questions.objects.values()
+            data = {}
+            for i in range(len(positionList)):
+                temp = ALL_blogs[positionList[i]]
+                data['blog'+str(i+1)] = temp
+
+            print(data)
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+    
 # 根据hot排序，返回5个当前热门的问题
 def main_page(request):
     try:
@@ -406,7 +498,10 @@ def main_page(request):
                     isfollowed = 1
 
                 # getting the url of picture of the corresponding blog
-                url = picture.objects.filter(question = question_id).values()[0]['url']
+                try:
+                    url = picture.objects.filter(question = question_id).values()[0]['url']
+                except:
+                    url = ""
 
                 # getting the amount of answers regarding to this questions
                 amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
@@ -450,7 +545,10 @@ def my_follow(request):
                 question_id = question_ids[i]['question_id']
 
                 # getting the url of picture of the corresponding blog
-                url = picture.objects.filter(question = question_id).values()[0]['url']
+                try:
+                    url = picture.objects.filter(question = question_id).values()[0]['url']
+                except:
+                    url = ""
 
                 # getting the amount of answers regarding to this questions
                 amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
@@ -510,7 +608,10 @@ def my_group(request):
                 group = Group.objects.filter(group_name=group_name).values()[0]
 
                 # getting the url of picture of the corresponding blog
-                url = picture.objects.filter(group_name = group_name).values()[0]['url']
+                try:
+                    url = picture.objects.filter(group_name = group_name).values()[0]['url']
+                except:
+                    url = ""
 
                 temp = group
                 temp['url'] = url
@@ -525,69 +626,69 @@ def my_group(request):
 
 
 
-# /unUnswered: 按关注的数量返回高赞未回答的问题
-def unUnswered(request):
-    try:
-        if request.method == 'POST':
-            
-            # get the information of current user
-            username = request.POST['username']
+# /unAnswered: 按关注的数量返回高赞未回答的问题
+def unAnswered(request):
+    if request.method == 'POST':
+        
+        # get the information of current user
+        username = request.POST['username']
 
-            userid = User.objects.filter(username = username).values()[0]['id']
+        userid = User.objects.filter(username = username).values()[0]['id']
 
-            cursor = connection.cursor()
-            
-            # get the un-unswered questions ordered by amount of follows
-            cursor.execute("select * from Our_project_blog_questions where id not in (select question_id from Our_project_blog_answers) ORDER BY `follow` DESC;")
-            
-            # zip the raw results into a dict
-            columns = [column[0] for column in cursor.description]
-            rows = cursor.fetchall()
-            questions_represent_by_dict = []
-            for row in rows:
-                questions_represent_by_dict.append(dict(zip(columns, row)))
+        cursor = connection.cursor()
+        
+        # get the un-unswered questions ordered by amount of follows
+        cursor.execute("select * from Our_project_blog_questions where id not in (select question_id from Our_project_blog_answers) ORDER BY `follow` DESC;")
+        
+        # zip the raw results into a dict
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        questions_represent_by_dict = []
+        for row in rows:
+            questions_represent_by_dict.append(dict(zip(columns, row)))
 
-            data = {}
-            for i in range(0, len(questions_represent_by_dict)):
+        data = {}
+        for i in range(0, len(questions_represent_by_dict)):
 
-                # get the id of question blog
-                question_id = questions_represent_by_dict[i]['id']
+            # get the id of question blog
+            question_id = questions_represent_by_dict[i]['id']
 
-                # fectch the pic's url according to the question blog's id
+            # fectch the pic's url according to the question blog's id
+            try:
                 url = picture.objects.filter(question = question_id).values()[0]['url']
+            except:
+                url = ""
 
-                isliked = 0
-                if (user_like_question.objects.filter(question_id = question_id, id = userid)):
-                    isliked = 1
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+                isliked = 1
 
-                # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
-                isfollowed = 0
-                if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
-                    isfollowed = 1
+            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+                isfollowed = 1
 
-                # put all the necessary information into the dict
-                temp = questions_represent_by_dict[i]
+            # put all the necessary information into the dict
+            temp = questions_represent_by_dict[i]
 
-                if (temp['content_format'] == "Markdown"):
-                    content = temp["content"]
-                    raw_content = get_raw(get_HTML(content))
-                else:
-                    raw_content = temp['content']
+            if (temp['content_format'] == "Markdown"):
+                content = temp["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = temp['content']
 
-                if (len(raw_content) > 140):
-                    raw_content = raw_content[0:140] + "..."
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
 
-                temp['url'] = url
-                temp['isliked'] = isliked
-                temp['isfollowed'] = isfollowed
-                temp['content'] = raw_content
-                data['blog'+str(i+i)] = temp
+            temp['url'] = url
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
+            temp['content'] = raw_content
+            data['blog'+str(i+i)] = temp
 
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-        else:
-            return HttpResponse("Only POST-request is accepted!")
-    except:
-        return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+    else:
+        return HttpResponse("Only POST-request is accepted!")
 
 
 
@@ -764,65 +865,67 @@ def getProfile(request):
     First, return the blogs related to this group.
 '''
 def getGroup(request):
-    try:
-        if request.method == "POST":
-            group_name = request.POST['group_name']
-            sub_group_name = request.POST['sub_group_name']
-            username = request.POST['username']
-            user_id = User.objects.filter(username=username).values()[0]['id']
-            
-            data = {}
+    if request.method == "POST":
+        group_name = request.POST['group_name']
+        sub_group_name = request.POST['sub_group_name']
+        username = request.POST['username']
+        user_id = User.objects.filter(username=username).values()[0]['id']
+        
+        data = {}
 
-            sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
+        print(group_name)
+        print(sub_group_name)
+        sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
 
-            questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
-            
-            for i in range(0, len(questions)):
-                question_id = questions[i]['id']
+        questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
+        
+        for i in range(0, len(questions)):
+            question_id = questions[i]['id']
 
-                # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
-                isliked = 0
-                if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
-                    isliked = 1
+            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+            isliked = 0
+            if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
+                isliked = 1
 
-                # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
-                isfollowed = 0
-                if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
-                    isfollowed = 1
+            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+            isfollowed = 0
+            if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
+                isfollowed = 1
 
-                # getting the url of picture of the corresponding blog
+            # getting the url of picture of the corresponding blog
+            try:
                 url = picture.objects.filter(question = question_id).values()[0]['url']
+            except:
+                url = ""
 
-                # getting the amount of answers regarding to this questions
-                amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+            # getting the amount of answers regarding to this questions
+            amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
-                # getting the sub_group_name according to the sub_group_type
-                sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
+            # getting the sub_group_name according to the sub_group_type
+            sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
 
-                if (questions[i]['content_format'] == "Markdown"):
-                    content = questions[i]["content"]
-                    raw_content = get_raw(get_HTML(content))
-                else:
-                    raw_content = questions[i]["content"]
+            if (questions[i]['content_format'] == "Markdown"):
+                content = questions[i]["content"]
+                raw_content = get_raw(get_HTML(content))
+            else:
+                raw_content = questions[i]["content"]
 
-                if (len(raw_content) > 140):
-                    raw_content = raw_content[0:140] + "..."
+            if (len(raw_content) > 140):
+                raw_content = raw_content[0:140] + "..."
 
-                # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
-                temp = questions[i]
-                temp['isliked'] = isliked
-                temp['isfollowed'] = isfollowed
-                temp['url'] = url
-                temp['content'] = raw_content
-                temp['sub_group_name'] = sub_group_name
-                temp['amount_of_answers'] = amount_of_answers
-                data['blog'+str(i+1)] = temp
-                    
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-        else:
-            return HttpResponse("Only POST-request is accepted!")
-    except:
-        return HttpResponse("Invalid Request! Please use Post-request and attach usename, group name, and sub-group name.")
+            # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+            temp = questions[i]
+            temp['isliked'] = isliked
+            temp['isfollowed'] = isfollowed
+            temp['url'] = url
+            temp['content'] = raw_content
+            temp['sub_group_name'] = sub_group_name
+            temp['amount_of_answers'] = amount_of_answers
+            data['blog'+str(i+1)] = temp
+                
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+    else:
+        return HttpResponse("Only POST-request is accepted!")
 
 
 '''
