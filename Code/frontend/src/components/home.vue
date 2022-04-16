@@ -40,22 +40,23 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <img src="../assets/log_out.png" class="logout" @click="logout" />
     </el-menu>
     <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
       <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
       <el-dropdown slot="suffix" trigger="click">
         <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
-        <el-dropdown-menu slot="dropdown" style="width: 440px;height: 100px;">
+        <el-dropdown-menu slot="dropdown" style="width: 34%;height: 100px;">
           <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
           <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
             <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
-            <el-dropdown-menu slot="dropdown" style="width: 160px;height: 150px;overflow: auto;">
+            <el-dropdown-menu slot="dropdown" style="width: 12%;height: 150px;overflow: auto;">
               <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
             <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
-            <el-dropdown-menu slot="dropdown" style="width: 270px;height: 150px;overflow: auto;">
+            <el-dropdown-menu slot="dropdown" style="width: 22%;height: 150px;overflow: auto;">
               <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -263,7 +264,7 @@
         <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name">
           <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
           <div class="blog" v-for="(item,index) in srBlogs" :key="index+'_sr'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
+            <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
             <p @click="skipToBlog(item)" v-html="item.content"></p>
             <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
               <img src="../assets/like-click.png" />
@@ -790,13 +791,20 @@ export default {
         this.searchCondition = condition
       }
     },
+    // User click to get the search results
     search () {
-      if (!this.srPage.length) {
-        this.srPage.push({
-          label: 'Search Results',
-          name: 'sixth'
-        })
+      if (this.searchContent === '') {
+        this.$message.error('Please type something you want to search!')
+        return
       }
+      if (this.srPage.length) {
+        this.srPage.pop()
+        this.activeTab = 'first'
+      }
+      this.srPage.push({
+        label: 'Search Results',
+        name: 'sixth'
+      })
       let sendData = {
         scope: this.searchCondition,
         content: this.searchContent
@@ -810,6 +818,9 @@ export default {
         this.activeTab = 'sixth'
         this.inSearch = true
       })
+      if (this.index === 'Partitions') {
+        this.$message('Please go to the Main page to see the results!')
+      }
     },
     // User click to go back to the main page
     backToMain () {
@@ -819,6 +830,7 @@ export default {
       this.searchContent = ''
       this.searchCondition = 'All'
     },
+    // User click to skip to the blog page
     skipToBlog (item) {
       this.$router.push({
         path: '/blog',
@@ -829,6 +841,12 @@ export default {
           searchContent: this.searchContent,
           inSearch: this.inSearch
         }
+      })
+    },
+    // User click to log out
+    logout () {
+      this.$router.push({
+        path: '/'
       })
     }
   }
@@ -907,19 +925,19 @@ export default {
 }
 .searchBox {
   position: fixed;
-  width: 450px;
+  width: 35%;
   top: 10px;
-  left: 360px;
+  left: 30%;
 }
 .searchIcon {
   position: fixed;
   top: 10px;
-  left: 830px;
+  right: 27%;
 }
 .postIcon {
   position: fixed;
   top: 10px;
-  left: 900px;
+  right: 15%;
   width: 100px;
   height: 40px;
   font-size: 18px;
@@ -927,9 +945,13 @@ export default {
 .userIcon {
   position: fixed;
   top: 10px;
-  left: 1253px;
+  right: 8%;
+  cursor: pointer;
 }
-.userIcon:hover {
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 2%;
   cursor: pointer;
 }
 #user {
