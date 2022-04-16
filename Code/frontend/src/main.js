@@ -24,18 +24,16 @@ import 'froala-editor/js/third_party/spell_checker.min'
 import 'froala-editor/js/third_party/font_awesome.min'
 import 'froala-editor/js/third_party/image_tui.min'
 import 'froala-editor/css/froala_editor.pkgd.min.css'
-
 import VueFroala from 'vue-froala-wysiwyg'
 Prism.highlightAll()
 Vue.prototype.GLOBAL = global
-Vue.use(VueFroala)
 library.add(faEye)
 library.add(faEyeSlash)
 library.add(faArrowLeft)
 library.add(faArrowRight)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('PrismEditor', PrismEditor)
-
+Vue.use(VueFroala)
 Vue.use(ElementUI)
 Vue.use(VueQuillEditor)
 

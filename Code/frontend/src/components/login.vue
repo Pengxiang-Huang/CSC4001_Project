@@ -34,13 +34,14 @@
           <input id="username"
                  type="text"
                  placeholder="username"
+                 @keyup.enter="submit"
                  v-model="username" />
           <label for="username"
                  class="login-input-icon">
             <i class="fa fa-user"></i>
           </label>
-          <input id="password" v-if="showPassword" type="text" class="input" v-model="password" />
-          <input id="password" v-else type="password" class="input" v-model="password" placeholder="Password">
+          <input id="password" v-if="showPassword" type="text" class="input" v-model="password" @keyup.enter="submit" />
+          <input id="password" v-else type="password" class="input" v-model="password" placeholder="Password" @keyup.enter="submit" >
           <label for="password"
                  class="login-input-icon">
             <i v-if="showPassword" class="fa fa-eye" @click="toggleShow"></i>
@@ -99,6 +100,7 @@ export default{
         data: Qs.stringify(sendData)
       }).then((response) => {
         if (response.data === 'Success Login!') {
+          this.$message.success('Welcome!')
           this.$router.push({
             path: '/home/:username',
             name: 'home',
@@ -510,6 +512,7 @@ input[type="password"]:focus {
 }
 
 .checkmark {
+  position: relative;
   height: 15px;
   width: 15px;
   background: #fff;

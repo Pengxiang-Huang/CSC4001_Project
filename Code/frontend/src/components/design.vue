@@ -46,12 +46,16 @@ export default {
     return {
       code: '',
       correct_code: '',
-      username: ''
+      username: '',
+      email: '',
+      password: ''
     }
   },
   created () {
     this.correct_code = this.$route.query.code
     this.username = this.$route.query.username
+    this.email = this.$route.query.email
+    this.password = this.$route.query.password
   },
   methods: {
     confirm () {
@@ -90,6 +94,7 @@ html {
   height: 100%;
   font: normal 14px/1.618em "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-align: center;
 }
 
 #body:before {

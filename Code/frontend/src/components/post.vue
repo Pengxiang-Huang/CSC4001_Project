@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <div class="context">
-        <!-- <h1>Post Your Blog Here</h1> -->
         <div class="wrapper">
           <div class="typing-demo">
             Encode Your Blog Here.
@@ -22,69 +21,68 @@
             <li></li>
       </ul>
     </div >
+    <div class="title-input" >
+      <input type="text" v-model="title" id="input1" placeholder="Typing your tilte in here!">
+      <label for="input1">Title:</label>
+    </div>
     <div class="editarea">
       <div class="text-area">
         <div class="textcode">
-          <froala :tag="'textarea'" :config="config" v-model="model" class="mytexteditor height-400"></froala>
+          <froala :tag="'textarea'" :config="config" v-model="blogtext" class="mytexteditor height-400"></froala>
         </div>
-      </div>
-      <div class="select-area">
-        <el-dropdown @command="SelectPartition">
-          <span style="color: white;">
-                {{ partition }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="CSC4001">CSC4001</el-dropdown-item>
-            <el-dropdown-item command="CSC3050">CSC3050</el-dropdown-item>
-            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
-            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
-            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-      <div class="subselect-area">
-        <el-dropdown @command="SubSelectPartition">
-          <span style="color: white;">
-                {{ subpartition }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="Proejct">Project</el-dropdown-item>
-            <el-dropdown-item command="Homework">Homeworkd</el-dropdown-item>
-            <el-dropdown-item command="partition3">Partition 3</el-dropdown-item>
-            <el-dropdown-item command="partition4">Partition 4</el-dropdown-item>
-            <el-dropdown-item command="partition5">Partition 5</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </div>
     <div class="codearea">
       <div class="language-js">
-      <el-dropdown @command="SelectLanguage" class="dropdown">
+      <el-dropdown @command="SelectLanguage" class="dropdowns">
         <span style="color: white;">
               {{ Language }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="cpp">cpp</el-dropdown-item>
-          <el-dropdown-item command="c">c</el-dropdown-item>
-          <el-dropdown-item command="java">java</el-dropdown-item>
-          <el-dropdown-item command="python">python</el-dropdown-item>
-          <el-dropdown-item command="html">html</el-dropdown-item>
-          <el-dropdown-item command="css">css</el-dropdown-item>
-          <el-dropdown-item command="javascript">javascript</el-dropdown-item>
-          <el-dropdown-item command="markdown">markdown</el-dropdown-item>
-          <el-dropdown-item command="bash">bash</el-dropdown-item>
+          <el-dropdown-item command="C++">C++</el-dropdown-item>
+          <el-dropdown-item command="C">C</el-dropdown-item>
+          <el-dropdown-item command="Java">Java</el-dropdown-item>
+          <el-dropdown-item command="Python">Python</el-dropdown-item>
+          <el-dropdown-item command="Javascript">Javascript</el-dropdown-item>
+          <el-dropdown-item command="Go">Go</el-dropdown-item>
+          <el-dropdown-item command="Bash">Bash</el-dropdown-item>
+          <el-dropdown-item command="Rust">Rust</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span class="copy-btn" @click="runcode">Run</span>
+      <span class="copy-btn" v-if="!isloading" @click="runcode">Run</span>
+      <span class="copy-btn" v-else> <vue-mzc-loading title="Code Running..."> </vue-mzc-loading> </span>
       <prism-editor class="my-editor height-300" v-model="code" :lineNumbers=true :highlight="highlighter"></prism-editor>
       </div>
-      <div class="result-area"></div>
+      <div class="result-area">
+        <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="codeResult"></code></pre>
+      </div>
     </div>
-
+    <div class="chose">
+    <section class="containers">
+        <div class="dropdown">
+          <select v-model="partition" name="one" class="dropdown-select">
+          <option value="">Partition</option>
+          <option value="CSC4001">CSC4001</option>
+          <option value="CSC3150">CSC3150</option>
+          <option value="CSC4005">CSC4005</option>
+          </select>
+        </div>
+      <div class="dropdown dropdown-dark">
+        <select v-model="subpartition" name="two" class="dropdown-select">
+          <option value="">Sub-Partition</option>
+          <option value="Project1">Project1</option>
+          <option value="Project2">Project2</option>
+          <option value="Final">Final</option>
+        </select>
+      </div>
+    </section>
+    </div>
     <div class="sendbtn">
-      <button class="btn">POST</button>
+      <button class="btn" @click="submit">POST</button>
     </div>
-    <!-- <pre class="line-numbers" ><code class="language-xml line-numbers" v-text="html"></code></pre> -->
+    <div class="goback">
+      <button class="btnback" @click="goback">Go back</button>
+    </div>
   </div>
 </template>
 
@@ -97,24 +95,27 @@ import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/themes/prism-okaidia.css'
 import editor from '@/components/editor.vue'
-import VueUeditorWrap from 'vue-ueditor-wrap'
 import VueFroala from 'vue-froala-wysiwyg'
-
+import VueMzcLoading from 'vue-mzc-loading'
+import axios from 'axios'
+import Qs from 'qs'
 export default {
   components: {
     PrismEditor,
     editor,
-    VueUeditorWrap,
-    VueFroala
+    VueFroala,
+    VueMzcLoading
   },
   data: () => ({
-    code: '#! /bin/bash \n# You can write and test your code here\necho "hello world"',
+    code: 'print("Hello World!")',
     lineNumbers: true,
-    Language: 'bash',
-    content: 'dsa',
-    partition: 'partition',
-    subpartition: 'subpartition',
-    html: '<text></text>',
+    Language: 'Python',
+    partition: '',
+    subpartition: '',
+    codeResult: 'Hello World!',
+    isloading: false,
+    blogtext: '',
+    title: '',
     config: {
       heightMax: 330,
       heightMin: 330,
@@ -127,19 +128,19 @@ export default {
   methods: {
     highlighter (code) {
       var lang = this.Language
-      if (lang === 'cpp') {
+      if (lang === 'C++') {
         return highlight(code, languages.cpp)
-      } else if (lang === 'c') {
+      } else if (lang === 'C') {
         return highlight(code, languages.c)
-      } else if (lang === 'java') {
+      } else if (lang === 'Java') {
         return highlight(code, languages.java)
-      } else if (lang === 'python') {
+      } else if (lang === 'Python') {
         return highlight(code, languages.python)
-      } else if (lang === 'html') {
-        return highlight(code, languages.html)
-      } else if (lang === 'css') {
-        return highlight(code, languages.css)
-      } else if (lang === 'javascript') {
+      } else if (lang === 'Rust') {
+        return highlight(code, languages.rust)
+      } else if (lang === 'Go') {
+        return highlight(code, languages.go)
+      } else if (lang === 'Javascript') {
         return highlight(code, languages.javascript)
       } else if (lang === 'markdown') {
         return highlight(code, languages.markdown)
@@ -151,23 +152,70 @@ export default {
       this.Language = command
       console.log(this.Language)
     },
-    SelectPartition (command) {
-      this.partition = command
-      console.log(this.partition)
-    },
-    SubSelectPartition (command) {
-      this.subpartition = command
-      console.log(this.subpartition)
-    },
     runcode () {
-      console.log(this.code)
-      console.log(this.Language)
+      console.log(this.partition)
+      this.isloading = true
+      var langchose = this.Language
+      var codechose = this.code
+      let sendData = {
+        lang: langchose,
+        source_code: codechose
+      }
+      console.log(langchose)
+      console.log(codechose)
+      axios({
+        method: 'post',
+        url: 'http://175.178.34.84/api/RunCode',
+        data: Qs.stringify(sendData)
+      }).then((response) => {
+        console.log(response.data.result)
+        this.codeResult = response.data.result
+        this.isloading = false
+      }).catch((error) => {
+        console.log(error)
+      })
     },
-    onEditorBlur () {
-      console.log('onEditorBlur')
+    goback () {
+      this.$router.go(-1)
     },
-    onEditorFocus () {},
-    onEditorChange () {}
+    submit () {
+      if (this.title === '') {
+        this.$message.error('Please conclude your title!')
+      } else if (this.partition === '') {
+        this.$message.error('Please choose your partition!')
+      } else if (this.subpartition === '') {
+        this.$message.error('Please chose your sub-partition!')
+      } else if (this.blogtext === '') {
+        this.$message.error('Please write your blog!')
+      } else {
+        let senddata = {
+          title: this.title,
+          group_type: this.partition,
+          sub_group_type: this.subpartition,
+          code: this.code,
+          content: this.blogtext,
+          author_name: 'Huang1234',
+          lang: this.Language
+        }
+        console.log(this.blogtext)
+        console.log(this.partition)
+        console.log(this.subpartition)
+        console.log(this.title)
+        console.log(this.code)
+        console.log(this.Language)
+        axios({
+          method: 'post',
+          url: 'http://175.178.34.84/SetQuestion',
+          data: Qs.stringify(senddata)
+        }).then((response) => {
+          this.$message.success('Post Successfully!')
+          console.log(response)
+        }).catch((error) => {
+          this.$message.error('Post Failed')
+          console.log(error)
+        })
+      }
+    }
   }
 }
 </script>
@@ -221,7 +269,7 @@ background: #282c34;
 padding: 1.25rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 40rem;
+max-width: 45rem;
 }
 div[class$="js"]::before {
 display: block;
@@ -269,9 +317,10 @@ color: rgba(255, 255, 255, 0.6);
 }
 /*Background begin here*/
 .context {
-    width: 100%;
-    position: absolute;
-    top:3vh;
+  left: 25%;
+  width: 50%;
+  position: absolute;
+  top:3vh;
 }
 
 .context h1{
@@ -382,7 +431,7 @@ color: rgba(255, 255, 255, 0.6);
       border-radius: 50%;
   }
 }
-.dropdown{
+.dropdowns{
   font-family: Menlo;
   display: block;
   position: absolute;
@@ -397,7 +446,7 @@ background: #dee1e6;
 padding: 2rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 80rem;
+max-width: 60rem;
 height: 25rem;
 }
 div[class$="area"]::before {
@@ -458,7 +507,10 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   }
 }
 .sendbtn {
-  height: 190%;
+  position: absolute;
+  height: 10rem;
+  top: 160%;
+  left: 45%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,11 +542,11 @@ box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 
 div[class^="result-"] {
 position: relative;
-background: #dee1e6;
+background: #282c34;
 padding: 2rem 1.5rem;
 margin: 0.85rem auto;
 border-radius: 16px;
-max-width: 40rem;
+max-width: 45rem;
 height: 10rem;
 }
 div[class$="area"]::before {
@@ -517,5 +569,225 @@ background-color: #ff5f56;
 /*后面两个小圆点 */
 -webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
+}
+.containers {
+  width: 400px;
+  text-align: center;
+}
+
+.containers > .dropdown {
+  margin: 0 20px;
+  vertical-align: top;
+}
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 28px;
+  width: 150px;
+  background: #f2f2f2;
+  border: 1px solid;
+  border-color: white #f7f7f7 whitesmoke;
+  border-radius: 3px;
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: -moz-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: -o-linear-gradient(top, transparent, rgba(0, 0, 0, 0.06));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.06));
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown:before, .dropdown:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 4px dashed;
+  border-color: #888888 transparent;
+  pointer-events: none;
+}
+
+.dropdown:before {
+  border-bottom-style: solid;
+  border-top: none;
+}
+
+.dropdown:after {
+  margin-top: 7px;
+  border-top-style: solid;
+  border-bottom: none;
+}
+
+.dropdown-select {
+  position: relative;
+  width: 130%;
+  margin: 0;
+  padding: 6px 8px 6px 10px;
+  height: 28px;
+  line-height: 14px;
+  font-size: 12px;
+  color: #62717a;
+  text-shadow: 0 1px white;
+  background: #f2f2f2; /* Fallback for IE 8 */
+  background: rgba(0, 0, 0, 0) !important; /* "transparent" doesn't work with Opera */
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+.dropdown-select:focus {
+  z-index: 3;
+  width: 100%;
+  color: #394349;
+  outline: 2px solid #49aff2;
+  outline: 2px solid -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.dropdown-select > option {
+  margin: 3px;
+  padding: 6px 8px;
+  text-shadow: none;
+  background: #f2f2f2;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* Fix for IE 8 putting the arrows behind the select element. */
+
+.lt-ie9 .dropdown {
+  z-index: 1;
+}
+
+.lt-ie9 .dropdown-select {
+  z-index: -1;
+}
+
+.lt-ie9 .dropdown-select:focus {
+  z-index: 3;
+}
+
+/* Dirty fix for Firefox adding padding where it shouldn't. */
+
+@-moz-document url-prefix() {
+  .dropdown-select {
+    padding-left: 6px;
+  }
+}
+
+.dropdown-dark {
+  background: #444;
+  border-color: #111111 #0a0a0a black;
+  background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: -moz-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: -o-linear-gradient(top, transparent, rgba(0, 0, 0, 0.4));
+  background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.4));
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-dark:before {
+  border-bottom-color: #aaa;
+}
+
+.dropdown-dark:after {
+  border-top-color: #aaa;
+}
+
+.dropdown-dark .dropdown-select {
+  color: #aaa;
+  text-shadow: 0 1px black;
+  background: #444;  /* Fallback for IE 8 */
+}
+
+.dropdown-dark .dropdown-select:focus {
+  color: #ccc;
+}
+
+.dropdown-dark .dropdown-select > option {
+  background: #444;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+}
+.chose {
+  position: absolute;
+  top: 80%;
+  left: 35%;
+  margin: 0 auto;
+  width: 400px;
+  text-align: center;
+}
+.line-numbers {
+  height: 140px;
+}
+.title-input {
+  position: absolute;
+  top: 8rem;
+  left: 52%;
+  width: 50%;
+  transform: translate(-50%,-50%);
+}
+.title-input input {
+  display: inline-block;
+  left: 50%;
+  width: 480px;
+  height: 40px;
+  box-sizing: border-box;
+  outline: none;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 10px 10px 10px 100px;
+  font-family: 'PingFang SC';
+  font-size: 16px;
+}
+.title-input input + label {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  bottom: 0;
+  height: 40px;
+  line-height: 40px;
+  color: white;
+  border-radius: 15px ;
+  padding: 0 50px;
+  background: linear-gradient(253deg, #0cc898, #1797d2, #864fe1);
+}
+.title-input input[type="text"]:focus + label{
+  border-radius: 10px;
+}
+.goback{
+  position: absolute;
+  height: 10rem;
+  top: 2%;
+  left: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnback {
+  width: 80px;
+  height: 30px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: rgb(113, 223, 190);
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+}
+
+.btnback:hover {
+  background-color: #17ce94;
+  box-shadow: 0px 15px 20px rgba(56, 163, 163, 0.73);
+  color: #fff;
+  transform: translateY(-7px);
 }
 </style>
