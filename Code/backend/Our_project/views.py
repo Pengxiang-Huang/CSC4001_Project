@@ -1249,7 +1249,10 @@ def MyBlogs(request):
                 isfollowed = 1
 
             # getting the url of picture of the corresponding blog
-            url = picture.objects.filter(question = question_id).values()[0]['url']
+            try:
+                url = picture.objects.filter(question = question_id).values()[0]['url']
+            except:
+                url = ""
 
             # getting the amount of answers regarding to this questions
             amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
