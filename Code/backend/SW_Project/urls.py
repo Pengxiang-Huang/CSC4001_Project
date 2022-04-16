@@ -46,4 +46,5 @@ urlpatterns = [
     path('api/MyBlogs', views.MyBlogs),
     path('api/Reply', views.Reply),
     path('api/AddViews', views.AddViews),
+    path('api/testing', views.testing),
 ]

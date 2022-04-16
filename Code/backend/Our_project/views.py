@@ -31,6 +31,10 @@ from .models import file
 import hashlib
 import markdown
 
+###### For Testing
+
+from . import BlackBox
+
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -71,6 +75,7 @@ def code(n = 6):
 # Create your views here.
 def index(request):  # request means the request sent by front-end
     if request.method == 'GET':  #GET 返回页面
+        print("hi there!!")
         return render(request, 'index.html')
 
 def register(request):
@@ -85,11 +90,9 @@ def register(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        print(username,email,password)
 
         #check user name. Multi-thread considerration.
         old_users = User.objects.filter(username=username)
-        print(old_users)
         if (old_users):# if exists
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
@@ -102,7 +105,6 @@ def register(request):
         try: #Multi-thread considerration:唯一索引，并发写入问题。
         #insert data
             user = User.objects.create(username=username, password=password_m, email=email)
-            print(user)
         except Exception as e:
             print('--create user error%s'%(e))
             data['isRegister'] = 0
@@ -116,6 +118,8 @@ def register(request):
 
         #return successful information
         return HttpResponse(json.dumps(data), content_type='application/json')
+    data['isRegister'] = 0
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 def login(request):
     if request.method == 'GET':
@@ -136,8 +140,6 @@ def login(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        print(username)
-        print(password)
 
         try:  #get the user infor.
             user = User.objects.get(username=username)
@@ -1526,3 +1528,15 @@ def AddViews(request):
         question.save()
         data['ok'] = 1
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+'''
+    Defining the test cases
+'''
+def testing(request):
+
+    result = {}
+
+    result['test_result'] = BlackBox.test()
+
+    return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
