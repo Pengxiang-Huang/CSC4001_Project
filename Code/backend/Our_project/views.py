@@ -1511,3 +1511,18 @@ def uploadFile(request, cor_id, question_or_answer = 1):
     data['ok'] = 1
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
+'''
+    Add views by one
+'''
+def AddViews(request):
+    data = {}
+    data['ok'] = 0
+    if request.method == "POST":
+        question_id = request.POST["question_id"]
+
+        question = Blog_Questions.objects.get(id=question_id)
+        question.views = question.views + 1
+        question.hot = question.hot + 1
+        question.save()
+        data['ok'] = 1
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
