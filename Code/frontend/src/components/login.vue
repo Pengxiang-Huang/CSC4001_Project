@@ -90,28 +90,32 @@ export default{
       this.showPassword = !this.showPassword
     },
     submit () {
-      let sendData = {
-        username: this.username,
-        password: this.password
-      }
-      axios({
-        method: 'POST',
-        url: 'http://175.178.34.84/login/',
-        data: Qs.stringify(sendData)
-      }).then((response) => {
-        if (response.data === 'Success Login!') {
-          this.$message.success('Welcome!')
-          this.$router.push({
-            path: '/home/:username',
-            name: 'home',
-            params: {
-              username: this.username
-            }
-          })
-        } else {
-          this.$message.error(response.data)
+      if (this.username === '' || this.password === '') {
+        this.$message.error('please input your username and password!')
+      } else {
+        let sendData = {
+          username: this.username,
+          password: this.password
         }
-      })
+        axios({
+          method: 'POST',
+          url: 'http://175.178.34.84/login/',
+          data: Qs.stringify(sendData)
+        }).then((response) => {
+          if (response.data === 'Success Login!') {
+            this.$message.success('Welcome!')
+            this.$router.push({
+              path: '/home/:username',
+              name: 'home',
+              params: {
+                username: this.username
+              }
+            })
+          } else {
+            this.$message.error(response.data)
+          }
+        })
+      }
     }
   }
 }
