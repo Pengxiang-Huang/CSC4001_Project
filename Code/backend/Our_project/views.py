@@ -301,15 +301,18 @@ def setQuestion(request):
         hot = 0
         views = 0
 
-        try: 
+        # try: 
         #insert data
-            user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
-                                                content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
-                                                code = code, lang = lang)
-        except Exception as e:
-            print('--Insert question error%s'%(e))
-            data['ok'] = 0
-            return HttpResponse(json.dumps(data), content_type='application/json')
+        new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
+                                            content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
+                                            code = code, lang = lang)
+        new_q_id = new_question['id']
+        uploadPicture(request, new_q_id, question_or_answer = 1)
+        uploadFile(request, new_q_id, question_or_answer = 1)
+        # except Exception as e:
+        #     print('--Insert question error%s'%(e))
+        #     data['ok'] = 0
+        #     return HttpResponse(json.dumps(data), content_type='application/json')
 
         #if success
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -1298,6 +1301,7 @@ def Reply(request):
             father_answer_id = None
         else:
             father_answer_id = int(question_id)
+
         
         content = request.POST["content"]
         code = request.POST["code"]
@@ -1305,9 +1309,86 @@ def Reply(request):
         content_format = request.POST["content_format"]
 
         Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
+        print(Answer)
+        answer_id = Answer['id']
+
+        # If the reply has pictures and files, upload them
+        uploadPicture(request, answer_id, question_or_answer = 0)
+        uploadFile(request, answer_id, question_or_answer = 0)
 
         data["ok"] = 1
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  
 
+
+'''
+    User this function to upload picture of question/answer
+'''
+def uploadPicture(request, cor_id, question_or_answer = 1):
+    data = {}
+
+    if request.method == 'POST':
+        i = 1
+        while (True):
+            ## 获取图片并存入服务器
+            picture_name = "pictures" + str(i)
+            try:
+                picture = request.FILES.get(picture_name)
+            except:
+                break
+
+            code = code(20)
+            pics_dir = '../../pictures/pics/' + code + '.jpg'
+            f = open(pics_dir, 'wb')
+            for line in picture.chunks():
+                f.write(line)
+            f.close()
+
+            ## 将文件url传入数据库
+            url = "http://175.178.34.84/pics/" + code + ".jpg"
+            if (question_or_answer):
+                pic = picture.objects.create(url=url, question=cor_id)
+            else:
+                pic = picture.objects.create(url = url, answer = cor_id)
+            
+            i += 1
+                
+    data['ok'] = 1
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+'''
+    User this function to upload files
+'''
+def uploadFile(request, cor_id, question_or_answer = 1):
+    data = {}
+
+    if request.method == 'POST':
+        i = 1
+        while (True):
+            ## 获取图片并存入服务器
+            file_name = "files" + str(i)
+            try:
+                up_file = request.FILES.get(file_name)
+                fs_name = request.POST[file_name]
+            except:
+                break
+
+            code = code(10)
+            fs_dir = '../../fs/' + code + fs_name
+            f = open(fs_dir, 'wb')
+            for line in up_file.chunks():
+                f.write(line)
+            f.close()
+
+            ## 将文件url传入数据库
+            url = "http://175.178.34.84/fs/" + code + fs_name
+            if (question_or_answer):
+                file_ = file.objects.create(url=url, corresponding_question=cor_id)
+            else:
+                file_ = file.objects.create(url = url, corresponding_answer = cor_id)
+            
+            i += 1
+                
+    data['ok'] = 1
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
