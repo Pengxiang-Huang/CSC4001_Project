@@ -152,17 +152,30 @@ export default {
     isloading: false,
     blogtext: '',
     title: '',
+    username: '',
+    link: '',
     config: {
       heightMax: 330,
       heightMin: 330,
       placeholderText: 'Type your blog...',
-      fileUploadURL: 'http://175.178.34.84/api/get_file',
+      fileUploadURL: 'http://175.178.34.84/api/getfile',
       fileUploadParams: {
-        id: 'file'
+        username: this.username
       },
-      imageUploadURL: 'http://175.178.34.84/pictures/pics'
+      toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'quote', 'emoticons', 'print', 'insertLink', 'markdown', 'insertFile', 'paragraphStyle'],
+      events: {
+        'file.uploaded': function (response) {
+          this.link = JSON.parse(response).link
+          sessionStorage.setItem('link', this.link)
+        }
+      },
+      imageUploadURL: 'http://175.178.34.84/api/getfile'
     }
   }),
+  created () {
+    this.username = this.$route.params['username']
+    this.config.fileUploadParams.username = this.username
+  },
   mounted () {
     Prism.highlightAll()
     document.body.style = 'overflow: auto;'
@@ -221,7 +234,8 @@ export default {
       this.$router.go(-1)
     },
     submit () {
-      console.log(this.blogtext)
+      console.log(sessionStorage.getItem('link'))
+      this.link = sessionStorage.getItem('link')
       if (this.title === '') {
         this.$message.error('Please conclude your title!')
       } else if (this.partition === '') {
@@ -237,8 +251,9 @@ export default {
           sub_group_type: this.subpartition,
           code: this.code,
           content: this.blogtext,
-          author_name: 'Huang1234',
-          lang: this.Language
+          author_name: this.username,
+          lang: this.Language,
+          files_url: this.link
         }
         axios({
           method: 'post',

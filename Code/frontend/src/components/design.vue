@@ -36,10 +36,10 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 // import bus from '../assets/bus.js'
 import router from '../router'
-// import Qs from 'qs'
+import Qs from 'qs'
 export default {
   name: 'design',
   data () {
@@ -59,19 +59,33 @@ export default {
   },
   methods: {
     confirm () {
+      let senddata = {
+        username: this.username,
+        email: this.email,
+        password: this.password
+      }
       if (this.code !== this.correct_code) {
         this.$message.error('The Verification Code is wrong, please try again')
       } else {
-        this.$message.success(' Welcome to our community !')
-        router.push({
-          path: '/home/:username',
-          name: 'home',
-          params: {
-            username: this.username
-          }
+        axios({
+          method: 'post',
+          url: 'http://175.178.34.84/api/verify',
+          data: Qs.stringify(senddata)
+        }).then(response => {
+          this.$message.success(' Welcome to our community !')
+          router.push({
+            path: '/home/:username',
+            name: 'home',
+            params: {
+              username: this.username
+            }
+          })
+        }).catch(error => {
+          this.$message.error('It seems like Something wrong here, please register again.')
+          router.push('/register')
+          console.log(error)
         })
       }
-      // console.log(this.correct_code)
     }
   }
 }
