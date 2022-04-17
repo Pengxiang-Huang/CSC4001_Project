@@ -47,4 +47,5 @@ urlpatterns = [
     path('api/Reply', views.Reply),
     path('api/AddViews', views.AddViews),
     path('api/testing', views.testing),
+    path('api/verify', views.verify),
 ]
