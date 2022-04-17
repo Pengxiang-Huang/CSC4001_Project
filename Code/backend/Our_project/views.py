@@ -31,10 +31,6 @@ from .models import file
 import hashlib
 import markdown
 
-###### For Testing
-
-from . import BlackBox
-
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -62,7 +58,7 @@ def check_state(fn):# fn is the views
     return wrap
 
 #生成密码
-def code(n = 6):
+def encode(n = 6):
     all_code = '012345678mchjsmejrigebriruwioihgdvbhserjebssse9P'
     index = len(all_code)
     code = ''
@@ -75,8 +71,50 @@ def code(n = 6):
 # Create your views here.
 def index(request):  # request means the request sent by front-end
     if request.method == 'GET':  #GET 返回页面
-        print("hi there!!")
         return render(request, 'index.html')
+
+# def register(request):
+#     #POST 处理数据
+#         #1.当前用户名是否可用
+#         #1.插入数据[暂时明文处理]
+#     data = {
+#         'isRegister': 1
+#     }# control flag
+
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         print(username,email,password)
+
+#         #check user name. Multi-thread considerration.
+#         old_users = User.objects.filter(username=username)
+#         print(old_users)
+#         if (old_users):# if exists
+#             data['isRegister'] = 0
+#             return HttpResponse(json.dumps(data), content_type='application/json')
+        
+#         ##hash the code
+#         m = hashlib.md5()
+#         m.update(password.encode())
+#         password_m = m.hexdigest()
+        
+#         try: #Multi-thread considerration:唯一索引，并发写入问题。
+#         #insert data
+#             user = User.objects.create(username=username, password=password_m, email=email)
+#         except Exception as e:
+#             print('--create user error%s'%(e))
+#             data['isRegister'] = 0
+#             return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+#         #免登录一天 session
+#         request.session['username'] = username
+#         request.session['uid'] = user.id
+#         #TODO 修改session储存时间为一天
+
+#         #return successful information
+#         return HttpResponse(json.dumps(data), content_type='application/json')
 
 def register(request):
     #POST 处理数据
@@ -90,42 +128,55 @@ def register(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
+        print(username,email,password)
 
         #check user name. Multi-thread considerration.
         old_users = User.objects.filter(username=username)
+        print(old_users)
         if (old_users):# if exists
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
-        
+
+        #return successful information
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
+def verify(request):
+    data = {
+        'isRegister': 1
+    }# control flag
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        print(username,email,password)
+
         ##hash the code
         m = hashlib.md5()
         m.update(password.encode())
         password_m = m.hexdigest()
         
-        try: #Multi-thread considerration:唯一索引，并发写入问题。
+        try: #Multi-thread consideration:唯一索引，并发写入问题。
         #insert data
             user = User.objects.create(username=username, password=password_m, email=email)
         except Exception as e:
             print('--create user error%s'%(e))
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
-
-
+        
         #免登录一天 session
         request.session['username'] = username
         request.session['uid'] = user.id
         #TODO 修改session储存时间为一天
 
-        #return successful information
         return HttpResponse(json.dumps(data), content_type='application/json')
-    data['isRegister'] = 0
-    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
 
 def login(request):
     if request.method == 'GET':
         ##1.检查会话状态session
         if request.session.get('username') and request.session.get('uid'):
-            return HttpResponseRedirect('/first')
+            return HttpResponseRedirect('/login/#/home/hands')
         ##2.检查会话状态cookies
         c_username = request.COOKIES.get('username')
         c_uid = request.COOKIES.get('uid')
@@ -133,13 +184,15 @@ def login(request):
             #回写cookies
             request.session['username'] = username
             request.session['uid'] = user.id
-            return HttpResponse('Success Login!')
+            return HttpResponseRedirect('/login/#/home/hands')
         ##3. 未登陆过，则登录
-        return render(request, 'login.html')
+        return render(request, 'index.html')
     
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        print(username)
+        print(password)
 
         try:  #get the user infor.
             user = User.objects.get(username=username)
@@ -163,6 +216,7 @@ def login(request):
             resp.set_cookie('uid', user.id, 3600*24*3)
 
         return resp
+
 
 def logout(request):
     #delete
@@ -235,7 +289,7 @@ def sendEmail(request):
                 if (email[i] == "="):
                     email = email[i+1:]
                     break
-        code_send = code()
+        code_send = encode()
         print(code_send)
         R_list = []
         R_list.append(email)
@@ -291,13 +345,24 @@ def setQuestion(request):
         group_type = request.POST['group_type']
 
         sub_group_type_name = request.POST['sub_group_type']
-        sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
 
+        try:
+            sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
+        except:
+            data['ok'] = 0
+            return HttpResponse(json.dumps(data), content_type='application/json')
+            
         content = request.POST['content']
         content_format = "HTML"
 
-        code = request.POST['code']
-        lang = request.POST['lang']
+        try:
+            code = request.POST['code']
+        except:
+            code = ""
+        try:
+            lang = request.POST['lang']
+        except:
+            lang = ""
 
         like = 0
         follow = 0
@@ -309,7 +374,7 @@ def setQuestion(request):
         new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
                                             content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
                                             code = code, lang = lang)
-        new_q_id = new_question['id']
+        new_q_id = new_question.id
         uploadPicture(request, new_q_id, question_or_answer = 1)
         uploadFile(request, new_q_id, question_or_answer = 1)
         # except Exception as e:
@@ -370,6 +435,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -420,6 +488,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -482,6 +553,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -1335,9 +1409,9 @@ def run_code(request):
             contents = urllib.request.urlopen(uri).read().decode('utf-8')
 
             data = {}
+            contents = "Result: \n" + contents
+            contents += "-----------------------------------------------\n" + "Running Time: " + str(time) + "s\nMemory Used: " + str(memory) + " Bytes."
             data["result"] = contents
-            data["time"] = time
-            data["memory"] = memory
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         else:
@@ -1430,8 +1504,7 @@ def Reply(request):
         content_format = request.POST["content_format"]
 
         Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
-        print(Answer)
-        answer_id = Answer['id']
+        answer_id = Answer.id
 
         # If the reply has pictures and files, upload them
         uploadPicture(request, answer_id, question_or_answer = 0)
@@ -1447,7 +1520,7 @@ def Reply(request):
 '''
 def uploadPicture(request, cor_id, question_or_answer = 1):
     data = {}
-
+    data["ok"] = 1
     if request.method == 'POST':
         i = 1
         while (True):
@@ -1458,7 +1531,11 @@ def uploadPicture(request, cor_id, question_or_answer = 1):
             except:
                 break
 
-            code = code(20)
+            if not (picture):
+                data["ok"] = 0
+                break
+
+            code = encode(20)
             pics_dir = '../../pictures/pics/' + code + '.jpg'
             f = open(pics_dir, 'wb')
             for line in picture.chunks():
@@ -1474,7 +1551,6 @@ def uploadPicture(request, cor_id, question_or_answer = 1):
             
             i += 1
                 
-    data['ok'] = 1
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 '''
@@ -1482,7 +1558,7 @@ def uploadPicture(request, cor_id, question_or_answer = 1):
 '''
 def uploadFile(request, cor_id, question_or_answer = 1):
     data = {}
-
+    data['ok'] = 1
     if request.method == 'POST':
         i = 1
         while (True):
@@ -1494,7 +1570,11 @@ def uploadFile(request, cor_id, question_or_answer = 1):
             except:
                 break
 
-            code = code(10)
+            if not (up_file):
+                data['ok'] = 0
+                break
+
+            code = encode(10)
             fs_dir = '../../fs/' + code + fs_name
             f = open(fs_dir, 'wb')
             for line in up_file.chunks():
@@ -1510,8 +1590,32 @@ def uploadFile(request, cor_id, question_or_answer = 1):
             
             i += 1
                 
-    data['ok'] = 1
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+
+def get_file(request):
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(request)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    defaultUploadOptions = {
+        "fieldname": "file",
+        "validation": {
+            "allowedExts": ["txt", "pdf", "doc"],
+            "allowedMimeTypes": ["text/plain", "application/msword", "application/x-pdf", "application/pdf"]
+        }
+    }
+    filename = request.POST.get("file")
+    print(request.POST)
+    print(filename)
+    extension = Utils.getExtension(filename)
+
+    print(filename)
+    print(extension)
+
+    return 0
+
 
 '''
     Add views by one
