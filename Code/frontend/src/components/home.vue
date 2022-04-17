@@ -17,22 +17,32 @@
         <input id="inputBox2" v-model="newVal">
         <button class="clickBtn" @click="reset">Reset</button>
       </div>
-      <el-menu
-        default-active="Main"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-        background-color="#545c64"
-        text-color="#ffffff"
-        active-text-color="#ffd04b"
-      >
-        <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
-        <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
-        <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
-        <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
-        <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
-          <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
-          <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
+      <el-menu default-active="Main"
+               class="el-menu-demo"
+               mode="horizontal"
+               @select="handleSelect"
+               background-color="rgb(32, 129, 181)"
+               text-color="#ffffff"
+               active-text-color="#d3c90a">
+        <el-menu-item index="Main"
+                      class="menu-item">Main</el-menu-item>
+        <el-menu-item index="Partitions"
+                      class="menu-item">Partitions</el-menu-item>
+        <el-button class="searchIcon"
+                   icon="el-icon-search"
+                   @click="search"
+                   circle></el-button>
+        <el-button class="postIcon"
+                   @click="skipToPost"
+                   round>Post</el-button>
+        <el-dropdown trigger="click"
+                     placement="bottom"
+                     @command="selectUserFunctions"
+                     class="userIcon">
+          <el-avatar v-if="profileURL"
+                     :src="profileURL"></el-avatar>
+          <el-avatar v-else
+                     icon="el-icon-user-solid"></el-avatar>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
             <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
@@ -78,11 +88,18 @@
         <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
         <el-tabs :value="activeTab" @tab-click="handleClick">
           <el-tab-pane></el-tab-pane>
-          <el-tab-pane label="Hot Blogs" name="first" class="animate__animated animate__fadeInUp">
-            <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
-              <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-              <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+          <el-tab-pane label="热点话题"
+                       name="first">
+            <div class="blog"
+                 v-for="(item,index) in hotBlogs"
+                 :key="index+'_hot'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
                 <img src="../assets/like-click.png" />
                 <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
               </button>
@@ -113,11 +130,18 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="Followed Blogs" name="second" class="animate__animated animate__fadeInUp">
-            <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
-              <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-              <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+          <el-tab-pane label="关注话题"
+                       name="second">
+            <div class="blog"
+                 v-for="(item,index) in followedBlogs"
+                 :key="index+'_follow'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
                 <img src="../assets/like-click.png" />
                 <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
               </button>
@@ -148,10 +172,18 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="Followed Partitions" name="third" class="animate__animated animate__fadeInUp">
-            <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
-            <div v-if="p_type" class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartitions_'+index">
-              <img :src="item.url" class="partition-icon"/>
+          <el-tab-pane label="关注分区"
+                       name="third">
+            <img v-show="p_type === false"
+                 src="../assets/back.png"
+                 @click="back"
+                 style="position: fixed;left: 80%;cursor: pointer;" />
+            <div v-if="p_type"
+                 class="partition"
+                 v-for="(item,index) in followedPartitions"
+                 :key="'followedPartitions_'+index">
+              <img :src="item.url"
+                   class="partition-icon" />
               <h3>{{ item.group_name + ' - ' + item.description }}</h3>
               <div id="sub-container">
                 <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
@@ -200,11 +232,18 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="My Blogs" name="fourth" class="animate__animated animate__fadeInUp">
-            <div class="blog" v-for="(item,index) in myBlogs" :key="index+'_my'">
-              <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-              <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+          <el-tab-pane label="我的提问"
+                       name="fourth">
+            <div class="blog"
+                 v-for="(item,index) in myBlogs"
+                 :key="index+'_my'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
                 <img src="../assets/like-click.png" />
                 <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
               </button>
@@ -235,11 +274,18 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="Wait for an answer" name="fifth" class="animate__animated animate__fadeInUp">
-            <div class="blog" v-for="(item,index) in unAnsweredBlogs" :key="index+'_wait'">
-              <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-              <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+          <el-tab-pane label="未解决的问题"
+                       name="fifth">
+            <div class="blog"
+                 v-for="(item,index) in unAnsweredBlogs"
+                 :key="index+'_wait'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
                 <img src="../assets/like-click.png" />
                 <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
               </button>
@@ -836,7 +882,7 @@ export default {
         this.activeTab = 'first'
       }
       this.srPage.push({
-        label: 'Search Results',
+        label: '搜索结果',
         name: 'sixth'
       })
       let sendData = {
@@ -923,6 +969,43 @@ export default {
   border-radius: 5px;
   border: 1px solid gray;
   margin: 10% auto;
+  border: 0;
+  padding: 0;
+  padding-left: 15px;
+  padding-right: 45px;
+  /*  Don't let that box scale because of left padding*/
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-image: -webkit-linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: -moz-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -ms-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  color-stop(0, #fcfaf6),
+  color-stop(1, #eae3cf));
+  box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -webkit-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -moz-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  height: 45px;
+  width: 100%;
+  color: #97917e;
+  font-weight: bold;
+  font-size: 14px;
+  outline: none;
+  line-height: 18px;
+  -webkit-transition: all 1s;
 }
 #reset-title {
   position: relative;
@@ -933,6 +1016,59 @@ export default {
   height: 12%;
   width: 60%;
   cursor: pointer;
+  background-color: #b73104;
+  background-image: -webkit-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -o-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  padding: 0px;
+  border: none;
+  margin: 0px;
+  outline: none;
+  display:inline-block;;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: white;
+  text-shadow: 0px 1px 2px #660300;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #a4381b;
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  box-shadow: inset 0px 1px rgba(255,185,145,1),
+        0px 2px 3px rgba(165,55,25,0.75);
+  -webkit-box-shadow: inset 0px 1px rgba(255,185,145,1),
+            0px 2px 3px rgba(165,55,25,0.75);
+  -moz-box-shadow: inset 0px 1px rgba(255,185,145,1),
+           0px 2px 3px rgba(165,55,25,0.75);
+    -moz-transition: all 1s ease-in;
+    /* WebKit */
+    -webkit-transition: all 1s ease-in;
+    /* Opera */
+    -o-transition: all 1s ease-in;
+    /* Standard */
+    transition: all 1s ease-in;
+}
+.clickBtn:hover {
+  background-color: #df620f;
+  border: 1px solid #df620f;
+  text-shadow: 0px 1px 3px #660300;
+  box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,0,0.65);
+  -webkit-box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
+  -moz-box-shadow:  inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
 }
 .closeBtn {
   width: 5%;
@@ -944,15 +1080,41 @@ export default {
   width: 20%;
   height: 100%;
   left: 0;
-  background-color: #bfbfbf;
+  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
+}
+@-moz-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-ms-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-o-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
 }
 #rightBox {
   position: fixed;
   width: 20%;
   height: 100%;
   left: 80%;
-  background-color: #bfbfbf;
+  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
 }
 .menu-item {
@@ -963,6 +1125,12 @@ export default {
   width: 35%;
   top: 10px;
   left: 30%;
+  border: 1.5px solid #9fbee4;
+  border-radius: 6px;
+  border-bottom-width: 2.5px;
+}
+.searchBox:hover {
+  border-color: #388fe1;
 }
 .searchIcon {
   position: fixed;
@@ -1017,7 +1185,7 @@ export default {
 }
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
-  color: #82beec;
+  color: #2e60c4;
 }
 .click_icon, .follow-partition {
   box-sizing: border-box;
@@ -1029,7 +1197,7 @@ export default {
   line-height: 25px;
   border-color: transparent;
   border-radius: 3px;
-  background-color: #82beec;
+  background-color: #e4c32c;
   margin-right: 50px;
 }
 .click_icon img, .follow-partition img{
@@ -1037,7 +1205,7 @@ export default {
 }
 .click_icon:hover, .follow-partition:hover{
   cursor: pointer;
-  background-color: #b3d8ff;
+  background-color: #e8b774;
 }
 .noclick_icon {
   box-sizing: border-box;
@@ -1064,18 +1232,18 @@ export default {
   top: 10px;
 }
 .sub-partitions {
-  background-color: #82beec;
+  background-color: #007ced;
+  color: rgb(249, 245, 245);
   border-color: transparent;
   width: 100px;
   padding: 10px 0 !important;
   margin: 10px 15px;
 }
-.sub-partitions:hover{
-  background-color: #b3d8ff;
+.sub-partitions:hover {
+  background-color: #2073b3;
 }
-.sub-partitions:first-child:hover{
-  background-color: #82beec;
-  cursor: default;
+.sub-partitions:first-child:hover {
+  background-color: #095c9c;
 }
 #sub-container {
   display: inline-block;
@@ -1217,5 +1385,41 @@ export default {
   100% {
     background-position: 1000px 200px, 1200px 300px, 1100px 250px;
   }
+}
+.pop-up {
+  background-image: linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -o-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -moz-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -webkit-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -ms-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -webkit-gradient(linear, left bottom, left top,
+  color-stop(0.33, #F0E9D7),
+  color-stop(0.67, #F5F1E5));
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  /*  height: 155px;*/
+  margin: 0px;
+  border-top: 1px solid white;
+  border-bottom: 1px solid #f5f1e4;
+  box-shadow: 0px 1px 2px rgba(100,0,0,0.10),
+        0px -1px 2px rgba(100,0,0,0.10);
+  -webkit-box-shadow: 0px 1px 2px rgba(100,0,0,0.10),
+            0px -1px 2px rgba(100,0,0,0.10);
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 35px;
+  padding-bottom: 25px;
+  margin-bottom: 0px;
+  position: fixed;
+  height: 40%;
+  width: 40%;
+  left: 30%;
+  top: 20%;
+  border-radius: 10px;
+  font-size: 25px;
+  text-align: center;
+  z-index: 1001;
+  background-color: white;
+  display: none;
 }
 </style>
