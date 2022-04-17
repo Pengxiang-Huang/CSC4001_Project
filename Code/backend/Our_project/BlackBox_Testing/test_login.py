@@ -39,8 +39,6 @@ def valid_with_sessions_test():
     req.session['username'] = "1"
     req.session["uid"] = "2"
     response = views.login(req)
-    print(response)
-    print(response.status_code)
     if (response.status_code == 302):
         return 1
     return 0
@@ -51,8 +49,6 @@ def with_valid_cookies():
     req.COOKIES['username'] = "1"
     req.COOKIES["uid"] = "3"
     response = views.login(req)
-    print(response)
-    print(response.content)
     if (response.status_code == 302):
         return 1
     return 0

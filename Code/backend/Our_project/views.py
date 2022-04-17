@@ -248,7 +248,6 @@ def update(request):
         _type = request.POST['type']
         newVal = request.POST['newVal']
         oldName = request.POST['username']
-        print(_type, newVal, oldName)
 
         if _type == 'Reset Username':
             #更新用户名
@@ -273,6 +272,7 @@ def update(request):
             user.password = password_m
             user.save()
             return HttpResponse('Password Reset successfully!')
+    return HttpResponse('Password Reset failed!')
 
 
 
@@ -290,7 +290,10 @@ def sendEmail(request):
                     email = email[i+1:]
                     break
         code_send = encode()
-        print(code_send)
+        if (email[9:] != "@link.cuhk.edu.cn"):
+            return HttpResponse('Invalid email address!')
+
+
         R_list = []
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
@@ -337,32 +340,39 @@ def setQuestion(request):
     }# control flag
 
     if request.method == 'POST':
-        title = request.POST['title']
-
-        author_name = request.POST['author_name']
-        author_id = User.objects.filter(username = author_name).values()[0]['id']
-
-        group_type = request.POST['group_type']
-
-        sub_group_type_name = request.POST['sub_group_type']
 
         try:
+            title = request.POST['title']
+        except:
+            return HttpResponse('Receive no tile!')
+
+        try:
+            author_name = request.POST['author_name']
+            author_id = User.objects.filter(username = author_name).values()[0]['id']
+        except:
+            return HttpResponse('No Such Username!')
+
+        try:
+            group_type = request.POST['group_type']
+            sub_group_type_name = request.POST['sub_group_type']
             sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
         except:
-            data['ok'] = 0
-            return HttpResponse(json.dumps(data), content_type='application/json')
-            
-        content = request.POST['content']
+            return HttpResponse('Invalid group name or sub_group_name!')
+        
+        try:
+            content = request.POST['content']
+        except:
+            return HttpResponse('Receive empty content!')
         content_format = "HTML"
+
 
         try:
             code = request.POST['code']
-        except:
-            code = ""
-        try:
             lang = request.POST['lang']
         except:
-            lang = ""
+            code = ""
+            land = ""
+
 
         like = 0
         follow = 0
@@ -374,6 +384,7 @@ def setQuestion(request):
         new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
                                             content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
                                             code = code, lang = lang)
+
         new_q_id = new_question.id
         uploadPicture(request, new_q_id, question_or_answer = 1)
         uploadFile(request, new_q_id, question_or_answer = 1)
@@ -384,6 +395,8 @@ def setQuestion(request):
 
         #if success
         return HttpResponse(json.dumps(data), content_type='application/json')
+    else:
+        return HttpResponse('Please use POST request!')
 
 #基于title相似度写的问题搜索
 def searchQuestion(request):
