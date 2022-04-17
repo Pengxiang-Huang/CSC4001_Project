@@ -1283,91 +1283,91 @@ def get_raw(HTML_content):
     Specially, maybe there will be answers which answer to another answer, it should be also included
 '''
 def GetAnswers(request):
-    try:
-        if request.method == "POST":
-            data = {}
 
-            username = request.POST['username']
-            userid = User.objects.filter(username=username).values()[0]['id']
+    if request.method == "POST":
+        data = {}
 
-            question_id = request.POST['question_id']
+        username = request.POST['username']
+        userid = User.objects.filter(username=username).values()[0]['id']
 
-            Answers = Blog_Answers.objects.filter(question_id = question_id).order_by("-id").values()
-            index_root_answer = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = None).count()
+        question_id = request.POST['question_id']
 
-            fathers = []
-            for i in range(0, len(Answers)):
-                answer = Answers[i]
-                answer_id = answer['id']
+        Answers = Blog_Answers.objects.filter(question_id = question_id).order_by("-id").values()
+        index_root_answer = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = None).count()
 
-                # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
-                isliked = 0
-                if (user_like_answer.objects.filter(answer_id = answer_id, id = userid)):
-                    isliked = 1
+        fathers = []
+        for i in range(0, len(Answers)):
+            answer = Answers[i]
+            answer_id = answer['id']
 
-                # getting the url of picture of the corresponding blog
-                pics = picture.objects.filter(answer = answer_id).values()
-                pic_urls = {}
-                for i in range(0, len(pics)):
-                    pic_urls["url" + str(1+i)] = pics[i]["url"]
+            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+            isliked = 0
+            if (user_like_answer.objects.filter(answer_id = answer_id, id = userid)):
+                isliked = 1
 
-                # find the files attached to this question
-                files = file.objects.filter(corresponding_answer = answer_id).values()
-                file_urls = {}
-                for i in range(0, len(files)):
-                    file_urls["url" + str(1+i)] = files[i]["url"]
+            # getting the url of picture of the corresponding blog
+            pics = picture.objects.filter(answer = answer_id).values()
+            pic_urls = {}
+            for i in range(0, len(pics)):
+                pic_urls["url" + str(1+i)] = pics[i]["url"]
 
-                content = answer["content"]
-                if (answer["content_format"] == "Markdown"):
-                    html_content = get_HTML(content)
+            # find the files attached to this question
+            files = file.objects.filter(corresponding_answer = answer_id).values()
+            file_urls = {}
+            for i in range(0, len(files)):
+                file_urls["url" + str(1+i)] = files[i]["url"]
+
+            content = answer["content"]
+            if (answer["content_format"] == "Markdown"):
+                html_content = get_HTML(content)
+            else:
+                html_content = content
+
+            # according to the author id, return the author's profile url and username
+            author_id = answer["author_id"]
+            author_name = User.objects.filter(id = author_id).values()[0]['username']
+            profile_url = User.objects.filter(id = author_id).values()[0]['photo']
+
+            # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+            answer['content'] = html_content
+            answer['isliked'] = isliked
+            answer['pic_urls'] = pic_urls
+            answer['file_urls'] = file_urls
+            answer['author_name'] = author_name
+            answer['author_profile_url'] = profile_url
+            answer['Children'] = {}
+
+            if (answer_id in fathers):
+                # then adopt its children
+                children = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = answer_id).order_by("-id").values()
+                father = answer
+                for j in range(0, len(children)):
+                    child_name = "Answer" + str(children[j]["id"])
+                    child = data[child_name]
+                    Children = answer["Children"]
+                    Children["Child" + str(len(children)-j)] = child
+                    data.pop(child_name)
+                father["Children"] = Children
+                if (answer["father_answer_id"] == None):
+                    data["root"+str(index_root_answer)] = father
+                    index_root_answer -= 1
                 else:
-                    html_content = content
-
-                # according to the author id, return the author's profile url and username
-                author_id = answer["author_id"]
-                author_name = User.objects.filter(id = author_id).values()[0]['username']
-                profile_url = User.objects.filter(id = author_id).values()[0]['photo']
-
-                # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
-                answer['content'] = html_content
-                answer['isliked'] = isliked
-                answer['pic_urls'] = pic_urls
-                answer['file_urls'] = file_urls
-                answer['author_name'] = author_name
-                answer['author_profile_url'] = profile_url
-                answer['Children'] = {}
-
-                if (answer_id in fathers):
-                    # then adopt its children
-                    children = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = answer_id).order_by("-id").values()
-                    father = answer
-                    for j in range(0, len(children)):
-                        child_name = "Answer" + str(children[j]["id"])
-                        child = data[child_name]
-                        Children = answer["Children"]
-                        Children["Child" + str(len(children)-j)] = child
-                        data.pop(child_name)
-                    father["Children"] = Children
-                    if (answer["father_answer_id"] == None):
-                        data["root"+str(index_root_answer)] = father
-                        index_root_answer -= 1
-                    else:
-                        data["Answer" + str(answer_id)] = father
-                    fathers.remove(answer_id)
+                    data["Answer" + str(answer_id)] = father
+                fathers.remove(answer_id)
+            else:
+                if (answer["father_answer_id"] == None):
+                    data["root"+str(index_root_answer)] = answer
+                    index_root_answer -= 1
                 else:
-                    if (answer["father_answer_id"] == None):
-                        data["root"+str(index_root_answer)] = answer
-                        index_root_answer -= 1
-                    else:
-                        data["Answer" + str(answer_id)] = answer        
-                if (answer["father_answer_id"] != None and (answer["father_answer_id"] not in fathers)):
-                    fathers.append(answer["father_answer_id"])
-                    
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-        else:
-            return HttpResponse("Only POST-request is accepted!")
-    except:
-        return HttpResponse("Invalid Request! Please use Post-request and attach usename and question id.")
+                    data["Answer" + str(answer_id)] = answer        
+            if (answer["father_answer_id"] != None and (answer["father_answer_id"] not in fathers)):
+                fathers.append(answer["father_answer_id"])
+        print("+++++++++++++++++++++++++++++++++")
+        print(data)
+        print("+++++++++++++++++++++++++++++++++")
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+    else:
+        return HttpResponse("Only POST-request is accepted!")
 
 
 
@@ -1439,7 +1439,10 @@ def run_code(request):
 
             data = {}
             contents = "Result: \n" + contents
-            contents += "-----------------------------------------------\n" + "Running Time: " + str(time) + "s\nMemory Used: " + str(memory) + " Bytes."
+            if (compiler == 116):
+                contents += "-----------------------------------------------\n" + "Running Time: " + str(time) + "s\nMemory Used: " + str(memory) + " Bytes."
+            else:
+                contents += "\n-----------------------------------------------\n" + "Running Time: " + str(time) + "s\nMemory Used: " + str(memory) + " Bytes."
             data["result"] = contents
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
@@ -1515,16 +1518,18 @@ def Reply(request):
         userid = User.objects.filter(username = username).values()[0]["id"]
 
         question_id = request.POST["question_id"]
+        print("question id: " + str(question_id))
         if (question_id == ""):
             question_id = None
         else:
             question_id = int(question_id)
 
         father_answer_id = request.POST["father_answer_id"]
+        print("father answer id: " + str(father_answer_id))
         if (father_answer_id == ""):
             father_answer_id = None
         else:
-            father_answer_id = int(question_id)
+            father_answer_id = int(father_answer_id)
 
         try:
             fs_url = request.POST['files_url']
@@ -1534,11 +1539,9 @@ def Reply(request):
             pics_url = ""
         
         content = request.POST["content"]
-        code = request.POST["code"]
-        lang = request.POST["lang"]
-        content_format = request.POST["content_format"]
+        content_format = "HTML"
 
-        Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
+        Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, content_format = content_format, like = 0, author_id = userid)
         answer_id = Answer.id
 
         if (fs_url != ""):
