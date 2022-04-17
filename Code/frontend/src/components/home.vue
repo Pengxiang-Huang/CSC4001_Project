@@ -1372,10 +1372,9 @@ export default {
 #cloud-intro{
   position: relative;
   height: 100%;
-  background: url(http://175.178.34.84/pics/p1);
-  background: url(http://175.178.34.84/pics/p1) 0 200px,
-              url(http://175.178.34.84/pics/p2) 0 300px,
-              url(http://175.178.34.84/pics/p3) 100px 250px;
+  background: url(http://175.178.34.84/pics/p1.png) 0 200px,
+              url(http://175.178.34.84/pics/p2.png) 0 300px,
+              url(http://175.178.34.84/pics/p3.png) 100px 250px;
   animation: wind 20s linear infinite;
 }
 @keyframes wind{
