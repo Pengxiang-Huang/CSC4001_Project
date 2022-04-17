@@ -365,12 +365,14 @@ def setQuestion(request):
             return HttpResponse('Receive empty content!')
         content_format = "HTML"
 
+        fs_url = ""
+        pics_url = ""
         try:
             fs_url = request.POST['files_url']
-            pics_url = request.POST['pics_url']
+            print("here")
+            print(fs_url)
         except:
-            fs_url = ""
-            pics_url = ""
+            pass
 
         try:
             code = request.POST['code']
@@ -393,10 +395,20 @@ def setQuestion(request):
 
         new_q_id = new_question.id
         # store the files url and pics url
-        if (fs_url != ""):
+        print("-----------------")
+        print(fs_url)
+        print("-----------------")
+
+        for i in range(0, len(fs_url)):
+            if fs_url[i] == ".":
+                extension = fs_url[i:]
+
+        if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
+            print("%@@@@@@@@@@@@@@@@@@@@@@@")
+            print(new_q_id)
+            pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
+        else:
             fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
-        if (pics_url != ""):
-            pic = picture.objects.create(url = pics_url, question_id = new_q_id)
 
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
