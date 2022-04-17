@@ -167,6 +167,126 @@
                 <i class="el-icon-view"></i>
                 <span>{{ item.views }}</span>
               </div>
+    <el-menu
+      default-active="Main"
+      class="el-menu-demo"
+      mode="horizontal"
+      @select="handleSelect"
+      background-color="#545c64"
+      text-color="#ffffff"
+      active-text-color="#ffd04b"
+    >
+      <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
+      <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
+      <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
+      <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
+      <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
+        <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
+        <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
+          <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
+          <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
+          <el-dropdown-item divided>
+            <el-upload
+              class="avatar-uploader"
+              action="/api/getProfile/"
+              :show-file-list="false"
+              :http-request="uploadProfile"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">Upload Profile
+            </el-upload>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <img src="../assets/log_out.png" class="logout" @click="logout" />
+    </el-menu>
+    <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
+      <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
+      <el-dropdown slot="suffix" trigger="click">
+        <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
+        <el-dropdown-menu slot="dropdown" style="width: 34%;height: 100px;">
+          <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
+          <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+            <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
+            <el-dropdown-menu slot="dropdown" style="width: 12%;height: 150px;overflow: auto;">
+              <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+            <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
+            <el-dropdown-menu slot="dropdown" style="width: 22%;height: 150px;overflow: auto;">
+              <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </el-input>
+    <div v-if="index === 'Main'" class="tab">
+      <div id="leftBox"></div>
+      <div id="rightBox"></div>
+      <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+      <el-tabs :value="activeTab" @tab-click="handleClick">
+        <el-tab-pane></el-tab-pane>
+        <el-tab-pane label="Hot Blogs" name="first">
+          <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
+            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
+            <p @click="skipToBlog(item)" v-html="item.content"></p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ item.amount_of_answers }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-view"></i>
+              <span>{{ item.views }}</span>
+            </div>
+          </div>
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+        </el-tab-pane>
+        <el-tab-pane label="Followed Blogs" name="second">
+          <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
+            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
+            <p @click="skipToBlog(item)" v-html="item.content"></p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
@@ -538,6 +658,41 @@
           <div class="noclick_icon">
             <i class="el-icon-view"></i>
             <span>{{ item.views }}</span>
+          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+        </el-tab-pane>
+        <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name">
+          <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
+          <div class="blog" v-for="(item,index) in srBlogs" :key="index+'_sr'">
+            <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
+            <p @click="skipToBlog(item)" v-html="item.content"></p>
+            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+            </button>
+            <button v-else class="click_icon" @click="like($event,item,0,false)">
+              <img src="../assets/like.png" />
+              <span style="color: white;">{{ item.like }}</span>
+            </button>
+            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow-click.png" />
+              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+            </button>
+            <button v-else class="click_icon" @click="follow($event,item,false)">
+              <img src="../assets/follow.png" />
+              <span style="color: white;">{{ item.follow }}</span>
+            </button>
+            <div class="noclick_icon">
+              <i class="el-icon-collection-tag"></i>
+              <span>{{ item.group_type }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ item.amount_of_answers }}</span>
+            </div>
+            <div class="noclick_icon">
+              <i class="el-icon-view"></i>
+              <span>{{ item.views }}</span>
+            </div>
           </div>
         </div>
         <div style="height: 200px;"></div> <!-- Used to leave some blank -->
@@ -996,13 +1151,20 @@ export default {
         this.searchCondition = condition
       }
     },
+    // User click to get the search results
     search () {
-      if (!this.srPage.length) {
-        this.srPage.push({
-          label: 'Search Results',
-          name: 'sixth'
-        })
+      if (this.searchContent === '') {
+        this.$message.error('Please type something you want to search!')
+        return
       }
+      if (this.srPage.length) {
+        this.srPage.pop()
+        this.activeTab = 'first'
+      }
+      this.srPage.push({
+        label: 'Search Results',
+        name: 'sixth'
+      })
       let sendData = {
         scope: this.searchCondition,
         content: this.searchContent
@@ -1016,6 +1178,9 @@ export default {
         this.activeTab = 'sixth'
         this.inSearch = true
       })
+      if (this.index === 'Partitions') {
+        this.$message('Please go to the Main page to see the results!')
+      }
     },
     // User click to go back to the main page
     backToMain () {
@@ -1025,6 +1190,7 @@ export default {
       this.searchContent = ''
       this.searchCondition = 'All'
     },
+    // User click to skip to the blog page
     skipToBlog (item) {
       this.$router.push({
         path: '/blog',
@@ -1035,6 +1201,12 @@ export default {
           searchContent: this.searchContent,
           inSearch: this.inSearch
         }
+      })
+    },
+    // User click to log out
+    logout () {
+      this.$router.push({
+        path: '/'
       })
     }
   }
@@ -1113,19 +1285,19 @@ export default {
 }
 .searchBox {
   position: fixed;
-  width: 450px;
+  width: 35%;
   top: 10px;
-  left: 360px;
+  left: 30%;
 }
 .searchIcon {
   position: fixed;
   top: 10px;
-  left: 830px;
+  right: 27%;
 }
 .postIcon {
   position: fixed;
   top: 10px;
-  left: 900px;
+  right: 15%;
   width: 100px;
   height: 40px;
   font-size: 18px;
@@ -1133,9 +1305,13 @@ export default {
 .userIcon {
   position: fixed;
   top: 10px;
-  left: 1253px;
+  right: 8%;
+  cursor: pointer;
 }
-.userIcon:hover {
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 2%;
   cursor: pointer;
 }
 #user {

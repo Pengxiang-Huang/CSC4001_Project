@@ -45,4 +45,8 @@ urlpatterns = [
     path('api/RunCode', views.run_code),
     path('api/MyBlogs', views.MyBlogs),
     path('api/Reply', views.Reply),
+    path('api/AddViews', views.AddViews),
+    path('api/testing', views.testing),
+    path('api/verify', views.verify),
+    path('api/getfile', views.get_file),
 ]
