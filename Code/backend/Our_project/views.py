@@ -58,7 +58,7 @@ def check_state(fn):# fn is the views
     return wrap
 
 #生成密码
-def code(n = 6):
+def encode(n = 6):
     all_code = '012345678mchjsmejrigebriruwioihgdvbhserjebssse9P'
     index = len(all_code)
     code = ''
@@ -72,6 +72,49 @@ def code(n = 6):
 def index(request):  # request means the request sent by front-end
     if request.method == 'GET':  #GET 返回页面
         return render(request, 'index.html')
+
+# def register(request):
+#     #POST 处理数据
+#         #1.当前用户名是否可用
+#         #1.插入数据[暂时明文处理]
+#     data = {
+#         'isRegister': 1
+#     }# control flag
+
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         print(username,email,password)
+
+#         #check user name. Multi-thread considerration.
+#         old_users = User.objects.filter(username=username)
+#         print(old_users)
+#         if (old_users):# if exists
+#             data['isRegister'] = 0
+#             return HttpResponse(json.dumps(data), content_type='application/json')
+        
+#         ##hash the code
+#         m = hashlib.md5()
+#         m.update(password.encode())
+#         password_m = m.hexdigest()
+        
+#         try: #Multi-thread considerration:唯一索引，并发写入问题。
+#         #insert data
+#             user = User.objects.create(username=username, password=password_m, email=email)
+#         except Exception as e:
+#             print('--create user error%s'%(e))
+#             data['isRegister'] = 0
+#             return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+#         #免登录一天 session
+#         request.session['username'] = username
+#         request.session['uid'] = user.id
+#         #TODO 修改session储存时间为一天
+
+#         #return successful information
+#         return HttpResponse(json.dumps(data), content_type='application/json')
 
 def register(request):
     #POST 处理数据
@@ -93,35 +136,47 @@ def register(request):
         if (old_users):# if exists
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
-        
+
+        #return successful information
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
+def verify(request):
+    data = {
+        'isRegister': 1
+    }# control flag
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        print(username,email,password)
+
         ##hash the code
         m = hashlib.md5()
         m.update(password.encode())
         password_m = m.hexdigest()
         
-        try: #Multi-thread considerration:唯一索引，并发写入问题。
+        try: #Multi-thread consideration:唯一索引，并发写入问题。
         #insert data
             user = User.objects.create(username=username, password=password_m, email=email)
-            print(user)
         except Exception as e:
             print('--create user error%s'%(e))
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
-
-
+        
         #免登录一天 session
         request.session['username'] = username
         request.session['uid'] = user.id
         #TODO 修改session储存时间为一天
 
-        #return successful information
         return HttpResponse(json.dumps(data), content_type='application/json')
+
+
 
 def login(request):
     if request.method == 'GET':
         ##1.检查会话状态session
         if request.session.get('username') and request.session.get('uid'):
-            return HttpResponseRedirect('/first')
+            return HttpResponseRedirect('/login/#/home/hands')
         ##2.检查会话状态cookies
         c_username = request.COOKIES.get('username')
         c_uid = request.COOKIES.get('uid')
@@ -129,9 +184,9 @@ def login(request):
             #回写cookies
             request.session['username'] = username
             request.session['uid'] = user.id
-            return HttpResponse('Success Login!')
+            return HttpResponseRedirect('/login/#/home/hands')
         ##3. 未登陆过，则登录
-        return render(request, 'login.html')
+        return render(request, 'index.html')
     
     elif request.method == 'POST':
         username = request.POST['username']
@@ -161,6 +216,7 @@ def login(request):
             resp.set_cookie('uid', user.id, 3600*24*3)
 
         return resp
+
 
 def logout(request):
     #delete
@@ -192,7 +248,6 @@ def update(request):
         _type = request.POST['type']
         newVal = request.POST['newVal']
         oldName = request.POST['username']
-        print(_type, newVal, oldName)
 
         if _type == 'Reset Username':
             #更新用户名
@@ -217,6 +272,7 @@ def update(request):
             user.password = password_m
             user.save()
             return HttpResponse('Password Reset successfully!')
+    return HttpResponse('Password Reset failed!')
 
 
 
@@ -233,8 +289,11 @@ def sendEmail(request):
                 if (email[i] == "="):
                     email = email[i+1:]
                     break
-        code_send = code()
-        print(code_send)
+        code_send = encode()
+        if (email[9:] != "@link.cuhk.edu.cn"):
+            return HttpResponse('Invalid email address!')
+
+
         R_list = []
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
@@ -281,21 +340,45 @@ def setQuestion(request):
     }# control flag
 
     if request.method == 'POST':
-        title = request.POST['title']
 
-        author_name = request.POST['author_name']
-        author_id = User.objects.filter(username = author_name).values()[0]['id']
+        try:
+            title = request.POST['title']
+        except:
+            return HttpResponse('Receive no tile!')
 
-        group_type = request.POST['group_type']
+        try:
+            author_name = request.POST['author_name']
+            author_id = User.objects.filter(username = author_name).values()[0]['id']
+        except:
+            return HttpResponse('No Such Username!')
 
-        sub_group_type_name = request.POST['sub_group_type']
-        sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
-
-        content = request.POST['content']
+        try:
+            group_type = request.POST['group_type']
+            sub_group_type_name = request.POST['sub_group_type']
+            sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
+        except:
+            return HttpResponse('Invalid group name or sub_group_name!')
+        
+        try:
+            content = request.POST['content']
+        except:
+            return HttpResponse('Receive empty content!')
         content_format = "HTML"
 
-        code = request.POST['code']
-        lang = request.POST['lang']
+        try:
+            fs_url = request.POST['files_url']
+            pics_url = request.POST['pics_url']
+        except:
+            fs_url = ""
+            pics_url = ""
+
+        try:
+            code = request.POST['code']
+            lang = request.POST['lang']
+        except:
+            code = ""
+            land = ""
+
 
         like = 0
         follow = 0
@@ -307,16 +390,17 @@ def setQuestion(request):
         new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
                                             content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
                                             code = code, lang = lang)
-        new_q_id = new_question['id']
-        uploadPicture(request, new_q_id, question_or_answer = 1)
-        uploadFile(request, new_q_id, question_or_answer = 1)
-        # except Exception as e:
-        #     print('--Insert question error%s'%(e))
-        #     data['ok'] = 0
-        #     return HttpResponse(json.dumps(data), content_type='application/json')
 
-        #if success
+        new_q_id = new_question.id
+        # store the files url and pics url
+        if (fs_url != ""):
+            fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
+        if (pics_url != ""):
+            pic = picture.objects.create(url = pics_url, question_id = new_q_id)
+
         return HttpResponse(json.dumps(data), content_type='application/json')
+    else:
+        return HttpResponse('Please use POST request!')
 
 #基于title相似度写的问题搜索
 def searchQuestion(request):
@@ -335,7 +419,7 @@ def searchQuestion(request):
         
         DBlist = []
         #get the db values of all contents
-        titleDB = Blog_Questions.objects.values('title')
+        titleDB = Blog_Questions.objects.values('title').order_by('id')
         for title in titleDB:   
             DBlist.append(title['title'].upper())
         print(DBlist)
@@ -368,6 +452,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -381,7 +468,7 @@ def searchQuestion(request):
             # idea, set the non-type to 0 so that not effectively return
             DBScope = []
             #get the db values
-            DBtype = Blog_Questions.objects.values('group_type')
+            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
             print(scope)
@@ -418,6 +505,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -437,7 +527,7 @@ def searchQuestion(request):
 
             DBScope = []
             #get the db values
-            DBtype = Blog_Questions.objects.values('group_type')
+            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
             print(DBScope)
@@ -480,6 +570,9 @@ def searchQuestion(request):
             for i in range(len(positionList)):
                 temp = ALL_blogs[positionList[i]]
                 rawContent = temp['content']
+                answerID = temp['id']
+                amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+                temp['amount_of_answers'] = amount_of_answers
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
@@ -1333,9 +1426,9 @@ def run_code(request):
             contents = urllib.request.urlopen(uri).read().decode('utf-8')
 
             data = {}
+            contents = "Result: \n" + contents
+            contents += "-----------------------------------------------\n" + "Running Time: " + str(time) + "s\nMemory Used: " + str(memory) + " Bytes."
             data["result"] = contents
-            data["time"] = time
-            data["memory"] = memory
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
         else:
@@ -1421,6 +1514,12 @@ def Reply(request):
         else:
             father_answer_id = int(question_id)
 
+        try:
+            fs_url = request.POST['files_url']
+            pics_url = request.POST['pics_url']
+        except:
+            fs_url = ""
+            pics_url = ""
         
         content = request.POST["content"]
         code = request.POST["code"]
@@ -1428,86 +1527,73 @@ def Reply(request):
         content_format = request.POST["content_format"]
 
         Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
-        print(Answer)
-        answer_id = Answer['id']
+        answer_id = Answer.id
+
+        if (fs_url != ""):
+            fs = file.objects.create(url = fs_url, corresponding_question = question_id, corresponding_answer = answer_id)
+        if (pics_url != ""):
+            pic = picture.objects.create(url = pics_url, question_id = question_id, answer_id = answer_id)
 
         # If the reply has pictures and files, upload them
-        uploadPicture(request, answer_id, question_or_answer = 0)
-        uploadFile(request, answer_id, question_or_answer = 0)
 
         data["ok"] = 1
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  
 
 
+
+
 '''
-    User this function to upload picture of question/answer
+    Add views by one
 '''
-def uploadPicture(request, cor_id, question_or_answer = 1):
+def AddViews(request):
     data = {}
+    data['ok'] = 0
+    if request.method == "POST":
+        question_id = request.POST["question_id"]
 
-    if request.method == 'POST':
-        i = 1
-        while (True):
-            ## 获取图片并存入服务器
-            picture_name = "pictures" + str(i)
-            try:
-                picture = request.FILES.get(picture_name)
-            except:
-                break
-
-            code = code(20)
-            pics_dir = '../../pictures/pics/' + code + '.jpg'
-            f = open(pics_dir, 'wb')
-            for line in picture.chunks():
-                f.write(line)
-            f.close()
-
-            ## 将文件url传入数据库
-            url = "http://175.178.34.84/pics/" + code + ".jpg"
-            if (question_or_answer):
-                pic = picture.objects.create(url=url, question=cor_id)
-            else:
-                pic = picture.objects.create(url = url, answer = cor_id)
-            
-            i += 1
-                
-    data['ok'] = 1
+        question = Blog_Questions.objects.get(id=question_id)
+        question.views = question.views + 1
+        question.hot = question.hot + 1
+        question.save()
+        data['ok'] = 1
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
+
 '''
-    User this function to upload files
+    Defining the test cases
 '''
-def uploadFile(request, cor_id, question_or_answer = 1):
-    data = {}
+def testing(request):
 
-    if request.method == 'POST':
-        i = 1
-        while (True):
-            ## 获取图片并存入服务器
-            file_name = "files" + str(i)
-            try:
-                up_file = request.FILES.get(file_name)
-                fs_name = request.POST[file_name]
-            except:
-                break
+    result = {}
 
-            code = code(10)
-            fs_dir = '../../fs/' + code + fs_name
-            f = open(fs_dir, 'wb')
-            for line in up_file.chunks():
-                f.write(line)
-            f.close()
+    result['test_result'] = BlackBox.test()
 
-            ## 将文件url传入数据库
-            url = "http://175.178.34.84/fs/" + code + fs_name
-            if (question_or_answer):
-                file_ = file.objects.create(url=url, corresponding_question=cor_id)
-            else:
-                file_ = file.objects.create(url = url, corresponding_answer = cor_id)
-            
-            i += 1
-                
-    data['ok'] = 1
+    return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
+
+
+def get_file(request):
+    data= {}
+    recevie_file = request.FILES.get("file")
+    username = request.POST.get("username")
+
+    userid = User.objects.filter(username = username).values()[0]['id']
+
+    name = recevie_file.name
+    for i in range(0, len(name)):
+        if name[i] == ".":
+            extension = name[i:]
+
+    code = encode(10)
+    if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
+        fs_dir = '../../pictures/pics/' + code + extension
+        data["link"] = 'http://175.178.34.84/pics/' + code + extension
+    else:
+        fs_dir = '../../fs/' + code + extension
+        data["link"] = 'http://175.178.34.84/fs/' + code + extension
+    f = open(fs_dir, 'wb')
+    for line in recevie_file.chunks():
+        f.write(line)
+    f.close()
+
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-
