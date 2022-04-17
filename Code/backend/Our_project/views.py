@@ -1292,10 +1292,9 @@ def GetAnswers(request):
 
         question_id = request.POST['question_id']
 
-        Answers = Blog_Answers.objects.filter(question_id = question_id).order_by("-id").values()
+        Answers = Blog_Answers.objects.filter(question_id = question_id).order_by("id").values()
         index_root_answer = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = None).count()
 
-        fathers = []
         for i in range(0, len(Answers)):
             answer = Answers[i]
             answer_id = answer['id']
@@ -1337,34 +1336,32 @@ def GetAnswers(request):
             answer['author_profile_url'] = profile_url
             answer['Children'] = {}
 
-            if (answer_id in fathers):
-                # then adopt its children
-                children = Blog_Answers.objects.filter(question_id = question_id, father_answer_id = answer_id).order_by("-id").values()
-                father = answer
-                for j in range(0, len(children)):
-                    child_name = "Answer" + str(children[j]["id"])
-                    child = data[child_name]
-                    Children = answer["Children"]
-                    Children["Child" + str(len(children)-j)] = child
-                    data.pop(child_name)
-                father["Children"] = Children
-                if (answer["father_answer_id"] == None):
-                    data["root"+str(index_root_answer)] = father
-                    index_root_answer -= 1
-                else:
-                    data["Answer" + str(answer_id)] = father
-                fathers.remove(answer_id)
+            print("het here!!")
+            if answer["father_answer_id"] == None:   # means it is the root answer
+                data["root" + str(answer_id)] = answer
             else:
-                if (answer["father_answer_id"] == None):
-                    data["root"+str(index_root_answer)] = answer
-                    index_root_answer -= 1
-                else:
-                    data["Answer" + str(answer_id)] = answer        
-            if (answer["father_answer_id"] != None and (answer["father_answer_id"] not in fathers)):
-                fathers.append(answer["father_answer_id"])
+                root_id = answer["father_answer_id"]
+                father_id = Blog_Answers.objects.filter(id = root_id).values()[0]["author_id"]
+                father_name = User.objects.filter(id = father_id).values()[0]['username']
+                father = answer
+                target_id = -1
+                while (father != None):
+                    root_id = father["father_answer_id"]
+                    print(father)
+                    target_id = father['id']
+                    try:
+                        father = Blog_Answers.objects.filter(id = root_id).values()[0]  
+                    except:
+                        break
+                child = answer
+                child["father_name"] = father_name
+                data["root" + str(target_id)]['Children']["child" + str(answer_id)] = child
+                
+
         print("+++++++++++++++++++++++++++++++++")
         print(data)
         print("+++++++++++++++++++++++++++++++++")
+
         return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
     else:
         return HttpResponse("Only POST-request is accepted!")
