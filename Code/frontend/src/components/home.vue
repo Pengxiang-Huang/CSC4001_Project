@@ -1080,7 +1080,7 @@ export default {
   width: 20%;
   height: 100%;
   left: 0;
-  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
   -webkit-animation: 10s linear 0s normal none infinite animate;
   -moz-animation: 10s linear 0s normal none infinite animate;
   -ms-animation: 10s linear 0s normal none infinite animate;
@@ -1109,7 +1109,7 @@ export default {
   width: 20%;
   height: 100%;
   left: 80%;
-  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
   -webkit-animation: 10s linear 0s normal none infinite animate;
   -moz-animation: 10s linear 0s normal none infinite animate;
   -ms-animation: 10s linear 0s normal none infinite animate;
