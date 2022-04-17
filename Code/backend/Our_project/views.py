@@ -30,6 +30,7 @@ from .models import sub_group
 from .models import file
 import hashlib
 import markdown
+from . import BlackBox
 
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
@@ -138,6 +139,9 @@ def register(request):
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         #return successful information
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    else:
+        data['isRegister'] = 0
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 def verify(request):
@@ -402,13 +406,13 @@ def setQuestion(request):
         for i in range(0, len(fs_url)):
             if fs_url[i] == ".":
                 extension = fs_url[i:]
-
-        if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
-            print("%@@@@@@@@@@@@@@@@@@@@@@@")
-            print(new_q_id)
-            pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
-        else:
-            fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
+        if (fs_url != ""):
+            if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
+                print("%@@@@@@@@@@@@@@@@@@@@@@@")
+                print(new_q_id)
+                pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
+            else:
+                fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
 
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
@@ -749,67 +753,71 @@ def my_group(request):
 
 # /unAnswered: 按关注的数量返回高赞未回答的问题
 def unAnswered(request):
-    if request.method == 'POST':
-        
-        # get the information of current user
-        username = request.POST['username']
+    try:
+        if request.method == 'POST':
+            
+            # get the information of current user
+            username = request.POST['username']
 
-        userid = User.objects.filter(username = username).values()[0]['id']
+            userid = User.objects.filter(username = username).values()[0]['id']
 
-        cursor = connection.cursor()
-        
-        # get the un-unswered questions ordered by amount of follows
-        cursor.execute("select * from Our_project_blog_questions where id not in (select question_id from Our_project_blog_answers) ORDER BY `follow` DESC;")
-        
-        # zip the raw results into a dict
-        columns = [column[0] for column in cursor.description]
-        rows = cursor.fetchall()
-        questions_represent_by_dict = []
-        for row in rows:
-            questions_represent_by_dict.append(dict(zip(columns, row)))
+            cursor = connection.cursor()
+            
+            # get the un-unswered questions ordered by amount of follows
+            cursor.execute("select * from Our_project_blog_questions where id not in (select question_id from Our_project_blog_answers) ORDER BY `follow` DESC;")
+            
+            # zip the raw results into a dict
+            columns = [column[0] for column in cursor.description]
+            rows = cursor.fetchall()
+            questions_represent_by_dict = []
+            for row in rows:
+                questions_represent_by_dict.append(dict(zip(columns, row)))
 
-        data = {}
-        for i in range(0, len(questions_represent_by_dict)):
+            data = {}
+            for i in range(0, len(questions_represent_by_dict)):
 
-            # get the id of question blog
-            question_id = questions_represent_by_dict[i]['id']
+                # get the id of question blog
+                question_id = questions_represent_by_dict[i]['id']
 
-            # fectch the pic's url according to the question blog's id
-            try:
-                url = picture.objects.filter(question = question_id).values()[0]['url']
-            except:
-                url = ""
+                # fectch the pic's url according to the question blog's id
+                try:
+                    url = picture.objects.filter(question = question_id).values()[0]['url']
+                except:
+                    url = ""
 
-            isliked = 0
-            if (user_like_question.objects.filter(question_id = question_id, id = userid)):
-                isliked = 1
+                isliked = 0
+                if (user_like_question.objects.filter(question_id = question_id, id = userid)):
+                    isliked = 1
 
-            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
-            isfollowed = 0
-            if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
-                isfollowed = 1
+                # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+                isfollowed = 0
+                if (user_follow_question.objects.filter(question_id = question_id, id = userid)):
+                    isfollowed = 1
 
-            # put all the necessary information into the dict
-            temp = questions_represent_by_dict[i]
+                # put all the necessary information into the dict
+                temp = questions_represent_by_dict[i]
 
-            if (temp['content_format'] == "Markdown"):
-                content = temp["content"]
-                raw_content = get_raw(get_HTML(content))
-            else:
-                raw_content = temp['content']
+                if (temp['content_format'] == "Markdown"):
+                    content = temp["content"]
+                    raw_content = get_raw(get_HTML(content))
+                else:
+                    raw_content = temp['content']
 
-            if (len(raw_content) > 140):
-                raw_content = raw_content[0:140] + "..."
+                if (len(raw_content) > 140):
+                    raw_content = raw_content[0:140] + "..."
 
-            temp['url'] = url
-            temp['isliked'] = isliked
-            temp['isfollowed'] = isfollowed
-            temp['content'] = raw_content
-            data['blog'+str(i+i)] = temp
+                temp['url'] = url
+                temp['isliked'] = isliked
+                temp['isfollowed'] = isfollowed
+                temp['content'] = raw_content
+                data['blog'+str(i+1)] = temp
 
-        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-    else:
-        return HttpResponse("Only POST-request is accepted!")
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+        else:
+            return HttpResponse("Only POST-request is accepted!")
+    except:
+        return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
+
 
 
 
@@ -821,8 +829,8 @@ def like(request):
     try:
         if request.method == 'POST':
             
-            Question_or_Answer = request.POST['type']
             username = request.POST['username']
+            Question_or_Answer = request.POST['type']
             target_id = request.POST['id']
             user_id = User.objects.filter(username=username).values()[0]['id']
             if (int(Question_or_Answer)):    # means the id belong to an answer
@@ -852,7 +860,7 @@ def like(request):
         else:
             return HttpResponse("Only POST-request is accepted!")
     except:
-        pass
+        return HttpResponse("Invalid input!")
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
             
@@ -883,7 +891,7 @@ def follow(request):
         else:
             return HttpResponse("Only POST-request is accepted!")
     except:
-        pass
+        return HttpResponse("Invalid input!")
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
@@ -986,67 +994,70 @@ def getProfile(request):
     First, return the blogs related to this group.
 '''
 def getGroup(request):
-    if request.method == "POST":
-        group_name = request.POST['group_name']
-        sub_group_name = request.POST['sub_group_name']
-        username = request.POST['username']
-        user_id = User.objects.filter(username=username).values()[0]['id']
-        
-        data = {}
+    try:
+        if request.method == "POST":
+            group_name = request.POST['group_name']
+            sub_group_name = request.POST['sub_group_name']
+            username = request.POST['username']
+            user_id = User.objects.filter(username=username).values()[0]['id']
+            
+            data = {}
 
-        print(group_name)
-        print(sub_group_name)
-        sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
+            print(group_name)
+            print(sub_group_name)
+            sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
 
-        questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
-        
-        for i in range(0, len(questions)):
-            question_id = questions[i]['id']
+            questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
+            
+            for i in range(0, len(questions)):
+                question_id = questions[i]['id']
 
-            # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
-            isliked = 0
-            if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
-                isliked = 1
+                # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
+                isliked = 0
+                if (user_like_question.objects.filter(question_id = question_id, id = user_id)):
+                    isliked = 1
 
-            # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
-            isfollowed = 0
-            if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
-                isfollowed = 1
+                # check whether the current user has followed this blog_question. If the current user has followed this blog, return isfollowed = 1
+                isfollowed = 0
+                if (user_follow_question.objects.filter(question_id = question_id, id = user_id)):
+                    isfollowed = 1
 
-            # getting the url of picture of the corresponding blog
-            try:
-                url = picture.objects.filter(question = question_id).values()[0]['url']
-            except:
-                url = ""
+                # getting the url of picture of the corresponding blog
+                try:
+                    url = picture.objects.filter(question = question_id).values()[0]['url']
+                except:
+                    url = ""
 
-            # getting the amount of answers regarding to this questions
-            amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
+                # getting the amount of answers regarding to this questions
+                amount_of_answers = Blog_Answers.objects.filter(question_id = question_id).count()
 
-            # getting the sub_group_name according to the sub_group_type
-            sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
+                # getting the sub_group_name according to the sub_group_type
+                sub_group_name = sub_group.objects.filter(id = questions[i]["sub_group_type"]).values()[0]["sub_group_name"]
 
-            if (questions[i]['content_format'] == "Markdown"):
-                content = questions[i]["content"]
-                raw_content = get_raw(get_HTML(content))
-            else:
-                raw_content = questions[i]["content"]
+                if (questions[i]['content_format'] == "Markdown"):
+                    content = questions[i]["content"]
+                    raw_content = get_raw(get_HTML(content))
+                else:
+                    raw_content = questions[i]["content"]
 
-            if (len(raw_content) > 140):
-                raw_content = raw_content[0:140] + "..."
+                if (len(raw_content) > 140):
+                    raw_content = raw_content[0:140] + "..."
 
-            # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
-            temp = questions[i]
-            temp['isliked'] = isliked
-            temp['isfollowed'] = isfollowed
-            temp['url'] = url
-            temp['content'] = raw_content
-            temp['sub_group_name'] = sub_group_name
-            temp['amount_of_answers'] = amount_of_answers
-            data['blog'+str(i+1)] = temp
-                
-        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-    else:
-        return HttpResponse("Only POST-request is accepted!")
+                # put the url, whether user has liked/followed the blog into data, preparing to be sent to frontend
+                temp = questions[i]
+                temp['isliked'] = isliked
+                temp['isfollowed'] = isfollowed
+                temp['url'] = url
+                temp['content'] = raw_content
+                temp['sub_group_name'] = sub_group_name
+                temp['amount_of_answers'] = amount_of_answers
+                data['blog'+str(i+1)] = temp
+                    
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+        else:
+            return HttpResponse("Only POST-request is accepted!")
+    except:
+        return HttpResponse("Invalid Input!")
 
 
 '''
@@ -1376,7 +1387,10 @@ def run_code(request):
     try:
         if request.method == "POST":
             source = request.POST['source_code']
-            lang = request.POST['lang']
+            try:
+                lang = request.POST['lang']
+            except:
+                lang = "Python"
 
             accessToken = '1963c8460eedcdf0d6aa233a8c6e1021'
             endpoint = 'a3e69f92.compilers.sphere-engine.com'
@@ -1499,6 +1513,9 @@ def MyBlogs(request):
             temp['amount_of_answers'] = amount_of_answers
             data['blog'+str(i+1)] = temp
 
+    else:
+        return HttpResponse("This API only accept POST request!")
+
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json') 
 
 '''
@@ -1609,3 +1626,15 @@ def get_file(request):
     f.close()
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
+'''
+    Defining the test cases
+'''
+def testing(request):
+
+    result = {}
+
+    result['test_result'] = BlackBox.test()
+
+    return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
