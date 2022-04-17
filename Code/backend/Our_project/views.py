@@ -415,7 +415,7 @@ def searchQuestion(request):
         
         DBlist = []
         #get the db values of all contents
-        titleDB = Blog_Questions.objects.values('title')
+        titleDB = Blog_Questions.objects.values('title').order_by('id')
         for title in titleDB:   
             DBlist.append(title['title'].upper())
         print(DBlist)
@@ -464,7 +464,7 @@ def searchQuestion(request):
             # idea, set the non-type to 0 so that not effectively return
             DBScope = []
             #get the db values
-            DBtype = Blog_Questions.objects.values('group_type')
+            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
             print(scope)
@@ -523,7 +523,7 @@ def searchQuestion(request):
 
             DBScope = []
             #get the db values
-            DBtype = Blog_Questions.objects.values('group_type')
+            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
             print(DBScope)
@@ -1520,114 +1520,12 @@ def Reply(request):
         answer_id = Answer.id
 
         # If the reply has pictures and files, upload them
-        uploadPicture(request, answer_id, question_or_answer = 0)
-        uploadFile(request, answer_id, question_or_answer = 0)
 
         data["ok"] = 1
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  
 
 
-'''
-    User this function to upload picture of question/answer
-'''
-def uploadPicture(request, cor_id, question_or_answer = 1):
-    data = {}
-    data["ok"] = 1
-    if request.method == 'POST':
-        i = 1
-        while (True):
-            ## 获取图片并存入服务器
-            picture_name = "pictures" + str(i)
-            try:
-                picture = request.FILES.get(picture_name)
-            except:
-                break
-
-            if not (picture):
-                data["ok"] = 0
-                break
-
-            code = encode(20)
-            pics_dir = '../../pictures/pics/' + code + '.jpg'
-            f = open(pics_dir, 'wb')
-            for line in picture.chunks():
-                f.write(line)
-            f.close()
-
-            ## 将文件url传入数据库
-            url = "http://175.178.34.84/pics/" + code + ".jpg"
-            if (question_or_answer):
-                pic = picture.objects.create(url=url, question=cor_id)
-            else:
-                pic = picture.objects.create(url = url, answer = cor_id)
-            
-            i += 1
-                
-    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-
-'''
-    User this function to upload files
-'''
-def uploadFile(request, cor_id, question_or_answer = 1):
-    data = {}
-    data['ok'] = 1
-    if request.method == 'POST':
-        i = 1
-        while (True):
-            ## 获取图片并存入服务器
-            file_name = "files" + str(i)
-            try:
-                up_file = request.FILES.get(file_name)
-                fs_name = request.POST[file_name]
-            except:
-                break
-
-            if not (up_file):
-                data['ok'] = 0
-                break
-
-            code = encode(10)
-            fs_dir = '../../fs/' + code + fs_name
-            f = open(fs_dir, 'wb')
-            for line in up_file.chunks():
-                f.write(line)
-            f.close()
-
-            ## 将文件url传入数据库
-            url = "http://175.178.34.84/fs/" + code + fs_name
-            if (question_or_answer):
-                file_ = file.objects.create(url=url, corresponding_question=cor_id)
-            else:
-                file_ = file.objects.create(url = url, corresponding_answer = cor_id)
-            
-            i += 1
-                
-    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-
-
-
-def get_file(request):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(request)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-    defaultUploadOptions = {
-        "fieldname": "file",
-        "validation": {
-            "allowedExts": ["txt", "pdf", "doc"],
-            "allowedMimeTypes": ["text/plain", "application/msword", "application/x-pdf", "application/pdf"]
-        }
-    }
-    filename = request.POST.get("file")
-    print(request.POST)
-    print(filename)
-    extension = Utils.getExtension(filename)
-
-    print(filename)
-    print(extension)
-
-    return 0
 
 
 '''
@@ -1657,3 +1555,33 @@ def testing(request):
     result['test_result'] = BlackBox.test()
 
     return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
+
+
+def get_file(request):
+    
+    recevie_file = request.FILE.get("file")
+    username = request.POST.get("username")
+
+    userid = User.objects.filter(username = username).values()[0]['id']
+
+    name = recevie_file.name
+    for i in range(0, len(name)):
+        if name[i] == ".":
+            extension = name[i:]
+
+    code = encode(10)
+    if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
+        fs_dir = '../../pictures/pics' + code + extension
+    else:
+        fs_dir = '../../fs/' + code + extension
+    f = open(fs_dir, 'wb')
+    for line in up_file.chunks():
+        f.write(line)
+    f.close()
+
+    # store the file into the database
+    
+
+
+    data["link"] = '../../pictures/pics'
+    return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
