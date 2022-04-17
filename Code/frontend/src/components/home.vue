@@ -1,357 +1,413 @@
 <template>
   <div>
-    <div id="mask"></div>
-    <div id="pop-up-reset" class="pop-up">
-      <span id="reset-title"></span>
-      <img src="../assets/close.png" class="closeBtn" @click="close">
-      <input id="inputBox1">
-      <input id="inputBox2" v-model="newVal">
-      <button class="clickBtn" @click="reset">Reset</button>
-    </div>
-    <el-menu
-      default-active="Main"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-      background-color="#545c64"
-      text-color="#ffffff"
-      active-text-color="#ffd04b"
-    >
-      <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
-      <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
-      <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
-      <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
-      <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
-        <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
-        <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
-          <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
-          <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
-          <el-dropdown-item divided>
-            <el-upload
-              class="avatar-uploader"
-              action="/api/getProfile/"
-              :show-file-list="false"
-              :http-request="uploadProfile"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">Upload Profile
-            </el-upload>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <img src="../assets/log_out.png" class="logout" @click="logout" />
-    </el-menu>
-    <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
-      <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
-      <el-dropdown slot="suffix" trigger="click">
-        <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
-        <el-dropdown-menu slot="dropdown" style="width: 34%;height: 100px;">
-          <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
-          <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
-            <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
-            <el-dropdown-menu slot="dropdown" style="width: 12%;height: 150px;overflow: auto;">
-              <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
-            <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
-            <el-dropdown-menu slot="dropdown" style="width: 22%;height: 150px;overflow: auto;">
-              <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </el-input>
-    <div v-if="index === 'Main'" class="tab">
-      <div id="leftBox"></div>
-      <div id="rightBox"></div>
-      <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
-      <el-tabs :value="activeTab" @tab-click="handleClick">
-        <el-tab-pane></el-tab-pane>
-        <el-tab-pane label="Hot Blogs" name="first">
-          <div class="blog" v-for="(item,index) in hotBlogs" :key="index+'_hot'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="Followed Blogs" name="second">
-          <div class="blog" v-for="(item,index) in followedBlogs" :key="index+'_follow'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="Followed Partitions" name="third">
-          <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
-          <div v-if="p_type" class="partition" v-for="(item,index) in followedPartitions" :key="'followedPartitions_'+index">
-            <img :src="item.url" class="partition-icon"/>
-            <h3>{{ item.group_name + ' - ' + item.description }}</h3>
-            <div id="sub-container">
-              <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-              <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
-            </div>
-            <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
-            </button>
-            <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.amount_of_follows }}</span>
-            </button>
-          </div>
-          <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,true)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,true)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="My Blogs" name="fourth">
-          <div class="blog" v-for="(item,index) in myBlogs" :key="index+'_my'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane label="Wait for an answer" name="fifth">
-          <div class="blog" v-for="(item,index) in unAnsweredBlogs" :key="index+'_wait'">
-            <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>0</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-        <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name">
-          <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
-          <div class="blog" v-for="(item,index) in srBlogs" :key="index+'_sr'">
-            <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-            <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-            </button>
-            <button v-else class="click_icon" @click="like($event,item,0,false)">
-              <img src="../assets/like.png" />
-              <span style="color: white;">{{ item.like }}</span>
-            </button>
-            <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow-click.png" />
-              <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-            </button>
-            <button v-else class="click_icon" @click="follow($event,item,false)">
-              <img src="../assets/follow.png" />
-              <span style="color: white;">{{ item.follow }}</span>
-            </button>
-            <div class="noclick_icon">
-              <i class="el-icon-collection-tag"></i>
-              <span>{{ item.group_type }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-chat-line-round"></i>
-              <span>{{ item.amount_of_answers }}</span>
-            </div>
-            <div class="noclick_icon">
-              <i class="el-icon-view"></i>
-              <span>{{ item.views }}</span>
-            </div>
-          </div>
-          <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <div v-if="index === 'Partitions'" class="tab">
-      <div id="leftBox"></div>
-      <div id="rightBox"></div>
-      <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
-      <div v-if="p_type" class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
-        <img :src="item.url" class="partition-icon"/>
-        <h3>{{ item.group_name + ' - ' + item.description }}</h3>
-        <div id="sub-container">
-          <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-          <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
-        </div>
-        <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-          <img src="../assets/follow-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
-        </button>
-        <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
-          <img src="../assets/follow.png" />
-          <span style="color: white;">{{ item.amount_of_follows }}</span>
-        </button>
+    <div class="initbackground" v-show="showbackground(2)">
+      <div id="cloud-intro"></div>
+      <div id="frame">
+        <div id="wave"></div>
+        <div id="boat"></div>
       </div>
-      <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
-        <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
-            <p @click="skipToBlog(item)" v-html="item.content"></p>
-        <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-          <img src="../assets/like-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-        </button>
-        <button v-else class="click_icon" @click="like($event,item,0,true)">
-          <img src="../assets/like.png" />
-          <span style="color: white;">{{ item.like }}</span>
-        </button>
-        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-          <img src="../assets/follow-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-        </button>
-        <button v-else class="click_icon" @click="follow($event,item,true)">
-          <img src="../assets/follow.png" />
-          <span style="color: white;">{{ item.follow }}</span>
-        </button>
-        <div class="noclick_icon">
-          <i class="el-icon-collection-tag"></i>
-          <span>{{ item.group_type }}</span>
-        </div>
-        <div class="noclick_icon">
-          <i class="el-icon-chat-line-round"></i>
-          <span>{{ item.amount_of_answers }}</span>
-        </div>
-        <div class="noclick_icon">
-          <i class="el-icon-view"></i>
-          <span>{{ item.views }}</span>
-        </div>
+    </div>
+    <div v-show="!showbackground(2)">
+      <fade-loader id="loading" style="display: none;position: fixed;top: 40%;left: 45%;z-index: 1001;"></fade-loader>
+      <div id="mask"></div>
+      <div id="pop-up-reset" class="pop-up">
+        <span id="reset-title"></span>
+        <img src="../assets/close.png" class="closeBtn" @click="close">
+        <input id="inputBox1">
+        <input id="inputBox2" v-model="newVal">
+        <button class="clickBtn" @click="reset">Reset</button>
       </div>
-      <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+      <el-menu default-active="Main"
+               class="el-menu-demo"
+               mode="horizontal"
+               @select="handleSelect"
+               background-color="rgb(32, 129, 181)"
+               text-color="#ffffff"
+               active-text-color="#d3c90a">
+        <el-menu-item index="Main"
+                      class="menu-item">Main</el-menu-item>
+        <el-menu-item index="Partitions"
+                      class="menu-item">Partitions</el-menu-item>
+        <el-button class="searchIcon"
+                   icon="el-icon-search"
+                   @click="search"
+                   circle></el-button>
+        <el-button class="postIcon"
+                   @click="skipToPost"
+                   round>Post</el-button>
+        <el-dropdown trigger="click"
+                     placement="bottom"
+                     @command="selectUserFunctions"
+                     class="userIcon">
+          <el-avatar v-if="profileURL"
+                     :src="profileURL"></el-avatar>
+          <el-avatar v-else
+                     icon="el-icon-user-solid"></el-avatar>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
+            <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
+            <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
+            <el-dropdown-item divided>
+              <el-upload
+                class="avatar-uploader"
+                action="/api/getProfile/"
+                :show-file-list="false"
+                :http-request="uploadProfile"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">Upload Profile
+              </el-upload>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <img src="../assets/log_out.png" class="logout" @click="logout" />
+      </el-menu>
+      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
+        <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
+        <el-dropdown slot="suffix" trigger="click">
+          <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
+          <el-dropdown-menu slot="dropdown" style="width: 34%;height: 100px;">
+            <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
+            <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+              <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
+              <el-dropdown-menu slot="dropdown" style="width: 12%;height: 150px;overflow: auto;">
+                <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
+              <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
+              <el-dropdown-menu slot="dropdown" style="width: 22%;height: 150px;overflow: auto;">
+                <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-input>
+      <div v-if="index === 'Main'" class="tab">
+        <div id="leftBox"></div>
+        <div id="rightBox"></div>
+        <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <el-tabs :value="activeTab" @tab-click="handleClick">
+          <el-tab-pane></el-tab-pane>
+          <el-tab-pane label="热点话题"
+                       name="first">
+            <div class="blog"
+                 v-for="(item,index) in hotBlogs"
+                 :key="index+'_hot'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>{{ item.amount_of_answers }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+          <el-tab-pane label="关注话题"
+                       name="second">
+            <div class="blog"
+                 v-for="(item,index) in followedBlogs"
+                 :key="index+'_follow'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>{{ item.amount_of_answers }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+          <el-tab-pane label="关注分区"
+                       name="third">
+            <img v-show="p_type === false"
+                 src="../assets/back.png"
+                 @click="back"
+                 style="position: fixed;left: 80%;cursor: pointer;" />
+            <div v-if="p_type"
+                 class="partition"
+                 v-for="(item,index) in followedPartitions"
+                 :key="'followedPartitions_'+index">
+              <img :src="item.url"
+                   class="partition-icon" />
+              <h3>{{ item.group_name + ' - ' + item.description }}</h3>
+              <div id="sub-container">
+                <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
+                <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+              </div>
+              <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+              </button>
+              <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.amount_of_follows }}</span>
+              </button>
+            </div>
+            <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+              <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
+              <p @click="skipToBlog(item)" v-html="item.content"></p>
+              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,true)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,true)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>{{ item.amount_of_answers }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+          <el-tab-pane label="我的提问"
+                       name="fourth">
+            <div class="blog"
+                 v-for="(item,index) in myBlogs"
+                 :key="index+'_my'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>{{ item.amount_of_answers }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+          <el-tab-pane label="未解决的问题"
+                       name="fifth">
+            <div class="blog"
+                 v-for="(item,index) in unAnsweredBlogs"
+                 :key="index+'_wait'">
+              <h3 @click="skipToBlog(item)"
+                  v-html="item.title"></h3>
+              <p @click="skipToBlog(item)"
+                 v-html="item.content"></p>
+              <button v-if="item.isliked"
+                      class="click_icon"
+                      @click="like($event,item,0,false)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>0</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+          <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name" class="animate__animated animate__fadeInUp">
+            <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
+            <div class="blog" v-for="(item,index) in srBlogs" :key="index+'_sr'">
+              <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
+              <p @click="skipToBlog(item)" v-html="item.content"></p>
+              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+              </button>
+              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: white;">{{ item.like }}</span>
+              </button>
+              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow-click.png" />
+                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="click_icon" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <div class="noclick_icon">
+                <i class="el-icon-collection-tag"></i>
+                <span>{{ item.group_type }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-chat-line-round"></i>
+                <span>{{ item.amount_of_answers }}</span>
+              </div>
+              <div class="noclick_icon">
+                <i class="el-icon-view"></i>
+                <span>{{ item.views }}</span>
+              </div>
+            </div>
+            <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <div v-if="index === 'Partitions'" class="tab">
+        <div id="leftBox"></div>
+        <div id="rightBox"></div>
+        <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <div v-if="p_type" class="partition animate__animated animate__slideInUp" v-for="(item,index) in partitions" :key="'partition_'+index">
+          <img :src="item.url" class="partition-icon"/>
+          <h3>{{ item.group_name + ' - ' + item.description }}</h3>
+          <div id="sub-container">
+            <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
+            <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+          </div>
+          <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
+            <img src="../assets/follow-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+          </button>
+          <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ item.amount_of_follows }}</span>
+          </button>
+        </div>
+        <div v-if="p_type === false" class="blog animate__animated animate__slideInUp" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+          <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
+              <p @click="skipToBlog(item)" v-html="item.content"></p>
+          <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
+            <img src="../assets/like-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+          </button>
+          <button v-else class="click_icon" @click="like($event,item,0,true)">
+            <img src="../assets/like.png" />
+            <span style="color: white;">{{ item.like }}</span>
+          </button>
+          <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
+            <img src="../assets/follow-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+          </button>
+          <button v-else class="click_icon" @click="follow($event,item,true)">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ item.follow }}</span>
+          </button>
+          <div class="noclick_icon">
+            <i class="el-icon-collection-tag"></i>
+            <span>{{ item.group_type }}</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-chat-line-round"></i>
+            <span>{{ item.amount_of_answers }}</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-view"></i>
+            <span>{{ item.views }}</span>
+          </div>
+        </div>
+        <div style="height: 200px;"></div> <!-- Used to leave some blank -->
+      </div>
     </div>
   </div>
 </template>
@@ -359,7 +415,12 @@
 <script>
 import axios from 'axios'
 import Qs from 'qs'
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+
 export default {
+  components: {
+    FadeLoader
+  },
   data () {
     return {
       input: '',
@@ -382,7 +443,8 @@ export default {
       p_type: true, // true => partition, false => sub-partition
       subBlogs: {},
       username: '',
-      newVal: ''
+      newVal: '',
+      value: 0
     }
   },
   computed: {
@@ -397,6 +459,10 @@ export default {
     }
   },
   created () {
+    if (!sessionStorage.getItem('isLogin')) {
+      alert('You do not log in, click OK to skip to the login page!')
+      this.logout()
+    }
     this.username = this.$route.params['username']
     if (this.$route.params['searchContent'] !== undefined) {
       this.searchContent = this.$route.params['searchContent']
@@ -471,8 +537,22 @@ export default {
   },
   mounted: function () {
     document.body.style = 'overflow: hidden;'
+    this.timer = setInterval(this.get, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.timer)
   },
   methods: {
+    get () {
+      this.value = this.value + 1
+    },
+    showbackground (time) {
+      if (time > this.value) {
+        return true
+      } else {
+        return false
+      }
+    },
     // close the pop-up window
     close () {
       document.getElementById('mask').style.display = 'none'
@@ -510,9 +590,9 @@ export default {
         tips += files[i].name
         tips += ', '
       }
-      tips = tips.substring(0, tips.length - 2)
+      tips = tips.substscale(0, tips.length - 2)
       if (tips.length > 40) {
-        tips = tips.substring(0, 40) + '...'
+        tips = tips.substscale(0, 40) + '...'
       }
       fileTip.innerHTML = tips
       this.fileList = files
@@ -802,7 +882,7 @@ export default {
         this.activeTab = 'first'
       }
       this.srPage.push({
-        label: 'Search Results',
+        label: '搜索结果',
         name: 'sixth'
       })
       let sendData = {
@@ -845,6 +925,7 @@ export default {
     },
     // User click to log out
     logout () {
+      sessionStorage.clear()
       this.$router.push({
         path: '/'
       })
@@ -888,6 +969,43 @@ export default {
   border-radius: 5px;
   border: 1px solid gray;
   margin: 10% auto;
+  border: 0;
+  padding: 0;
+  padding-left: 15px;
+  padding-right: 45px;
+  /*  Don't let that box scale because of left padding*/
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-image: -webkit-linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: -moz-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -ms-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  color-stop(0, #fcfaf6),
+  color-stop(1, #eae3cf));
+  box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -webkit-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -moz-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  height: 45px;
+  width: 100%;
+  color: #97917e;
+  font-weight: bold;
+  font-size: 14px;
+  outline: none;
+  line-height: 18px;
+  -webkit-transition: all 1s;
 }
 #reset-title {
   position: relative;
@@ -898,6 +1016,59 @@ export default {
   height: 12%;
   width: 60%;
   cursor: pointer;
+  background-color: #b73104;
+  background-image: -webkit-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -o-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  padding: 0px;
+  border: none;
+  margin: 0px;
+  outline: none;
+  display:inline-block;;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: white;
+  text-shadow: 0px 1px 2px #660300;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #a4381b;
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  box-shadow: inset 0px 1px rgba(255,185,145,1),
+        0px 2px 3px rgba(165,55,25,0.75);
+  -webkit-box-shadow: inset 0px 1px rgba(255,185,145,1),
+            0px 2px 3px rgba(165,55,25,0.75);
+  -moz-box-shadow: inset 0px 1px rgba(255,185,145,1),
+           0px 2px 3px rgba(165,55,25,0.75);
+    -moz-transition: all 1s ease-in;
+    /* WebKit */
+    -webkit-transition: all 1s ease-in;
+    /* Opera */
+    -o-transition: all 1s ease-in;
+    /* Standard */
+    transition: all 1s ease-in;
+}
+.clickBtn:hover {
+  background-color: #df620f;
+  border: 1px solid #df620f;
+  text-shadow: 0px 1px 3px #660300;
+  box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,0,0.65);
+  -webkit-box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
+  -moz-box-shadow:  inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
 }
 .closeBtn {
   width: 5%;
@@ -909,25 +1080,57 @@ export default {
   width: 20%;
   height: 100%;
   left: 0;
-  background-color: #bfbfbf;
+  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
+}
+@-moz-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-ms-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-o-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
 }
 #rightBox {
   position: fixed;
   width: 20%;
   height: 100%;
   left: 80%;
-  background-color: #bfbfbf;
+  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
 }
 .menu-item {
-  margin-left: 50px;
+  margin-left: 50px !important;
 }
 .searchBox {
   position: fixed;
   width: 35%;
   top: 10px;
   left: 30%;
+  border: 1.5px solid #9fbee4;
+  border-radius: 6px;
+  border-bottom-width: 2.5px;
+}
+.searchBox:hover {
+  border-color: #388fe1;
 }
 .searchIcon {
   position: fixed;
@@ -982,7 +1185,7 @@ export default {
 }
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
-  color: #82beec;
+  color: #2e60c4;
 }
 .click_icon, .follow-partition {
   box-sizing: border-box;
@@ -994,7 +1197,7 @@ export default {
   line-height: 25px;
   border-color: transparent;
   border-radius: 3px;
-  background-color: #82beec;
+  background-color: #e4c32c;
   margin-right: 50px;
 }
 .click_icon img, .follow-partition img{
@@ -1002,7 +1205,7 @@ export default {
 }
 .click_icon:hover, .follow-partition:hover{
   cursor: pointer;
-  background-color: #b3d8ff;
+  background-color: #e8b774;
 }
 .noclick_icon {
   box-sizing: border-box;
@@ -1029,18 +1232,18 @@ export default {
   top: 10px;
 }
 .sub-partitions {
-  background-color: #82beec;
+  background-color: #007ced;
+  color: rgb(249, 245, 245);
   border-color: transparent;
   width: 100px;
-  padding: 10px 0;
+  padding: 10px 0 !important;
   margin: 10px 15px;
 }
-.sub-partitions:hover{
-  background-color: #b3d8ff;
+.sub-partitions:hover {
+  background-color: #2073b3;
 }
-.sub-partitions:first-child:hover{
-  background-color: #82beec;
-  cursor: default;
+.sub-partitions:first-child:hover {
+  background-color: #095c9c;
 }
 #sub-container {
   display: inline-block;
@@ -1053,5 +1256,170 @@ export default {
 .follow-partition {
   float: right;
   margin: 0;
+}
+#frame {
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  height: 15em;
+  width: 15em;
+  background-color: lightblue;
+  border: 0.75em solid #864d18;
+  border-radius: 50%;
+  margin: 2em auto;
+  overflow: hidden;
+  z-index: 2;
+}
+#frame:after {
+  content: "";
+  height: 5em;
+  width: 5em;
+  background-color: rgba(255, 255, 0, 0.77);
+  display: block;
+  margin-top: -2em;
+  border-radius: 50%;
+  margin-left: 50%;
+  box-shadow: -4px 5px 31px rgba(255, 255, 0, 1);
+}
+#wave {
+  background: radial-gradient(#3b3b92 38%, #1269e6 100%);
+  height: 23em;
+  width: 23em;
+  position: absolute;
+  border-radius: 8.15em;
+  bottom: -19em;
+  left: -5em;
+  transform: rotate(360deg);
+  animation: wave 5s linear infinite;
+}
+#boat {
+  width: 7.5em;
+  height: 2.125em;
+  background: linear-gradient(18deg, #457b96 29%, #62a6e4 100%);
+  position: absolute;
+  top: 8.5em;
+  margin-left: 3.75em;
+  margin-top: 0.25em;
+  left: -1em;
+  border-radius: 45%;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  transform: rotate(-4deg);
+  animation: rockTheBoat 1.25s linear infinite;
+  z-index: 2;
+  border-bottom: 3px outset #6776bb;
+}
+#boat:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 2em solid transparent;
+  border-right: -0.25em solid transparent;
+  border-bottom: 4em solid #eaeaea;
+  position: absolute;
+  top: -4em;
+  left: 1.75em;
+  z-index: 1;
+  transform: rotateY(500px);
+}
+#boat:after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-right: 2em solid transparent;
+  border-left: -0.25em solid transparent;
+  border-bottom: 4em solid #f5f0f0;
+  position: absolute;
+  top: -4em;
+  left: 3.875em;
+  z-index: 1;
+}
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rockTheBoat {
+  0% {
+    margin-top: 0.25em;
+    transform: rotate(-4deg);
+  }
+  40% {
+    transform: rotate(6deg);
+    margin-top: -0.5em;
+  }
+  65% {
+    transform: rotate(-8deg);
+    margin-top: -0.125em;
+  }
+  100% {
+    transform: rotate(-4deg);
+    margin-top: 0.25em;
+  }
+}
+.initbackground {
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  background-color: #007ced;
+  background: linear-gradient(to bottom, #007ced 1%,#cce7ff 100%);
+}
+#cloud-intro{
+  position: relative;
+  height: 100%;
+  background: url(http://175.178.34.84/pics/p1);
+  background: url(http://175.178.34.84/pics/p1) 0 200px,
+              url(http://175.178.34.84/pics/p2) 0 300px,
+              url(http://175.178.34.84/pics/p3) 100px 250px;
+  animation: wind 20s linear infinite;
+}
+@keyframes wind{
+  0% {
+    background-position: 0 200px, 0 300px, 100px 250px;
+  }
+  100% {
+    background-position: 1000px 200px, 1200px 300px, 1100px 250px;
+  }
+}
+.pop-up {
+  background-image: linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -o-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -moz-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -webkit-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -ms-linear-gradient(bottom, #F0E9D7 23%, #F5F1E5 62%);
+  background-image: -webkit-gradient(linear, left bottom, left top,
+  color-stop(0.33, #F0E9D7),
+  color-stop(0.67, #F5F1E5));
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  /*  height: 155px;*/
+  margin: 0px;
+  border-top: 1px solid white;
+  border-bottom: 1px solid #f5f1e4;
+  box-shadow: 0px 1px 2px rgba(100,0,0,0.10),
+        0px -1px 2px rgba(100,0,0,0.10);
+  -webkit-box-shadow: 0px 1px 2px rgba(100,0,0,0.10),
+            0px -1px 2px rgba(100,0,0,0.10);
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 35px;
+  padding-bottom: 25px;
+  margin-bottom: 0px;
+  position: fixed;
+  height: 40%;
+  width: 40%;
+  left: 30%;
+  top: 20%;
+  border-radius: 10px;
+  font-size: 25px;
+  text-align: center;
+  z-index: 1001;
+  background-color: white;
+  display: none;
 }
 </style>

@@ -143,26 +143,44 @@ export default {
     VueMzcLoading
   },
   data: () => ({
-    code: 'print("Hello World!")',
+    code: '// include any code you want to here',
     lineNumbers: true,
-    Language: 'Python',
+    Language: 'C++',
     partition: '',
     subpartition: '',
-    codeResult: 'Hello World!',
+    codeResult: '// code result will be shown here',
     isloading: false,
     blogtext: '',
     title: '',
+    username: '',
+    link: '',
     config: {
       heightMax: 330,
       heightMin: 330,
       placeholderText: 'Type your blog...',
-      fileUploadURL: 'http://175.178.34.84/api/get_file',
+      fileUploadURL: 'http://175.178.34.84/api/getfile',
       fileUploadParams: {
-        id: 'file'
+        username: this.username
       },
-      imageUploadURL: 'http://175.178.34.84/pictures/pics'
+      quickInsertButtons: ['table', 'ul', 'ol', 'hr'],
+      toolbarButtons: ['bold', 'italic', 'underline', '|', 'fontFamily', 'fontSize', 'quote', '|',
+        'print', 'markdown', 'align', '|',
+        'html', 'insertLink', 'insertFile', '|',
+        'paragraphStyle', 'paragraphFormat', 'specialCharacters', '|',
+        'undo', 'redo', 'fullscreen'],
+      events: {
+        'file.uploaded': function (response) {
+          this.link = JSON.parse(response).link
+          sessionStorage.setItem('link', this.link)
+        }
+      },
+      imageUploadURL: 'http://175.178.34.84/api/getfile'
     }
   }),
+  created () {
+    this.username = this.$route.params['username']
+    this.config.fileUploadParams.username = this.username
+  },
   mounted () {
     Prism.highlightAll()
     document.body.style = 'overflow: auto;'
@@ -221,7 +239,8 @@ export default {
       this.$router.go(-1)
     },
     submit () {
-      console.log(this.blogtext)
+      console.log(sessionStorage.getItem('link'))
+      this.link = sessionStorage.getItem('link')
       if (this.title === '') {
         this.$message.error('Please conclude your title!')
       } else if (this.partition === '') {
@@ -237,8 +256,9 @@ export default {
           sub_group_type: this.subpartition,
           code: this.code,
           content: this.blogtext,
-          author_name: 'Huang1234',
-          lang: this.Language
+          author_name: this.username,
+          lang: this.Language,
+          files_url: this.link
         }
         axios({
           method: 'post',
@@ -286,7 +306,7 @@ export default {
 }
 /*background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);*/
 #app {
-  background: linear-gradient(253deg, #0cc898, #1797d2, #864fe1);
+  background: linear-gradient(253deg,  #3b69cd, #71a1eb);
   font-family: "Exo", sans-serif;
   min-height: 450px;
   height: 180vh;
@@ -815,7 +835,7 @@ div[class^="result"]::after {
   color: white;
   border-radius: 15px;
   padding: 0 50px;
-  background: linear-gradient(253deg, #0cc898, #1797d2, #864fe1);
+  background: linear-gradient(253deg, #2eb8d3, #40afe2, #3b69cd);
 }
 .title-input input[type="text"]:focus + label {
   border-radius: 10px;
@@ -838,7 +858,7 @@ div[class^="result"]::after {
   letter-spacing: 2.5px;
   font-weight: 500;
   color: #000;
-  background-color: rgb(113, 223, 190);
+  background-color: rgb(113, 170, 223);
   border: none;
   border-radius: 45px;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
@@ -847,8 +867,8 @@ div[class^="result"]::after {
 }
 
 .btnback:hover {
-  background-color: #17ce94;
-  box-shadow: 0px 15px 20px rgba(56, 163, 163, 0.73);
+  background-color: #1797ce;
+  box-shadow: 0px 15px 20px rgba(56, 90, 163, 0.73);
   color: #fff;
   transform: translateY(-7px);
 }
