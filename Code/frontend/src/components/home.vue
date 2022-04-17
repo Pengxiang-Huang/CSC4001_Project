@@ -492,7 +492,6 @@ export default {
   mounted: function () {
     document.body.style = 'overflow: hidden;'
     this.timer = setInterval(this.get, 1000)
-    // this.sleep(1000)
   },
   beforeDestroy () {
     clearInterval(this.timer)
@@ -507,10 +506,6 @@ export default {
       } else {
         return false
       }
-    },
-    sleep (ms) {
-      var unixtime = new Date().getTime()
-      while (new Date().getTime() < unixtime + ms) {}
     },
     // close the pop-up window
     close () {
@@ -871,21 +866,16 @@ export default {
     },
     // User click to skip to the blog page
     skipToBlog (item) {
-      document.getElementById('mask').style.display = 'block'
-      document.getElementById('loading').style.display = 'block'
-      var _this = this
-      setTimeout(function () {
-        _this.$router.push({
-          path: '/blog',
-          query: {
-            question_id: item.id,
-            username: _this.username,
-            searchCondition: _this.searchCondition,
-            searchContent: _this.searchContent,
-            inSearch: _this.inSearch
-          }
-        })
-      }, 800)
+      this.$router.push({
+        path: '/blog',
+        query: {
+          question_id: item.id,
+          username: this.username,
+          searchCondition: this.searchCondition,
+          searchContent: this.searchContent,
+          inSearch: this.inSearch
+        }
+      })
     },
     // User click to log out
     logout () {

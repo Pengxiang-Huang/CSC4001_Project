@@ -1,147 +1,165 @@
 <template>
   <div>
-    <div id="mask"></div>
-    <div id="pop-up-reset" class="pop-up">
-      <span id="reset-title"></span>
-      <img src="../assets/close.png" class="closeBtn" @click="close">
-      <input id="inputBox1">
-      <input id="inputBox2" v-model="newVal">
-      <button class="clickBtn" @click="reset">Reset</button>
+    <div class="initbackground" v-show="showbackground(2)">
+      <div id="cloud-intro"></div>
+      <div id="frame">
+        <div id="wave"></div>
+        <div id="boat"></div>
+      </div>
     </div>
-    <el-menu
-      default-active="Main"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-      background-color="#545c64"
-      text-color="#ffffff"
-      active-text-color="#ffd04b"
-    >
-      <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
-      <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
+    <div v-show="!showbackground(2)">
+      <div id="mask"></div>
+      <div id="pop-up-reset" class="pop-up">
+        <span id="reset-title"></span>
+        <img src="../assets/close.png" class="closeBtn" @click="close">
+        <input id="inputBox1">
+        <input id="inputBox2" v-model="newVal">
+        <button class="clickBtn" @click="reset">Reset</button>
+      </div>
+      <div id="textcode">
+        <froala :tag="'textarea'" :config="config" v-model="model"></froala>
+        <img src="../assets/close.png" @click="closeAnwserBox" style="position: fixed;top: 21%;left: 81%;cursor: pointer">
+      </div>
+      <el-menu
+        default-active="Main"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#545c64"
+        text-color="#ffffff"
+        active-text-color="#ffd04b"
+      >
+        <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
+        <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
+        <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
+        <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
+        <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
+          <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
+          <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
+            <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
+            <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
+            <el-dropdown-item divided>
+              <el-upload
+                class="avatar-uploader"
+                action="/api/getProfile/"
+                :show-file-list="false"
+                :http-request="uploadProfile"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">Upload Profile
+              </el-upload>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <img src="../assets/log_out.png" class="logout" @click="logout" />
+      </el-menu>
       <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
         <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
         <el-dropdown slot="suffix" trigger="click">
           <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
-          <el-dropdown-menu slot="dropdown" style="width: 440px;height: 100px;">
+          <el-dropdown-menu slot="dropdown" style="width: 34%;height: 100px;">
             <el-dropdown-item disabled>Limit the search results by following conditions:</el-dropdown-item>
             <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
               <el-dropdown-item divided command="Partition">Search in Partition</el-dropdown-item>
-              <el-dropdown-menu slot="dropdown" style="width: 160px;height: 150px;overflow: auto;">
+              <el-dropdown-menu slot="dropdown" style="width: 12%;height: 150px;overflow: auto;">
                 <el-dropdown-item divided v-for="(item,index) in partitions" :key="'partition_'+index" :command="item.group_name">{{ item.group_name }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown trigger="click" placement="bottom-start" @command="selectSearchCondition">
               <el-dropdown-item divided command="Sub-Partition">Search in Sub-Partition</el-dropdown-item>
-              <el-dropdown-menu slot="dropdown" style="width: 270px;height: 150px;overflow: auto;">
+              <el-dropdown-menu slot="dropdown" style="width: 22%;height: 150px;overflow: auto;">
                 <el-dropdown-item divided v-for="(item,index) in filterCondition" :key="'subpartition_'+index" :command="item">{{ item }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-dropdown-menu>
         </el-dropdown>
       </el-input>
-      <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
-      <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
-      <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
-        <el-avatar v-if="profileURL" :src="profileURL"></el-avatar>
-        <el-avatar v-else icon="el-icon-user-solid"></el-avatar>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item disabled><input :value="username" id="user"/></el-dropdown-item>
-          <el-dropdown-item divided command="Reset Username">Reset Username</el-dropdown-item>
-          <el-dropdown-item divided command="Reset Password">Reset Password</el-dropdown-item>
-          <el-dropdown-item divided>
-            <el-upload
-              class="avatar-uploader"
-              action="/api/getProfile/"
-              :show-file-list="false"
-              :http-request="uploadProfile"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">Upload Profile
-            </el-upload>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </el-menu>
-    <div v-if="index === 'Main'" class="tab">
-      <div id="leftBox"></div>
-      <div id="rightBox"></div>
-      <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
-      <div style="padding: 0 50px;">
-        <h2>{{ blog.title }}</h2>
-        <span v-show="JSON.stringify(blog.file_urls) !== '{}'">Attachments:</span>
-        <a v-for="(url,index) in blog.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
-        <hr />
-        <p v-html="blog.content"></p>
-        <p v-html="blog.code"></p>
-        <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="margin-bottom: 20px;" :preview-src-list="previewArr">
-        </el-image>
-        <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
-          <img src="../assets/like-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
-        </button>
-        <button v-else class="click_icon" @click="like($event,blog,0,false)">
-          <img src="../assets/like.png" />
-          <span style="color: white;">{{ blog.like }}</span>
-        </button>
-        <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog,false)">
-          <img src="../assets/follow-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ blog.follow }}</span>
-        </button>
-        <button v-else class="click_icon" @click="follow($event,blog,false)">
-          <img src="../assets/follow.png" />
-          <span style="color: white;">{{ blog.follow }}</span>
-        </button>
-        <div class="noclick_icon">
-          <i class="el-icon-collection-tag"></i>
-          <span>{{ blog.sub_group_name }}</span>
+      <div v-if="index === 'Main'" class="tab">
+        <div id="leftBox"></div>
+        <div id="rightBox"></div>
+        <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <div style="padding: 0 50px;" class="animate__animated animate__zoomIn">
+          <h2>{{ blog.title }}</h2>
+          <span v-show="JSON.stringify(blog.file_urls) !== '{}'">Attachments:</span>
+          <a v-for="(url,index) in blog.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+          <hr />
+          <p v-html="blog.content"></p>
+          <p v-html="blog.code"></p>
+          <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="display: block;margin-bottom: 20px;" :preview-src-list="previewArr">
+          </el-image>
+          <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
+            <img src="../assets/like-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
+          </button>
+          <button v-else class="click_icon" @click="like($event,blog,0,false)">
+            <img src="../assets/like.png" />
+            <span style="color: white;">{{ blog.like }}</span>
+          </button>
+          <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog,false)">
+            <img src="../assets/follow-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ blog.follow }}</span>
+          </button>
+          <button v-else class="click_icon" @click="follow($event,blog,false)">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ blog.follow }}</span>
+          </button>
+          <div class="noclick_icon" @click="answer(blog)" style="cursor: pointer;">
+            <i class="el-icon-chat-dot-square"></i>
+            <span>Answer</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-collection-tag"></i>
+            <span>{{ blog.sub_group_name }}</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-collection-tag"></i>
+            <span>{{ blog.group_type }}</span>
+          </div>
         </div>
-        <div class="noclick_icon">
-          <i class="el-icon-collection-tag"></i>
-          <span>{{ blog.group_type }}</span>
-        </div>
-      </div>
-      <hr style="color: gray;margin: 20px 0;"/>
-      <div class="comments-container">
-        <ul id="comments-list" class="comments-list" style="list-style-type: none;">
-          <li v-for="(item,index) in answers" :key="'answer_'+index">
-            <div class="comment-main-level">
-              <div class="comment-avatar">
-                  <el-avatar v-if="item.author_profile_url" :src="item.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
-                  <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
-              </div>
-              <div class="comment-box">
-                <div class="comment-head">
-                  <h6 class="comment-name">{{ item.author_name }}</h6>
-                  <span v-show="item.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
-                  <span style="color: white;margin: 0 10px">reply</span>
-                  <h6 class="comment-name">{{ blog.author_name }}</h6>
-                  <span style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
-                  <div v-if="item.isliked">
-                    <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: #409EFF;">{{ item.like }}</span>
-                    <img src="../assets/like-click.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
-                  </div>
-                  <div v-else>
-                    <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: white;">{{ item.like }}</span>
-                    <img src="../assets/like.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
-                  </div>
-                </div>
-                <div class="comment-content">
-                  <div v-html="item.content"></div>
-                  <el-image v-for="(pic,index) in item.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(item)">
-                  </el-image>
-                  <span v-show="JSON.stringify(item.file_urls) !== '{}'">Attachments:</span>
-                  <a v-for="(url,index) in item.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
-                </div>
-              </div>
-            </div>
-            <ul class="comments-list reply-list" style="list-style-type: none;">
-              <li v-for="(child,index) in item.Children" :key="'child_'+index">
+        <hr style="color: gray;margin: 20px 0;" class="animate__animated animate__zoomIn"/>
+        <div class="comments-container animate__animated animate__zoomIn">
+          <ul id="comments-list" class="comments-list" style="list-style-type: none;">
+            <li v-for="(item,index) in answers" :key="'answer_'+index">
+              <div class="comment-main-level">
                 <div class="comment-avatar">
-                  <el-avatar v-if="child.author_profile_url" :src="child.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
-                  <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                    <el-avatar v-if="item.author_profile_url" :src="item.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                    <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
                 </div>
                 <div class="comment-box">
                   <div class="comment-head">
+                    <h6 class="comment-name">{{ item.author_name }}</h6>
+                    <span v-show="item.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                    <span style="color: white;margin: 0 10px">reply</span>
+                    <h6 class="comment-name">{{ blog.author_name }}</h6>
+                    <span style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
+                    <div v-if="item.isliked">
+                      <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: #409EFF;">{{ item.like }}</span>
+                      <img src="../assets/like-click.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
+                    </div>
+                    <div v-else>
+                      <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: white;">{{ item.like }}</span>
+                      <img src="../assets/like.png" style="float: right;cursor: pointer;" @click="like($event,item,1,false)"/>
+                    </div>
+                    <i class="el-icon-chat-dot-square" @click="answer(item)" style="float: right;margin-right: 10px;font-size: 25px;color: white;cursor: pointer;"></i>
+                  </div>
+                  <div class="comment-content">
+                    <div v-html="item.content"></div>
+                    <el-image v-for="(pic,index) in item.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(item)">
+                    </el-image>
+                    <span v-show="JSON.stringify(item.file_urls) !== '{}'">Attachments:</span>
+                    <a v-for="(url,index) in item.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+                  </div>
+                </div>
+              </div>
+              <ul class="comments-list reply-list" style="list-style-type: none;">
+                <li v-for="(child,index) in item.Children" :key="'child_'+index">
+                  <div class="comment-avatar">
+                    <el-avatar v-if="child.author_profile_url" :src="child.author_profile_url" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                    <el-avatar v-else icon="el-icon-user-solid" style="position: absolute;margin: auto; left: 0;top: 0;right: 0;bottom: 0;"></el-avatar>
+                  </div>
+                  <div class="comment-box">
+                    <div class="comment-head">
                       <h6 class="comment-name">{{ child.author_name }}</h6>
                       <span v-show="child.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
                       <span style="color: white;margin: 0 10px">reply</span>
@@ -155,75 +173,77 @@
                         <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: white;">{{ child.like }}</span>
                         <img src="../assets/like.png" style="float: right;cursor: pointer;" @click="like($event,child,1,false)"/>
                       </div>
+                      <i class="el-icon-chat-dot-square" @click="answer(child)" style="float: right;margin-right: 10px;font-size: 25px;color: white;cursor: pointer;"></i>
+                    </div>
+                    <div class="comment-content">
+                      <div v-html="child.content"></div>
+                      <el-image v-for="(pic,index) in child.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(child)">
+                      </el-image>
+                      <span v-show="JSON.stringify(child.file_urls) !== '{}'">Attachments:</span>
+                      <a v-for="(url,index) in child.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
+                    </div>
                   </div>
-                  <div class="comment-content">
-                    <div v-html="child.content"></div>
-                    <el-image v-for="(pic,index) in child.pic_urls" :key="'image_'+index" :src="pic" style="margin-bottom: 20px;" :preview-src-list="answerImages(child)">
-                    </el-image>
-                    <span v-show="JSON.stringify(child.file_urls) !== '{}'">Attachments:</span>
-                    <a v-for="(url,index) in child.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="height: 200px;"></div> <!-- Used to leave some blank -->
       </div>
-      <div style="height: 200px;"></div> <!-- Used to leave some blank -->
-    </div>
-    <div v-if="index === 'Partitions'" class="tab">
-      <div id="leftBox"></div>
-      <div id="rightBox"></div>
-      <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
-      <div v-if="p_type" class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
-        <img :src="item.url" class="partition-icon"/>
-        <h3>{{ item.group_name + ' - ' + item.description }}</h3>
-        <div id="sub-container">
-          <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
-          <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+      <div v-if="index === 'Partitions'" class="tab">
+        <div id="leftBox"></div>
+        <div id="rightBox"></div>
+        <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <div v-if="p_type" class="partition" v-for="(item,index) in partitions" :key="'partition_'+index">
+          <img :src="item.url" class="partition-icon"/>
+          <h3>{{ item.group_name + ' - ' + item.description }}</h3>
+          <div id="sub-container">
+            <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
+            <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
+          </div>
+          <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
+            <img src="../assets/follow-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+          </button>
+          <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ item.amount_of_follows }}</span>
+          </button>
         </div>
-        <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-          <img src="../assets/follow-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
-        </button>
-        <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
-          <img src="../assets/follow.png" />
-          <span style="color: white;">{{ item.amount_of_follows }}</span>
-        </button>
+        <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+          <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
+          <p @click="skipToBlog(item)">{{ item.content }}</p>
+          <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
+            <img src="../assets/like-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
+          </button>
+          <button v-else class="click_icon" @click="like($event,item,0,true)">
+            <img src="../assets/like.png" />
+            <span style="color: white;">{{ item.like }}</span>
+          </button>
+          <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
+            <img src="../assets/follow-click.png" />
+            <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+          </button>
+          <button v-else class="click_icon" @click="follow($event,item,true)">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ item.follow }}</span>
+          </button>
+          <div class="noclick_icon">
+            <i class="el-icon-collection-tag"></i>
+            <span>{{ item.group_type }}</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-chat-line-round"></i>
+            <span>{{ item.amount_of_answers }}</span>
+          </div>
+          <div class="noclick_icon">
+            <i class="el-icon-view"></i>
+            <span>{{ item.views }}</span>
+          </div>
+        </div>
+        <div style="height: 200px;"></div> <!-- Used to leave some blank -->
       </div>
-      <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
-        <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
-        <p @click="skipToBlog(item)">{{ item.content }}</p>
-        <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-          <img src="../assets/like-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-        </button>
-        <button v-else class="click_icon" @click="like($event,item,0,true)">
-          <img src="../assets/like.png" />
-          <span style="color: white;">{{ item.like }}</span>
-        </button>
-        <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-          <img src="../assets/follow-click.png" />
-          <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
-        </button>
-        <button v-else class="click_icon" @click="follow($event,item,true)">
-          <img src="../assets/follow.png" />
-          <span style="color: white;">{{ item.follow }}</span>
-        </button>
-        <div class="noclick_icon">
-          <i class="el-icon-collection-tag"></i>
-          <span>{{ item.group_type }}</span>
-        </div>
-        <div class="noclick_icon">
-          <i class="el-icon-chat-line-round"></i>
-          <span>{{ item.amount_of_answers }}</span>
-        </div>
-        <div class="noclick_icon">
-          <i class="el-icon-view"></i>
-          <span>{{ item.views }}</span>
-        </div>
-      </div>
-      <div style="height: 200px;"></div> <!-- Used to leave some blank -->
     </div>
   </div>
 </template>
@@ -231,7 +251,12 @@
 <script>
 import axios from 'axios'
 import Qs from 'qs'
+import VueFroala from 'vue-froala-wysiwyg'
+
 export default {
+  components: {
+    VueFroala
+  },
   data () {
     return {
       searchContent: '',
@@ -249,7 +274,13 @@ export default {
       username: '',
       newVal: '',
       blog: {},
-      answers: {}
+      answers: {},
+      config: {
+        heightMax: 330,
+        heightMin: 330,
+        placeholderText: 'Type your answer...'
+      },
+      value: 0
     }
   },
   computed: {
@@ -325,8 +356,22 @@ export default {
   },
   mounted: function () {
     document.body.style = 'overflow: hidden;'
+    this.timer = setInterval(this.get, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.timer)
   },
   methods: {
+    get () {
+      this.value = this.value + 1
+    },
+    showbackground (time) {
+      if (time > this.value) {
+        return true
+      } else {
+        return false
+      }
+    },
     // close the pop-up window
     close () {
       document.getElementById('mask').style.display = 'none'
@@ -651,14 +696,33 @@ export default {
         }
       })
     },
-    timeDiff (start) {
-      var staytimeGap = new Date().getTime() - new Date(start).getTime()
-      var stayHour = Math.floor(staytimeGap / (3600 * 1000))
-      var leave1 = staytimeGap % (3600 * 1000)
-      var stayMin = Math.floor(leave1 / (60 * 1000))
-      var leave2 = leave1 % (60 * 1000)
-      var staySec = Math.floor(leave2 / 1000)
-      return stayHour + ':' + stayMin + ':' + staySec
+    // User click to log out
+    logout () {
+      sessionStorage.clear()
+      this.$router.push({
+        path: '/'
+      })
+    },
+    // User click to answer the blog
+    answer (item) {
+      // let sendData = {
+      //   username: this.username,
+      //   question_id: this.blog.id,
+      //   father_answer_id: item.id
+      // }
+      document.getElementById('mask').style.display = 'block'
+      document.getElementById('textcode').style.display = 'block'
+      document.getElementById('textcode').classList.remove('fadeout')
+      document.getElementById('textcode').classList.add('fadein')
+    },
+    // User click to close the answer pop up window
+    closeAnwserBox () {
+      document.getElementById('mask').style.display = 'none'
+      document.getElementById('textcode').classList.remove('fadein')
+      document.getElementById('textcode').classList.add('fadeout')
+      setTimeout(function () {
+        document.getElementById('textcode').style.display = 'none'
+      }, 800)
     }
   }
 }
@@ -673,6 +737,15 @@ export default {
   background-color: #bfbfbf;
   z-index: 1000;
   opacity: 0.8;
+  display: none;
+}
+#textcode{
+  position: fixed;
+  width: 60%;
+  height: 40%;
+  z-index: 9999;
+  left: 20%;
+  top: 20%;
   display: none;
 }
 #pop-up-post {
@@ -740,15 +813,21 @@ export default {
   top: 10px;
   left: 360px;
 }
+.searchBox {
+  position: fixed;
+  width: 35%;
+  top: 10px;
+  left: 30%;
+}
 .searchIcon {
   position: fixed;
   top: 10px;
-  left: 830px;
+  right: 27%;
 }
 .postIcon {
   position: fixed;
   top: 10px;
-  left: 900px;
+  right: 15%;
   width: 100px;
   height: 40px;
   font-size: 18px;
@@ -756,9 +835,13 @@ export default {
 .userIcon {
   position: fixed;
   top: 10px;
-  left: 1253px;
+  right: 8%;
+  cursor: pointer;
 }
-.userIcon:hover {
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 2%;
   cursor: pointer;
 }
 #user {
@@ -966,5 +1049,178 @@ export default {
   -webkit-border-radius: 0 0 4px 4px;
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px;
+}
+.fadein {
+  animation: fadein 1.5s ease 1;
+  -webkit-animation: fadein 1.5s ease 1;
+  -moz-animation: fadein 1.5s ease 1;
+  -o-animation: fadein 1.5s ease 1;
+}
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@-moz-keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@-webkit-keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@-o-keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+.fadeout {
+  animation: fadeout 1s ease 1;
+  -webkit-animation: fadeout 1s ease 1;
+  -moz-animation: fadeout 1s ease 1;
+  -o-animation: fadeout 1s ease 1;
+}
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+@-moz-keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+@-webkit-keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+@-o-keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+#frame {
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  height: 15em;
+  width: 15em;
+  background-color: lightblue;
+  border: 0.75em solid #864d18;
+  border-radius: 50%;
+  margin: 2em auto;
+  overflow: hidden;
+  z-index: 2;
+}
+#frame:after {
+  content: "";
+  height: 5em;
+  width: 5em;
+  background-color: rgba(255, 255, 0, 0.77);
+  display: block;
+  margin-top: -2em;
+  border-radius: 50%;
+  margin-left: 50%;
+  box-shadow: -4px 5px 31px rgba(255, 255, 0, 1);
+}
+#wave {
+  background: radial-gradient(#3b3b92 38%, #1269e6 100%);
+  height: 23em;
+  width: 23em;
+  position: absolute;
+  border-radius: 8.15em;
+  bottom: -19em;
+  left: -5em;
+  transform: rotate(360deg);
+  animation: wave 5s linear infinite;
+}
+#boat {
+  width: 7.5em;
+  height: 2.125em;
+  background: linear-gradient(18deg, #457b96 29%, #62a6e4 100%);
+  position: absolute;
+  top: 8.5em;
+  margin-left: 3.75em;
+  margin-top: 0.25em;
+  left: -1em;
+  border-radius: 45%;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  transform: rotate(-4deg);
+  animation: rockTheBoat 1.25s linear infinite;
+  z-index: 2;
+  border-bottom: 3px outset #6776bb;
+}
+#boat:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 2em solid transparent;
+  border-right: -0.25em solid transparent;
+  border-bottom: 4em solid #eaeaea;
+  position: absolute;
+  top: -4em;
+  left: 1.75em;
+  z-index: 1;
+  transform: rotateY(500px);
+}
+#boat:after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-right: 2em solid transparent;
+  border-left: -0.25em solid transparent;
+  border-bottom: 4em solid #f5f0f0;
+  position: absolute;
+  top: -4em;
+  left: 3.875em;
+  z-index: 1;
+}
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rockTheBoat {
+  0% {
+    margin-top: 0.25em;
+    transform: rotate(-4deg);
+  }
+  40% {
+    transform: rotate(6deg);
+    margin-top: -0.5em;
+  }
+  65% {
+    transform: rotate(-8deg);
+    margin-top: -0.125em;
+  }
+  100% {
+    transform: rotate(-4deg);
+    margin-top: 0.25em;
+  }
+}
+.initbackground {
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  background-color: #007ced;
+  background: linear-gradient(to bottom, #007ced 1%,#cce7ff 100%);
+}
+#cloud-intro{
+  position: relative;
+  height: 100%;
+  background: url(http://175.178.34.84/pics/p1);
+  background: url(http://175.178.34.84/pics/p1) 0 200px,
+              url(http://175.178.34.84/pics/p2) 0 300px,
+              url(http://175.178.34.84/pics/p3) 100px 250px;
+  animation: wind 20s linear infinite;
+}
+@keyframes wind{
+  0% {
+    background-position: 0 200px, 0 300px, 100px 250px;
+  }
+  100% {
+    background-position: 1000px 200px, 1200px 300px, 1100px 250px;
+  }
 }
 </style>
