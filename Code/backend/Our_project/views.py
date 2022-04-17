@@ -365,6 +365,12 @@ def setQuestion(request):
             return HttpResponse('Receive empty content!')
         content_format = "HTML"
 
+        try:
+            fs_url = request.POST['files_url']
+            pics_url = request.POST['pics_url']
+        except:
+            fs_url = ""
+            pics_url = ""
 
         try:
             code = request.POST['code']
@@ -386,14 +392,12 @@ def setQuestion(request):
                                             code = code, lang = lang)
 
         new_q_id = new_question.id
-        uploadPicture(request, new_q_id, question_or_answer = 1)
-        uploadFile(request, new_q_id, question_or_answer = 1)
-        # except Exception as e:
-        #     print('--Insert question error%s'%(e))
-        #     data['ok'] = 0
-        #     return HttpResponse(json.dumps(data), content_type='application/json')
+        # store the files url and pics url
+        if (fs_url != ""):
+            fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
+        if (pics_url != ""):
+            pic = picture.objects.create(url = pics_url, question_id = new_q_id)
 
-        #if success
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
         return HttpResponse('Please use POST request!')
@@ -1510,6 +1514,12 @@ def Reply(request):
         else:
             father_answer_id = int(question_id)
 
+        try:
+            fs_url = request.POST['files_url']
+            pics_url = request.POST['pics_url']
+        except:
+            fs_url = ""
+            pics_url = ""
         
         content = request.POST["content"]
         code = request.POST["code"]
@@ -1518,6 +1528,11 @@ def Reply(request):
 
         Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, code = code, lang = lang, content_format = content_format, like = 0, author_id = userid)
         answer_id = Answer.id
+
+        if (fs_url != ""):
+            fs = file.objects.create(url = fs_url, corresponding_question = question_id, corresponding_answer = answer_id)
+        if (pics_url != ""):
+            pic = picture.objects.create(url = pics_url, question_id = question_id, answer_id = answer_id)
 
         # If the reply has pictures and files, upload them
 
@@ -1558,8 +1573,8 @@ def testing(request):
 
 
 def get_file(request):
-    
-    recevie_file = request.FILE.get("file")
+    data= {}
+    recevie_file = request.FILES.get("file")
     username = request.POST.get("username")
 
     userid = User.objects.filter(username = username).values()[0]['id']
@@ -1571,17 +1586,14 @@ def get_file(request):
 
     code = encode(10)
     if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
-        fs_dir = '../../pictures/pics' + code + extension
+        fs_dir = '../../pictures/pics/' + code + extension
+        data["link"] = 'http://175.178.34.84/pics/' + code + extension
     else:
         fs_dir = '../../fs/' + code + extension
+        data["link"] = 'http://175.178.34.84/fs/' + code + extension
     f = open(fs_dir, 'wb')
-    for line in up_file.chunks():
+    for line in recevie_file.chunks():
         f.write(line)
     f.close()
 
-    # store the file into the database
-    
-
-
-    data["link"] = '../../pictures/pics'
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
