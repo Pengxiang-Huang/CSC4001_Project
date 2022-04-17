@@ -92,34 +92,33 @@ export default {
         }
         console.log(Qs.stringify(sendData))
         var url = 'http://175.178.34.84' + '/register/'
-        axios.all([
-          axios({
-            method: 'post',
-            url: url,
-            data: Qs.stringify(sendData)
-          }),
-          axios({
-            method: 'post',
-            url: 'http://175.178.34.84' + '/sendEmail/',
-            data: Qs.stringify(sendData)
-          })
-        ]).then((response) => {
-          this.veri_code = response[1].data.code
-          if (response[0].data.isRegister) {
-            router.push({
-              path: '/design',
-              query: {
-                code: this.veri_code,
-                username: this.username,
-                email: this.email,
-                password: this.password1
-              }
+        axios({
+          method: 'post',
+          url: url,
+          data: Qs.stringify(sendData)
+        }).then((response) => {
+          if (response.data.isRegister) {
+            axios({
+              method: 'post',
+              url: 'http://175.178.34.84' + '/sendEmail/',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.veri_code = response.data.code
+              router.push({
+                path: '/design',
+                query: {
+                  username: this.username,
+                  email: this.email,
+                  password: this.password1,
+                  code: this.veri_code
+                }
+              })
             })
           } else {
-            this.$message.error('The username has already been used, please change it and register again!')
+            this.$message.error('The username has been registered, please change another one!')
           }
-        }).catch((error) => {
-          this.$message.error('Registration Failed!')
+        }).catch(error => {
+          this.$message.error('It seems have some errors, please try it again')
           console.log(error)
         })
       }
