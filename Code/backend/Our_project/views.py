@@ -30,7 +30,8 @@ from .models import sub_group
 from .models import file
 import hashlib
 import markdown
-from . import BlackBox
+from . import Unit_Testing
+from . import Component_Testing
 
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
@@ -340,7 +341,7 @@ def sendEmail(request):
 #需要对接如何返回
 def setQuestion(request):
     data = {
-        'ok': 1
+        'ok': 0
     }# control flag
 
     if request.method == 'POST':
@@ -361,7 +362,7 @@ def setQuestion(request):
             sub_group_type_name = request.POST['sub_group_type']
             sub_group_type = sub_group.objects.filter(sub_group_name = sub_group_type_name, group_name = group_type).values()[0]['id']
         except:
-            return HttpResponse('Invalid group name or sub_group_name!')
+            return HttpResponse(json.dumps(data), content_type='application/json')
         
         try:
             content = request.POST['content']
@@ -413,6 +414,7 @@ def setQuestion(request):
                 pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
             else:
                 fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
+        data['ok'] = 1
 
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
@@ -609,7 +611,7 @@ def main_page(request):
             # getting the blogs, order by 'hot'
             hot_blogs = Blog_Questions.objects.order_by('-hot').values()
             data = {}
-            for i in range(0, min(5, len(hot_blogs))):
+            for i in range(0, min(10,len(hot_blogs)-1)):
                 question_id = hot_blogs[i]['id']
 
                 # check whether the current user has liked this blog_question. If the current user has liked this blog, return isliked = 1
@@ -1532,14 +1534,12 @@ def Reply(request):
         userid = User.objects.filter(username = username).values()[0]["id"]
 
         question_id = request.POST["question_id"]
-        print("question id: " + str(question_id))
         if (question_id == ""):
             question_id = None
         else:
             question_id = int(question_id)
 
         father_answer_id = request.POST["father_answer_id"]
-        print("father answer id: " + str(father_answer_id))
         if (father_answer_id == ""):
             father_answer_id = None
         else:
@@ -1564,8 +1564,12 @@ def Reply(request):
             pic = picture.objects.create(url = pics_url, question_id = question_id, answer_id = answer_id)
 
         # If the reply has pictures and files, upload them
-
+        print("##############################")
+        print("All is Fine!!!!!")
+        print("##############################")
         data["ok"] = 1
+    else:
+        data['ok'] = 0
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')  
 
@@ -1589,16 +1593,6 @@ def AddViews(request):
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 
-'''
-    Defining the test cases
-'''
-def testing(request):
-
-    result = {}
-
-    result['test_result'] = BlackBox.test()
-
-    return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
 
 
 def get_file(request):
@@ -1635,6 +1629,8 @@ def testing(request):
 
     result = {}
 
-    result['test_result'] = BlackBox.test()
+    result['Unit_test'] = Unit_Testing.test()
+
+    result['Component_test'] = Component_Testing.test()
 
     return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
