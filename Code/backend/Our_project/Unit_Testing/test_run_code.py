@@ -26,7 +26,6 @@ def normal_test1():
     json_data = json.loads(response.content)
     result = json_data['result']
     
-    print(result[0:20])
     if (result[0:20] == "Result: \nhello world"):
         return 1
     return 0

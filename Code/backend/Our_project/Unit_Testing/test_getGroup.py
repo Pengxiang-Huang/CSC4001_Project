@@ -70,7 +70,6 @@ def request_with_noone():
     req.POST["username"] = "ruewioihfiwjfbwjebhjrwhe2131293hur"
 
     response = views.getGroup(req)
-    print(response.content)
     if (b'Invalid Input!' == response.content):
         return 1
     return 0

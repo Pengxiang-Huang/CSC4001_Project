@@ -76,7 +76,6 @@ def request_with_noone():
     req.POST['id'] = 1
 
     response = views.GetQuestions(req)
-    print(response.content)
     if (b'Invalid Request! Please use Post-request and attach usename and question id.' == response.content):
         return 1
     return 0

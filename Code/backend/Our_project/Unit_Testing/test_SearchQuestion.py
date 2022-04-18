@@ -19,6 +19,7 @@ def normal_test1():
     req = request("POST")
     req.POST["content"] = "what's "
     req.POST["scope"] = "All"
+    req.POST["username"] = "QinPR"
 
     response = views.searchQuestion(req)
     json_data = json.loads(response.content)
@@ -32,6 +33,7 @@ def normal_test2():
     req = request("POST")
     req.POST["content"] = "what's "
     req.POST["scope"] = "CSC4001"
+    req.POST["username"] = "QinPR"
 
     response = views.searchQuestion(req)
     json_data = json.loads(response.content)
@@ -45,6 +47,7 @@ def normal_test3():
     req = request("POST")
     req.POST["content"] = "what's "
     req.POST["scope"] = "CSC4001|Project"
+    req.POST["username"] = "QinPR"
 
     response = views.searchQuestion(req)
     json_data = json.loads(response.content)
@@ -58,6 +61,7 @@ def invalid_search1():
     req = request("POST")
     req.POST["content"] = ""
     req.POST["scope"] = "All"
+    req.POST["username"] = "QinPR"
 
     response = views.searchQuestion(req)
     json_data = json.loads(response.content)
@@ -71,11 +75,12 @@ def test_chinese():
     req = request("POST")
     req.POST["content"] = "什么？"
     req.POST["scope"] = "All"
+    req.POST["username"] = "QinPR"
 
     response = views.searchQuestion(req)
     json_data = json.loads(response.content)
     length = len(json_data)    # means it got search result
-    if (response.status_code == 200 and length > 0):
+    if (response.status_code == 200 and json_data != None):
         return 1
     return 0
 

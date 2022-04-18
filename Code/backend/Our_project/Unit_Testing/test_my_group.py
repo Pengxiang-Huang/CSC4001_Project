@@ -54,7 +54,6 @@ def request_with_noone():
     req.POST["username"] = "ruewioihfiwjfbwjebhjrwhe2131293hur"
 
     response = views.my_group(req)
-    print(response.content)
     if (b'Invalid Request! Please use Post-request and attach usename.' == response.content):
         return 1
     return 0

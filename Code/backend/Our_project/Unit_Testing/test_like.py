@@ -60,7 +60,6 @@ def request_with_noone():
     req.POST["username"] = "ruewioihfiwjfbwjebhjrwhe2131293hur"
 
     response = views.like(req)
-    print(response.content)
     if (b'Invalid input!' == response.content):
         return 1
     return 0

@@ -131,11 +131,9 @@ def register(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        print(username,email,password)
 
         #check user name. Multi-thread considerration.
         old_users = User.objects.filter(username=username)
-        print(old_users)
         if (old_users):# if exists
             data['isRegister'] = 0
             return HttpResponse(json.dumps(data), content_type='application/json')
@@ -154,7 +152,6 @@ def verify(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        print(username,email,password)
 
         ##hash the code
         m = hashlib.md5()
@@ -197,8 +194,6 @@ def login(request):
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        print(username)
-        print(password)
 
         try:  #get the user infor.
             user = User.objects.get(username=username)
@@ -231,7 +226,7 @@ def logout(request):
     if 'uid' in request.session:
         del request.session['uid']
     
-    resp = HttpResponseRedirect('/login')
+    resp = HttpResponseRedirect('/index')
     if 'username' in request.COOKIES:
         resp.delete_cookie('username')
     if 'uid' in request.COOKIES:
@@ -375,8 +370,6 @@ def setQuestion(request):
         pics_url = ""
         try:
             fs_url = request.POST['files_url']
-            print("here")
-            print(fs_url)
         except:
             pass
 
@@ -401,17 +394,12 @@ def setQuestion(request):
 
         new_q_id = new_question.id
         # store the files url and pics url
-        print("-----------------")
-        print(fs_url)
-        print("-----------------")
 
         for i in range(0, len(fs_url)):
             if fs_url[i] == ".":
                 extension = fs_url[i:]
         if (fs_url != ""):
             if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
-                print("%@@@@@@@@@@@@@@@@@@@@@@@")
-                print(new_q_id)
                 pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
             else:
                 fs = file.objects.create(url = fs_url, corresponding_question = new_q_id)
@@ -432,16 +420,17 @@ def searchQuestion(request):
         #get the infor
         question = request.POST['content'] #question in test
         question = question.upper()
-        print(question)
         questionElem = question.split(' ')
         scope = request.POST['scope']
+
+        username = request.POST['username']
+        userid = User.objects.filter(username = username).values()[0]['id']
         
         DBlist = []
         #get the db values of all contents
         titleDB = Blog_Questions.objects.values('title').order_by('id')
         for title in titleDB:   
             DBlist.append(title['title'].upper())
-        print(DBlist)
 
         if (scope=='All'):
             # start to search
@@ -464,7 +453,6 @@ def searchQuestion(request):
                 #update the similarity
                 searchValue -= 1
 
-            print(positionList)
             #finially, return the searched answer
             ALL_blogs = Blog_Questions.objects.values()
             data = {}
@@ -474,12 +462,18 @@ def searchQuestion(request):
                 answerID = temp['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
                 temp['amount_of_answers'] = amount_of_answers
+                isliked = 0
+                if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
+                temp['isliked'] = isliked
+
+                isfollowed = 0
+                if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
+                temp['isfollowed'] = isfollowed
+                
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
-                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-            #print(data)
 
             return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
@@ -490,8 +484,6 @@ def searchQuestion(request):
             DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
-            print(scope)
-            print(DBScope)
 
             # start to search
             for DBitem in DBlist:
@@ -517,7 +509,6 @@ def searchQuestion(request):
                 #update the similarity
                 searchValue -= 1
 
-            print(positionList)
             #finially, return the searched answer
             ALL_blogs = Blog_Questions.objects.values()
             data = {}
@@ -527,36 +518,38 @@ def searchQuestion(request):
                 answerID = temp['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
                 temp['amount_of_answers'] = amount_of_answers
+                isliked = 0
+                if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
+                temp['isliked'] = isliked
+
+                isfollowed = 0
+                if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
+                temp['isfollowed'] = isfollowed
+
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
-                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-            #print(data)
 
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
         else:   #CSC3150|project1   sub_group_type and group_type
             scopeItem = scope.split('|')
-            print (scopeItem)
             groupType = scopeItem[0]
             subGroupType = scopeItem[1]
             sub_group_type = sub_group.objects.filter(sub_group_name = subGroupType, group_name = groupType).values()[0]['id']
-            print(sub_group_type)
 
             DBScope = []
             #get the db values
             DBtype = Blog_Questions.objects.values('group_type').order_by('id')
             for type in DBtype:   
                 DBScope.append(type['group_type'])
-            print(DBScope)
 
             DBsub = []
             #get the db values
             DBsubid = Blog_Questions.objects.values('sub_group_type')
             for subid in DBsubid:   
                 DBsub.append(subid['sub_group_type'])
-            print(DBsub)
 
             # start to search
             for DBitem in DBlist:
@@ -582,7 +575,6 @@ def searchQuestion(request):
                 #update the similarity
                 searchValue -= 1
 
-            print(positionList)
             #finially, return the searched answer
             ALL_blogs = Blog_Questions.objects.values()
             data = {}
@@ -592,12 +584,18 @@ def searchQuestion(request):
                 answerID = temp['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
                 temp['amount_of_answers'] = amount_of_answers
+                isliked = 0
+                if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
+                temp['isliked'] = isliked
+
+                isfollowed = 0
+                if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
+                temp['isfollowed'] = isfollowed
+
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
                     temp['content'] = rawContent
-                #print(rawContent)
                 data['blog'+str(i+1)] = temp
-            #print(data)
             return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
     
@@ -933,41 +931,37 @@ def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_lik
             update_blog.save()
 
 def uploadProfile(request):
-    try:
-        if request.method == 'POST':
-            username = request.POST['username']
-            profile = request.FILES.get('profile')
-            profile_dir1 = '../../profiles/' + request.POST['id'] + '.jpg'
-            f = open(profile_dir1, 'wb')
-            for line in profile.chunks():
-                f.write(line)
-            f.close()
-            data = {
-                'profile_name': request.POST['id'] + '.jpg'
-            }
+    if request.method == 'POST':
+        username = request.POST['username']
+        profile = request.FILES.get('profile')
+        profile_dir1 = '../../profiles/' + request.POST['id'] + '.jpg'
+        f = open(profile_dir1, 'wb')
+        for line in profile.chunks():
+            f.write(line)
+        f.close()
+        data = {
+            'profile_name': request.POST['id'] + '.jpg'
+        }
 
-            # 判断是否改用户已经有头像了
-            target_user = User.objects.filter(username = username).values()[0]
-            print(target_user)
-            photo_url = target_user['photo']
-            if (photo_url):    # 用户有旧的头像, 则在服务器上删掉
-                prefix_string = ''
-                for i in range(0, len(photo_url)):
-                    prefix_string += photo_url[i]
-                    if (prefix_string == 'http://175.178.34.84/'):
-                        break
-                delete_url = '../' + photo_url[i+1:] 
-                os.remove(delete_url)
+        # 判断是否改用户已经有头像了
+        target_user = User.objects.filter(username = username).values()[0]
+        photo_url = target_user['photo']
+        if (photo_url):    # 用户有旧的头像, 则在服务器上删掉
+            prefix_string = ''
+            for i in range(0, len(photo_url)):
+                prefix_string += photo_url[i]
+                if (prefix_string == 'http://175.178.34.84/'):
+                    break
+            delete_url = '../../' + photo_url[i+1:] 
+            os.remove(delete_url)
 
-            # 将用户头像的url更新到数据库中
-            update_user = User.objects.get(username = username)
-            update_user.photo = 'http://175.178.34.84/profiles/'+ request.POST['id'] + '.jpg'
-            update_user.save()
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-        else:
-            return HttpResponse("Only POST-request is accepted!")
-    except:
-        return HttpResponse("Invalid Request! Please use Post-request and attach usename & profile.")
+        # 将用户头像的url更新到数据库中
+        update_user = User.objects.get(username = username)
+        update_user.photo = 'http://175.178.34.84/profiles/'+ request.POST['id'] + '.jpg'
+        update_user.save()
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+    else:
+        return HttpResponse("Only POST-request is accepted!")
 
 
 def getProfile(request):
@@ -1006,8 +1000,6 @@ def getGroup(request):
             
             data = {}
 
-            print(group_name)
-            print(sub_group_name)
             sub_group_id = sub_group.objects.filter(group_name = group_name, sub_group_name = sub_group_name).values()[0]['id']
 
             questions = Blog_Questions.objects.filter(group_type = group_name, sub_group_type = sub_group_id).order_by('-hot').values()
@@ -1126,8 +1118,6 @@ def groups(request, own = 0):
                 except:
                     url = ""
 
-                if group_name == "CSC3002":
-                    print("url: %s", url)
                 
                 # check whether the current user has followed this group
                 isFollowed = 0
@@ -1350,7 +1340,6 @@ def GetAnswers(request):
             answer['author_profile_url'] = profile_url
             answer['Children'] = {}
 
-            print("het here!!")
             if answer["father_answer_id"] == None:   # means it is the root answer
                 data["root" + str(answer_id)] = answer
             else:
@@ -1361,7 +1350,6 @@ def GetAnswers(request):
                 target_id = -1
                 while (father != None):
                     root_id = father["father_answer_id"]
-                    print(father)
                     target_id = father['id']
                     try:
                         father = Blog_Answers.objects.filter(id = root_id).values()[0]  
@@ -1370,11 +1358,6 @@ def GetAnswers(request):
                 child = answer
                 child["father_name"] = father_name
                 data["root" + str(target_id)]['Children']["child" + str(answer_id)] = child
-                
-
-        print("+++++++++++++++++++++++++++++++++")
-        print(data)
-        print("+++++++++++++++++++++++++++++++++")
 
         return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
     else:
@@ -1439,7 +1422,6 @@ def run_code(request):
                 response = client.submissions.get(task_id)
                 executing_status = response.get("executing")
 
-            print(response)
             time = response.get("result").get("time")
             memory = response.get("result").get("memory")
             try:
@@ -1473,7 +1455,11 @@ def MyBlogs(request):
     data = {}
     if request.method == "POST":
         username = request.POST["username"]
-        userid = User.objects.filter(username = username).values()[0]['id']
+        try:
+            userid = User.objects.filter(username = username).values()[0]['id']
+        except:
+            data['ok'] = 0
+            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json') 
         questions = Blog_Questions.objects.filter(author_id = userid).values()
         for i in range(0, len(questions)):
 
@@ -1565,9 +1551,6 @@ def Reply(request):
             pic = picture.objects.create(url = pics_url, question_id = question_id, answer_id = answer_id)
 
         # If the reply has pictures and files, upload them
-        print("##############################")
-        print("All is Fine!!!!!")
-        print("##############################")
         data["ok"] = 1
     else:
         data['ok'] = 0
