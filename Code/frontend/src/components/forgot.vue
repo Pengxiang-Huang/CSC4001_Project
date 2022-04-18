@@ -119,6 +119,7 @@ export default {
         }).then((response) => {
           if (response.data === 'Password Reset successfully!') {
             this.$message.success('Reset Successfully')
+            sessionStorage.setItem('isLogin', true)
             this.$router.push({
               path: '/home/:username',
               name: 'home',
@@ -169,7 +170,6 @@ export default {
   0% {
     transform: rotateX(100deg);
   }
-
   50%,
   100% {
     transform: rotateX(0deg);
