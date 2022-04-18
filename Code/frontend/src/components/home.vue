@@ -642,48 +642,46 @@ export default {
     },
     // Reset username or password
     reset () {
-      let type = document.getElementById('reset-title').innerHTML
-      if (type === 'Reset password' && document.getElementById('inputBox1') !== this.newVal) {
+      var type = document.getElementById('reset-title').innerHTML
+      if (type === 'Reset Password' && document.getElementById('inputBox1').value !== this.newVal) {
         this.$message.error('The passwords are not the same, please check it!')
-        return
-      }
-      if (this.newVal === '') {
+      } else if (this.newVal === '') {
         this.$message.error('You have not set your new ' + type.substring(6))
-        return
-      }
-      let sendData = {
-        type: type,
-        username: this.username,
-        newVal: this.newVal
-      }
-      axios({
-        method: 'POST',
-        url: 'http://175.178.34.84/updateInformation/',
-        data: Qs.stringify(sendData)
-      }).then((response) => {
-        if (type === 'Reset Username' && response.data === 'UserName has been taken') {
-          this.$message.error('The username has already been used, please change it again!')
-        } else {
-          this.$message.success((response.data))
-          this.close()
-          if (type === 'Reset Username') {
-            this.username = this.newVal
-            this.$router.replace({
-              path: '/blank',
-              name: 'blank',
-              params: {
-                username: this.username
-              }
-            })
-          } else {
-            this.$message('You need to log in again!')
-            this.$router.push({
-              path: '/login',
-              name: 'login'
-            })
-          }
+      } else {
+        let sendData = {
+          type: type,
+          username: this.username,
+          newVal: this.newVal
         }
-      })
+        axios({
+          method: 'POST',
+          url: 'http://175.178.34.84/updateInformation/',
+          data: Qs.stringify(sendData)
+        }).then((response) => {
+          if (type === 'Reset Username' && response.data === 'UserName has been taken') {
+            this.$message.error('The username has already been used, please change it again!')
+          } else {
+            this.$message.success((response.data))
+            this.close()
+            if (type === 'Reset Username') {
+              this.username = this.newVal
+              this.$router.replace({
+                path: '/blank',
+                name: 'blank',
+                params: {
+                  username: this.username
+                }
+              })
+            } else {
+              this.$message('You need to log in again!')
+              this.$router.push({
+                path: '/login',
+                name: 'login'
+              })
+            }
+          }
+        })
+      }
     },
     // Callback when the user successfully upload a profile
     handleAvatarSuccess (res, file) {
