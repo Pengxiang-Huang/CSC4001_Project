@@ -27,13 +27,15 @@
                       class="menu-item">主页面</el-menu-item>
         <el-menu-item index="Partitions"
                       class="menu-item">分区</el-menu-item>
+        <h3 class="mytext">cuhksz OVerflow</h3>
         <el-button class="searchIcon"
                    icon="el-icon-search"
                    @click="search"
                    circle></el-button>
-        <el-button class="postIcon"
+        <!-- <el-button class="postIcon"
                    @click="skipToPost"
-                   round>Post</el-button>
+                   round>Post</el-button> -->
+        <button class="postIcon" @click="skipToPost" ><span>Click!</span><span>Post Blog</span></button>
         <el-dropdown trigger="click"
                      placement="bottom"
                      @command="selectUserFunctions"
@@ -1131,15 +1133,7 @@ export default {
 .searchIcon {
   position: fixed;
   top: 10px;
-  right: 27%;
-}
-.postIcon {
-  position: fixed;
-  top: 10px;
-  right: 15%;
-  width: 100px;
-  height: 40px;
-  font-size: 18px;
+  right: 30%;
 }
 .userIcon {
   position: fixed;
@@ -1173,10 +1167,27 @@ export default {
   overflow: auto;
 }
 .blog {
-  border-bottom: 1px solid gray;
+  font-family: 'Inter UI', sans-serif;
+  border-bottom: 2px solid gray;
+  border-top: 2px solid gray;
+  border-left: 2px solid gray;
+  border-right: 2px solid gray;
+  border-radius: 40px;
+  margin-left: 10px;
   padding: 0 50px;
   font-size: 20px;
   line-height: 30px;
+}
+.blog:hover {
+  background-color: rgba(234, 232, 232, 0.696);
+  border-bottom: 2px solid #7098e9;
+  border-top: 2px solid #7098e9;
+  border-left: 2px solid #7098e9;
+  border-right: 2px solid #7098e9;
+  box-shadow: 0px 0px 5px #7098e9;
+}
+.blog>h3 {
+  font-family: 'Georgia';
 }
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
@@ -1228,7 +1239,16 @@ export default {
   top: 10px;
 }
 .sub-partitions {
+  font-family: "Helvetica", sans-serif;
   background-color: #007ced;
+  color: rgb(249, 245, 245);
+  border-color: transparent;
+  width: 100px;
+  padding: 10px 0 !important;
+  margin: 10px 15px;
+}
+.sub-partitions:first-child {
+  background-color: #08b7f2;
   color: rgb(249, 245, 245);
   border-color: transparent;
   width: 100px;
@@ -1239,7 +1259,7 @@ export default {
   background-color: #2073b3;
 }
 .sub-partitions:first-child:hover {
-  background-color: #095c9c;
+  background-color: #23e0f9;
 }
 #sub-container {
   display: inline-block;
@@ -1416,5 +1436,79 @@ export default {
   z-index: 1001;
   background-color: white;
   display: none;
+}
+.mytext{
+  font-family: 'myfont';
+  color: white;
+}
+.postIcon {
+  position: fixed;
+  top: 10px;
+  right: 25%;
+  width: 0;
+  height: 0;
+  font-size: 18px;
+  -webkit-perspective: 230px;
+  perspective: 230px;
+  border:none;
+  box-shadow: none;
+  background-color: rgb(32, 129, 181);
+  cursor: pointer;
+}
+.btn-12{
+  position: relative;
+  right: 20px;
+  bottom: 20px;
+  border:none;
+  box-shadow: none;
+  width: 130px;
+  height: 40px;
+  line-height: 42px;
+  -webkit-perspective: 230px;
+  perspective: 230px;
+}
+.postIcon span {
+  background: rgb(0,172,238);
+  background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
+  display: block;
+  position: absolute;
+  width: 130px;
+  height: 40px;
+  border-radius: 5px;
+  margin:0;
+  line-height: 40px;
+  padding: auto 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+.postIcon span:nth-child(1) {
+  -webkit-transform: rotateX(90deg);
+  -moz-transform: rotateX(90deg);
+  transform: rotateX(90deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon span:nth-child(2) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon:hover span:nth-child(1) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+}
+.postIcon:hover span:nth-child(2) {
+  color: transparent;
+  -webkit-transform: rotateX(-90deg);
+  -moz-transform: rotateX(-90deg);
+  transform: rotateX(-90deg);
 }
 </style>

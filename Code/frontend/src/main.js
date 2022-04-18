@@ -25,6 +25,7 @@ import 'froala-editor/js/third_party/font_awesome.min'
 import 'froala-editor/js/third_party/image_tui.min'
 import 'froala-editor/css/froala_editor.pkgd.min.css'
 import VueFroala from 'vue-froala-wysiwyg'
+import '../static/font/font.css'
 Prism.highlightAll()
 Vue.prototype.GLOBAL = global
 library.add(faEye)
