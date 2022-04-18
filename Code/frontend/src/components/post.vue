@@ -3,7 +3,7 @@
     <div class="context">
       <div class="wrapper">
         <div class="typing-demo">
-          Post Your Blog Here...
+          Post Your Blog Here ...
         </div>
       </div>
     </div>

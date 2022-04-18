@@ -95,8 +95,8 @@
         <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
         <el-tabs :value="activeTab" @tab-click="handleClick">
           <el-tab-pane></el-tab-pane>
-          <el-tab-pane label="热点话题"
-                       name="first">
+          <el-tab-pane name="first">
+            <button slot="label" class="fontClass btn-1"><span>热点话题</span></button>
             <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in hotBlogs"
                  :key="index+'_hot'">
@@ -105,22 +105,22 @@
               <p @click="skipToBlog(item)"
                  v-html="item.content"></p>
               <button v-if="item.isliked"
-                      class="click_icon"
-                      @click="like($event,item,0,false)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,false)">
-                <img src="../assets/like.png" />
+                      class="like"
+                      @click="like($event,item,0,false)" style="background-color: #ff3300;">
+                <img src="../assets/like.png"/>
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,false)">
+                <img src="../assets/like.png"/>
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,false)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,false)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -137,32 +137,32 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="关注话题"
-                       name="second">
+          <el-tab-pane name="second">
+            <button slot="label" class="fontClass btn-2"><span>关注话题</span></button>
             <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in followedBlogs"
-                 :key="index+'_follow'">
+                 :key="index+'_followedBlogs'">
               <h3 @click="skipToBlog(item)"
                   v-html="item.title"></h3>
               <p @click="skipToBlog(item)"
                  v-html="item.content"></p>
               <button v-if="item.isliked"
-                      class="click_icon"
-                      @click="like($event,item,0,false)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                      class="like"
+                      @click="like($event,item,0,false)" style="background-color: #ff3300;">
                 <img src="../assets/like.png" />
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,false)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,false)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -179,8 +179,8 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="关注分区"
-                       name="third">
+          <el-tab-pane name="third">
+            <button slot="label" class="fontClass btn-3"><span>关注分区</span></button>
             <img v-show="p_type === false"
                  src="../assets/back.png"
                  @click="back"
@@ -196,33 +196,33 @@
                 <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
                 <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
               </div>
-              <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+              <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;background-color: #ffcc00;">
+                <img src="../assets/follow.png" />
+                <span style="color: white;">{{ item.amount_of_follows }}</span>
               </button>
               <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
                 <img src="../assets/follow.png" />
-                <span style="color: white;">{{ item.amount_of_follows }}</span>
+                <span style="color: #8a8a8a;">{{ item.amount_of_follows }}</span>
               </button>
             </div>
             <div v-if="p_type === false" class="blog animate__animated animate__slideInUp" v-for="(item,index) in subBlogs" :key="index+'_sub'">
               <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
               <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,true)">
+              <button v-if="item.isliked" class="like" @click="like($event,item,0,true)" style="background-color: #ff3300;">
                 <img src="../assets/like.png" />
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,true)">
+                <img src="../assets/like.png" />
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,true)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,true)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,true)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -239,8 +239,8 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="我的提问"
-                       name="fourth">
+          <el-tab-pane name="fourth">
+            <button slot="label" class="fontClass btn-4"><span>我的提问</span></button>
             <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in myBlogs"
                  :key="index+'_my'">
@@ -249,22 +249,22 @@
               <p @click="skipToBlog(item)"
                  v-html="item.content"></p>
               <button v-if="item.isliked"
-                      class="click_icon"
-                      @click="like($event,item,0,false)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                      class="like"
+                      @click="like($event,item,0,false)" style="background-color: #ff3300;">
                 <img src="../assets/like.png" />
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,false)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,false)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -281,32 +281,32 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane label="未解决的问题"
-                       name="fifth">
+          <el-tab-pane name="fifth">
+            <button slot="label" class="fontClass btn-5"><span>未解决的问题</span></button>
             <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in unAnsweredBlogs"
-                 :key="index+'_wait'">
+                 :key="index+'_unAnswer'">
               <h3 @click="skipToBlog(item)"
                   v-html="item.title"></h3>
               <p @click="skipToBlog(item)"
                  v-html="item.content"></p>
               <button v-if="item.isliked"
-                      class="click_icon"
-                      @click="like($event,item,0,false)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,false)">
+                      class="like"
+                      @click="like($event,item,0,false)" style="background-color: #ff3300;">
                 <img src="../assets/like.png" />
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,false)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,false)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -314,7 +314,7 @@
               </div>
               <div class="noclick_icon">
                 <i class="el-icon-chat-line-round"></i>
-                <span>0</span>
+                <span>{{ item.amount_of_answers }}</span>
               </div>
               <div class="noclick_icon">
                 <i class="el-icon-view"></i>
@@ -323,26 +323,27 @@
             </div>
             <div style="height: 200px;"></div> <!-- Used to leave some blank -->
           </el-tab-pane>
-          <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name" class="animate__animated animate__fadeInUp">
+          <el-tab-pane v-for="(obj,index) in srPage" :key="index" :name="obj.name" class="animate__animated animate__fadeInUp">
+            <button slot="label" class="fontClass btn-6"><span>{{ obj.label }}</span></button>
             <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
             <div class="blog animate__animated animate__slideInUp" v-for="(item,index) in srBlogs" :key="index+'_sr'">
-              <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
+              <h3 @click="skipToBlog(item)"><text-highlight :queries="searchContent.split(' ')">{{ item.title }}</text-highlight></h3>
               <p @click="skipToBlog(item)" v-html="item.content"></p>
-              <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
-                <img src="../assets/like-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-              </button>
-              <button v-else class="click_icon" @click="like($event,item,0,false)">
+              <button v-if="item.isliked" class="like" @click="like($event,item,0,false)" style="background-color: #ff3300;">
                 <img src="../assets/like.png" />
                 <span style="color: white;">{{ item.like }}</span>
               </button>
-              <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,false)">
-                <img src="../assets/follow-click.png" />
-                <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+              <button v-else class="like" @click="like($event,item,0,false)">
+                <img src="../assets/like.png" />
+                <span style="color: #8a8a8a;">{{ item.like }}</span>
               </button>
-              <button v-else class="click_icon" @click="follow($event,item,false)">
+              <button v-if="item.isfollowed" class="follow" @click="follow($event,item,false)" style="background-color: #ffcc00;">
                 <img src="../assets/follow.png" />
                 <span style="color: white;">{{ item.follow }}</span>
+              </button>
+              <button v-else class="follow" @click="follow($event,item,false)">
+                <img src="../assets/follow.png" />
+                <span style="color: #8a8a8a;">{{ item.follow }}</span>
               </button>
               <div class="noclick_icon">
                 <i class="el-icon-collection-tag"></i>
@@ -372,33 +373,33 @@
             <el-button type="primary" class="sub-partitions" round>Sub Partitions:</el-button>
             <el-button type="primary" class="sub-partitions" @click="skipToSub($event,item)" v-for="(subitem,subindex) in item.sub_groups" :key="'subpartition_'+subindex" round>{{ subitem }}</el-button>
           </div>
-          <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;">
-            <img src="../assets/follow-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ item.amount_of_follows }}</span>
+          <button v-if="item.isFollowed" class="follow-partition" @click="followGroup(item)" style="float: right;background-color: #ffcc00;">
+            <img src="../assets/follow.png" />
+            <span style="color: white;">{{ item.amount_of_follows }}</span>
           </button>
           <button v-else class="follow-partition" @click="followGroup(item)" style="float: right;">
             <img src="../assets/follow.png" />
-            <span style="color: white;">{{ item.amount_of_follows }}</span>
+            <span style="color: #8a8a8a;">{{ item.amount_of_follows }}</span>
           </button>
         </div>
         <div v-if="p_type === false" class="blog animate__animated animate__slideInUp" v-for="(item,index) in subBlogs" :key="index+'_sub'">
           <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
               <p @click="skipToBlog(item)" v-html="item.content"></p>
-          <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-            <img src="../assets/like-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-          </button>
-          <button v-else class="click_icon" @click="like($event,item,0,true)">
+          <button v-if="item.isliked" class="like" @click="like($event,item,0,true)" style="background-color: #ff3300;">
             <img src="../assets/like.png" />
             <span style="color: white;">{{ item.like }}</span>
           </button>
-          <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-            <img src="../assets/follow-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+          <button v-else class="like" @click="like($event,item,0,true)">
+            <img src="../assets/like.png" />
+            <span style="color: #8a8a8a;">{{ item.like }}</span>
           </button>
-          <button v-else class="click_icon" @click="follow($event,item,true)">
+          <button v-if="item.isfollowed" class="follow" @click="follow($event,item,true)" style="background-color: #ffcc00;">
             <img src="../assets/follow.png" />
             <span style="color: white;">{{ item.follow }}</span>
+          </button>
+          <button v-else class="follow" @click="follow($event,item,true)">
+            <img src="../assets/follow.png" />
+            <span style="color: #8a8a8a;">{{ item.follow }}</span>
           </button>
           <div class="noclick_icon">
             <i class="el-icon-collection-tag"></i>
@@ -745,11 +746,37 @@ export default {
               method: 'POST',
               url: 'http://175.178.34.84/myFollow/',
               data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/MyBlogs',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/unAnswered/',
+              data: Qs.stringify(sendData)
             })
           ]).then((response) => {
             this.hotBlogs = response[0].data
             this.followedBlogs = response[1].data
+            this.myBlogs = response[2].data
+            this.unAnsweredBlogs = response[3].data
           })
+          if (this.inSearch) {
+            let sendData = {
+              scope: this.searchCondition,
+              content: this.searchContent,
+              username: this.username
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/search',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.srBlogs = response.data
+            })
+          }
           if (inPartition) {
             let sendData = {
               username: this.username,
@@ -792,11 +819,37 @@ export default {
               method: 'POST',
               url: 'http://175.178.34.84/myFollow/',
               data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/api/MyBlogs',
+              data: Qs.stringify(sendData)
+            }),
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/unAnswered/',
+              data: Qs.stringify(sendData)
             })
           ]).then((response) => {
             this.hotBlogs = response[0].data
             this.followedBlogs = response[1].data
+            this.myBlogs = response[2].data
+            this.unAnsweredBlogs = response[3].data
           })
+          if (this.inSearch) {
+            let sendData = {
+              scope: this.searchCondition,
+              content: this.searchContent,
+              username: this.username
+            }
+            axios({
+              method: 'POST',
+              url: 'http://175.178.34.84/search',
+              data: Qs.stringify(sendData)
+            }).then((response) => {
+              this.srBlogs = response.data
+            })
+          }
           if (inPartition) {
             let sendData = {
               username: this.username,
@@ -894,7 +947,8 @@ export default {
       })
       let sendData = {
         scope: this.searchCondition,
-        content: this.searchContent
+        content: this.searchContent,
+        username: this.username
       }
       axios({
         method: 'POST',
@@ -1124,13 +1178,13 @@ export default {
 .menu-item {
   font-family: 'myfont2' !important;
   font-size: 20px;
-  margin-left: 30px !important;
+  margin-left: 2% !important;
 }
 .searchBox {
   position: fixed;
   width: 35%;
   top: 10px;
-  left: 30%;
+  left: 31%;
   border: 1.5px solid #9fbee4;
   border-radius: 6px;
   border-bottom-width: 2.5px;
@@ -1141,7 +1195,72 @@ export default {
 .searchIcon {
   position: fixed;
   top: 10px;
-  right: 30%;
+  right: 27%;
+}
+.mytext{
+  position: relative;
+  font-family: 'myfont';
+  color: white;
+  left: 1%;
+}
+.postIcon {
+  position: fixed;
+  top: 10px;
+  right: 23%;
+  width: 0;
+  height: 0;
+  font-size: 18px;
+  -webkit-perspective: 230px;
+  perspective: 230px;
+  border:none;
+  box-shadow: none;
+  background-color: rgb(32, 129, 181);
+  cursor: pointer;
+  font-family: 'myfont';
+}
+.postIcon span {
+  background: rgb(0,172,238);
+  background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
+  display: block;
+  position: absolute;
+  width: 130px;
+  height: 40px;
+  border-radius: 5px;
+  margin:0;
+  line-height: 40px;
+  padding: auto 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+.postIcon span:nth-child(1) {
+  -webkit-transform: rotateX(90deg);
+  -moz-transform: rotateX(90deg);
+  transform: rotateX(90deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon span:nth-child(2) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon:hover span:nth-child(1) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+}
+.postIcon:hover span:nth-child(2) {
+  color: transparent;
+  -webkit-transform: rotateX(-90deg);
+  -moz-transform: rotateX(-90deg);
+  transform: rotateX(-90deg);
 }
 .userIcon {
   position: fixed;
@@ -1168,34 +1287,319 @@ export default {
   padding: 0 20%;
   overflow: auto;
 }
+.fontClass {
+  font-family: 'myfont2';
+  width: 100px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+  7px 7px 20px 0px rgba(0,0,0,.1),
+  4px 4px 5px 0px rgba(0,0,0,.1);
+  outline: none;
+}
+.btn-1 {
+  background: rgb(0,172,238);
+  background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
+  line-height: 42px;
+  padding: 0;
+  border: none;
+}
+.btn-1 span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.btn-1:before,
+.btn-1:after {
+  position: absolute;
+  content: "";
+  right: 0;
+  top: 0;
+  background: rgba(2,126,251,1);
+  transition: all 0.3s ease;
+}
+.btn-1:before {
+  height: 0%;
+  width: 2px;
+}
+.btn-1:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-1:hover{
+  background: transparent;
+  box-shadow: none;
+}
+.btn-1:hover:before {
+  height: 100%;
+}
+.btn-1:hover:after {
+  width: 100%;
+}
+.btn-1 span:hover{
+  color: rgba(2,126,251,1);
+}
+.btn-1 span:before,
+.btn-1 span:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0;
+  background: rgba(2,126,251,1);
+  transition: all 0.3s ease;
+}
+.btn-1 span:before {
+  width: 2px;
+  height: 0%;
+}
+.btn-1 span:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-1 span:hover:before {
+  height: 100%;
+}
+.btn-1 span:hover:after {
+  width: 100%;
+}
+.btn-2 {
+  background: rgb(247,150,192);
+  background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+  line-height: 42px;
+  padding: 0;
+  border: none;
+}
+.btn-2 span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.btn-2:before,
+.btn-2:after {
+  position: absolute;
+  content: "";
+  height: 0%;
+  width: 1px;
+  box-shadow:
+  -1px -1px 20px 0px rgba(255,255,255,1),
+  -4px -4px 5px 0px rgba(255,255,255,1),
+  7px 7px 20px 0px rgba(0,0,0,.4),
+  4px 4px 5px 0px rgba(0,0,0,.3);
+}
+.btn-2:before {
+  right: 0;
+  top: 0;
+  transition: all 500ms ease;
+}
+.btn-2:after {
+  left: 0;
+  bottom: 0;
+  transition: all 500ms ease;
+}
+.btn-2:hover{
+  background: transparent;
+  color: #76aef1;
+  box-shadow: none;
+}
+.btn-2:hover:before {
+  transition: all 500ms ease;
+  height: 100%;
+}
+.btn-2:hover:after {
+  transition: all 500ms ease;
+  height: 100%;
+}
+.btn-2 span:before,
+.btn-2 span:after {
+  position: absolute;
+  content: "";
+  box-shadow:
+  -1px -1px 20px 0px rgba(255,255,255,1),
+  -4px -4px 5px 0px rgba(255,255,255,1),
+  7px 7px 20px 0px rgba(0,0,0,.4),
+  4px 4px 5px 0px rgba(0,0,0,.3);
+}
+.btn-2 span:before {
+  left: 0;
+  top: 0;
+  width: 0%;
+  height: .5px;
+  transition: all 500ms ease;
+}
+.btn-2 span:after {
+  right: 0;
+  bottom: 0;
+  width: 0%;
+  height: .5px;
+  transition: all 500ms ease;
+}
+.btn-2 span:hover:before {
+  width: 100%;
+}
+.btn-2 span:hover:after {
+  width: 100%;
+}
+.btn-3 {
+  line-height: 42px;
+  padding: 0;
+  border: none;
+  background: rgb(255,27,0);
+  background: linear-gradient(0deg, rgba(255,27,0,1) 0%, rgba(251,75,2,1) 100%);
+}
+.btn-3:hover {
+  color: #f0094a;
+  background: transparent;
+  box-shadow:none;
+}
+.btn-3:before,
+.btn-3:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #f0094a;
+  box-shadow:
+  -1px -1px 5px 0px #fff,
+  7px 7px 20px 0px #0003,
+  4px 4px 5px 0px #0002;
+  transition:400ms ease all;
+}
+.btn-3:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.btn-3:hover:before,
+.btn-3:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.btn-4 {
+  background: rgb(22,9,240);
+  background: linear-gradient(0deg, rgba(22,9,240,1) 0%, rgba(49,110,244,1) 100%);
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.btn-4:after {
+  position: absolute;
+  content: " ";
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+  -webkit-transform: scale(.1);
+  transform: scale(.1);
+}
+.btn-4:hover {
+  color: #fff;
+  border: none;
+  background: transparent;
+}
+.btn-4:hover:after {
+  background: rgb(0,3,255);
+  background: linear-gradient(0deg, rgba(2,126,251,1) 0%,  rgba(0,3,255,1)100%);
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+.btn-5 {
+  border: none;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  padding: 0;
+}
+.btn-5:after {
+  position: absolute;
+  content: " ";
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1fd1f9;
+  background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+  transition: all 0.3s ease;
+}
+.btn-5:hover {
+  background: transparent;
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+  -4px -4px 6px 0 rgba(116, 125, 136, .2),
+  inset -4px -4px 6px 0 rgba(255,255,255,.5),
+  inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+  color: #fff;
+}
+.btn-5:hover:after {
+  -webkit-transform: scale(2) rotate(180deg);
+  transform: scale(2) rotate(180deg);
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+  -4px -4px 6px 0 rgba(116, 125, 136, .2),
+  inset -4px -4px 6px 0 rgba(255,255,255,.5),
+  inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+}
+.btn-6 {
+  border: none;
+  background: rgb(251,33,117);
+  background: linear-gradient(0deg, rgba(251,33,117,1) 0%, rgba(234,76,137,1) 100%);
+  color: #fff;
+  overflow: hidden;
+}
+.btn-6:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.btn-6:before {
+  position: absolute;
+  content: '';
+  display: inline-block;
+  top: -180px;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background-color: #fff;
+  animation: shiny-btn1 3s ease-in-out infinite;
+}
+.btn-6:hover{
+  opacity: 0.7;
+}
+.btn-6:active{
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
+  -4px -4px 6px 0 rgba(116, 125, 136, .2),
+  inset -4px -4px 6px 0 rgba(255,255,255,.2),
+  inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+}
+@-webkit-keyframes shiny-btn1 {
+  0% { -webkit-transform: scale(0) rotate(45deg); opacity: 0; }
+  80% { -webkit-transform: scale(0) rotate(45deg); opacity: 0.5; }
+  81% { -webkit-transform: scale(4) rotate(45deg); opacity: 1; }
+  100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
+}
 .blog {
-  font-family: 'Inter UI', sans-serif;
-  border-bottom: 2px solid gray;
-  border-top: 2px solid gray;
-  border-left: 2px solid gray;
-  border-right: 2px solid gray;
-  border-radius: 40px;
-  margin-left: 10px;
+  border-bottom: 1px solid gray;
   padding: 0 50px;
   font-size: 20px;
   line-height: 30px;
-}
-.blog:hover {
-  background-color: rgba(234, 232, 232, 0.696);
-  border-bottom: 2px solid #7098e9;
-  border-top: 2px solid #7098e9;
-  border-left: 2px solid #7098e9;
-  border-right: 2px solid #7098e9;
-  box-shadow: 0px 0px 5px #7098e9;
-}
-.blog>h3 {
-  font-family: 'Georgia';
 }
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
   color: #2e60c4;
 }
-.click_icon, .follow-partition {
+.like, .follow, .follow-partition {
   box-sizing: border-box;
   width: 100px;
   height: 40px;
@@ -1205,16 +1609,20 @@ export default {
   line-height: 25px;
   border-color: transparent;
   border-radius: 3px;
-  background-color: #e4c32c;
   margin-right: 50px;
   margin-bottom: 25px;
+  background-color: #e6e6e6;
 }
-.click_icon img, .follow-partition img{
+.like img, .follow img, .follow-partition img{
   float: left;
 }
-.click_icon:hover, .follow-partition:hover{
+.follow:hover, .follow-partition:hover{
   cursor: pointer;
-  background-color: #e8b774;
+  background-color: #eee685;
+}
+.like:hover {
+  cursor: pointer;
+  background-color: #ff9090;
 }
 .noclick_icon {
   box-sizing: border-box;
@@ -1241,16 +1649,7 @@ export default {
   top: 10px;
 }
 .sub-partitions {
-  font-family: "Helvetica", sans-serif;
   background-color: #007ced;
-  color: rgb(249, 245, 245);
-  border-color: transparent;
-  width: 100px;
-  padding: 10px 0 !important;
-  margin: 10px 15px;
-}
-.sub-partitions:first-child {
-  background-color: #08b7f2;
   color: rgb(249, 245, 245);
   border-color: transparent;
   width: 100px;
@@ -1261,7 +1660,7 @@ export default {
   background-color: #2073b3;
 }
 .sub-partitions:first-child:hover {
-  background-color: #23e0f9;
+  background-color: #095c9c;
 }
 #sub-container {
   display: inline-block;
