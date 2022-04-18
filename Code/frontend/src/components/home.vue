@@ -8,7 +8,6 @@
       </div>
     </div>
     <div v-show="!showbackground(2)">
-      <fade-loader id="loading" style="display: none;position: fixed;top: 40%;left: 45%;z-index: 1001;"></fade-loader>
       <div id="mask"></div>
       <div id="pop-up-reset" class="pop-up">
         <span id="reset-title"></span>
@@ -61,7 +60,7 @@
         </el-dropdown>
         <img src="../assets/log_out.png" class="logout" @click="logout" />
       </el-menu>
-      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
+      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox" @keyup.enter.native="search">
         <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
         <el-dropdown slot="suffix" trigger="click">
           <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
@@ -90,7 +89,7 @@
           <el-tab-pane></el-tab-pane>
           <el-tab-pane label="热点话题"
                        name="first">
-            <div class="blog"
+            <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in hotBlogs"
                  :key="index+'_hot'">
               <h3 @click="skipToBlog(item)"
@@ -132,7 +131,7 @@
           </el-tab-pane>
           <el-tab-pane label="关注话题"
                        name="second">
-            <div class="blog"
+            <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in followedBlogs"
                  :key="index+'_follow'">
               <h3 @click="skipToBlog(item)"
@@ -179,7 +178,7 @@
                  @click="back"
                  style="position: fixed;left: 80%;cursor: pointer;" />
             <div v-if="p_type"
-                 class="partition"
+                 class="partition animate__animated animate__slideInUp"
                  v-for="(item,index) in followedPartitions"
                  :key="'followedPartitions_'+index">
               <img :src="item.url"
@@ -198,7 +197,7 @@
                 <span style="color: white;">{{ item.amount_of_follows }}</span>
               </button>
             </div>
-            <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
+            <div v-if="p_type === false" class="blog animate__animated animate__slideInUp" v-for="(item,index) in subBlogs" :key="index+'_sub'">
               <h3 @click="skipToBlog(item)" v-html="item.title"></h3>
               <p @click="skipToBlog(item)" v-html="item.content"></p>
               <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
@@ -234,7 +233,7 @@
           </el-tab-pane>
           <el-tab-pane label="我的提问"
                        name="fourth">
-            <div class="blog"
+            <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in myBlogs"
                  :key="index+'_my'">
               <h3 @click="skipToBlog(item)"
@@ -276,7 +275,7 @@
           </el-tab-pane>
           <el-tab-pane label="未解决的问题"
                        name="fifth">
-            <div class="blog"
+            <div class="blog animate__animated animate__slideInUp"
                  v-for="(item,index) in unAnsweredBlogs"
                  :key="index+'_wait'">
               <h3 @click="skipToBlog(item)"
@@ -318,7 +317,7 @@
           </el-tab-pane>
           <el-tab-pane v-for="(obj,index) in srPage" :key="index" :label="obj.label" :name="obj.name" class="animate__animated animate__fadeInUp">
             <p v-show="JSON.stringify(srBlogs) === '{}'" style="width: 100%;text-align: center;">There are no results that satisfies the search conditions!</p>
-            <div class="blog" v-for="(item,index) in srBlogs" :key="index+'_sr'">
+            <div class="blog animate__animated animate__slideInUp" v-for="(item,index) in srBlogs" :key="index+'_sr'">
               <h3><text-highlight :queries="searchContent.split(' ')" @click="skipToBlog(item)">{{ item.title }}</text-highlight></h3>
               <p @click="skipToBlog(item)" v-html="item.content"></p>
               <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,false)">
@@ -415,12 +414,8 @@
 <script>
 import axios from 'axios'
 import Qs from 'qs'
-import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
 
 export default {
-  components: {
-    FadeLoader
-  },
   data () {
     return {
       input: '',
@@ -473,7 +468,6 @@ export default {
     if (this.$route.params['inSearch'] !== undefined) {
       this.inSearch = this.$route.params['inSearch']
       if (this.inSearch === 'true') {
-        console.log(111)
         this.search()
       }
     }
@@ -646,7 +640,11 @@ export default {
     reset () {
       let type = document.getElementById('reset-title').innerHTML
       if (type === 'Reset password' && document.getElementById('inputBox1') !== this.newVal) {
-        alert('The passwords are not the same, please check it!')
+        this.$message.error('The passwords are not the same, please check it!')
+        return
+      }
+      if (this.newVal === '') {
+        this.$message.error('You have not set your new ' + type.substring(6))
         return
       }
       let sendData = {
@@ -660,9 +658,9 @@ export default {
         data: Qs.stringify(sendData)
       }).then((response) => {
         if (type === 'Reset Username' && response.data === 'UserName has been taken') {
-          alert('The username has already been used, please change it again!')
+          this.$message.error('The username has already been used, please change it again!')
         } else {
-          alert(response.data)
+          this.$message.success((response.data))
           this.close()
           if (type === 'Reset Username') {
             this.username = this.newVal
@@ -674,6 +672,7 @@ export default {
               }
             })
           } else {
+            this.$message('You need to log in again!')
             this.$router.push({
               path: '/login',
               name: 'login'
@@ -945,9 +944,6 @@ export default {
   opacity: 0.8;
   display: none;
 }
-#pop-up-post {
-  height: 55%;
-}
 .pop-up {
   position: fixed;
   height: 40%;
@@ -1177,7 +1173,6 @@ export default {
   overflow: auto;
 }
 .blog {
-  height: 200px;
   border-bottom: 1px solid gray;
   padding: 0 50px;
   font-size: 20px;
@@ -1199,6 +1194,7 @@ export default {
   border-radius: 3px;
   background-color: #e4c32c;
   margin-right: 50px;
+  margin-bottom: 25px;
 }
 .click_icon img, .follow-partition img{
   float: left;
