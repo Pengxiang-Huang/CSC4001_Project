@@ -1,6 +1,13 @@
 <template>
   <div>
     <div class="initbackground" v-show="showbackground(2)">
+      <div class="anitext" >
+        <h1 class="loadtext">Loading....</h1>
+        <div class="container">
+          <span class="bar-fill bar"></span>
+          <span class="bar-inside bar"></span>
+        </div>
+      </div>
       <div id="cloud-intro"></div>
       <div id="frame">
         <div id="wave"></div>
@@ -53,7 +60,7 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <img src="../assets/log_out.png" class="logout" @click="logout" />
+        <button class="logout" @click="logout" >Log Out</button>
       </el-menu>
       <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox" @keyup.enter.native="search">
         <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
@@ -79,7 +86,7 @@
       <div v-if="index === 'Main'" class="tab">
         <div id="leftBox"></div>
         <div id="rightBox"></div>
-        <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <div class="bk-btn" src="../assets/back.png" @click="backToMain" ><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
         <div style="padding: 0 50px;" class="animate__animated animate__zoomIn">
           <el-tooltip class="item" effect="dark" :content="blog.author_name" placement="left">
             <el-avatar v-if="blog.author_profile" :src="blog.author_profile" style="float: left;cursor: pointer;margin-right: 10px;"></el-avatar>
@@ -1014,12 +1021,6 @@ export default {
   right: 8%;
   cursor: pointer;
 }
-.logout {
-  position: fixed;
-  top: 10px;
-  right: 2%;
-  cursor: pointer;
-}
 #user {
   border: 0;
   font-size: 16px;
@@ -1415,5 +1416,152 @@ export default {
   100% {
     background-position: 1000px 200px, 1200px 300px, 1100px 250px;
   }
+}
+.anitext {
+  background-color: red;
+  top: 10%;
+  left: 35%;
+  height: 0;
+  position: fixed;
+}
+.loadtext{
+  text-transform: uppercase;
+  font-size: 4em;
+  letter-spacing: 4px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #000, rgb(65, 55, 55), #000);
+  background-repeat: no-repeat;
+  background-size: 80%;
+  animation: animate 2s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(11, 0, 0, 0);
+}
+@keyframes animate {
+  0% {
+    background-position: -500%;
+  }
+  100% {
+    background-position: 500%;
+  }
+}
+.container {
+  width: 300px;
+  margin: 50px auto 0;
+  text-align: center;
+  position: fixed;
+  top: 20%;
+  left: 42%;
+}
+.bar-fill {
+  border-radius: 5px;
+  margin: auto;
+  background:  #1269e6 100%;
+  width: 200px;
+  height: 40px;
+  display: block;
+  position: absolute;
+  top: 0;
+}
+.bar-inside {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  margin: auto;
+  background: white;
+  width: 190px;
+  height: 30px;
+  display: block;
+  z-index: 3;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  transform-origin: 100% 50%;
+  transform: scalex(1);
+  animation: processing 2s infinite;
+}
+p {
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 2px;
+}
+@keyframes processing {
+  0% {
+    transform: scalex(1);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  10%{
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+  100% {
+    transform: scalex(0);
+  }
+}
+.logout {
+  font-family: 'Georgia';
+  position: fixed;
+  top: 1px;
+  height: 30px;
+  right: 1%;
+  cursor: pointer;
+  margin: 1rem;
+  background-color: #34bced;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+}
+.logout:hover{
+   background:#fff;
+   box-shadow:0px 2px 10px 5px #97B1BF;
+   color:#000;
+}
+.logout:after {
+    content: "";
+    background: #f1c40f;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+.logout:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
+.bk-btn {
+  height: 52px;
+  width: 52px;
+  background-color: rgb(26, 221, 133);
+  border-radius: 50%;
+  position: fixed;
+  left: 81%;
+  cursor: pointer;
+}
+.bk-btn .bk-btn-triangle {
+  position: relative;
+  top: 13px;
+  left: 10.4px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-right: 13px solid white;
+}
+.bk-btn .bk-btn-bar {
+  position: relative;
+  background-color: white;
+  height: 7.8px;
+  width: 13px;
+  top: -3.64px;
+  left: 22.88px;
 }
 </style>
