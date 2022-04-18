@@ -17,20 +17,21 @@
         <button class="clickBtn" @click="reset">Reset</button>
       </div>
       <div id="textcode">
-        <froala :tag="'textarea'" :config="config" v-model="model"></froala>
+        <froala :tag="'textarea'" :config="config" v-model="answerText"></froala>
         <img src="../assets/close.png" @click="closeAnwserBox" style="position: fixed;top: 21%;left: 81%;cursor: pointer">
+        <el-button type="primary" @click="submitPost" round style="width: 100%;margin-top: 20px;">Post</el-button>
       </div>
       <el-menu
         default-active="Main"
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
-        background-color="#545c64"
+        background-color="rgb(32, 129, 181)"
         text-color="#ffffff"
-        active-text-color="#ffd04b"
+        active-text-color="#d3c90a"
       >
-        <el-menu-item index="Main" class="menu-item">Main</el-menu-item>
-        <el-menu-item index="Partitions" class="menu-item">Partitions</el-menu-item>
+        <el-menu-item index="Main" class="menu-item">主页面</el-menu-item>
+        <el-menu-item index="Partitions" class="menu-item">分区</el-menu-item>
         <el-button class="searchIcon" icon="el-icon-search" @click="search" circle></el-button>
         <el-button class="postIcon" @click="skipToPost" round>Post</el-button>
         <el-dropdown trigger="click" placement="bottom" @command="selectUserFunctions" class="userIcon">
@@ -54,7 +55,7 @@
         </el-dropdown>
         <img src="../assets/log_out.png" class="logout" @click="logout" />
       </el-menu>
-      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox">
+      <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox" @keyup.enter.native="search">
         <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
         <el-dropdown slot="suffix" trigger="click">
           <img src="../assets/filter.png" style="position: relative;top: 5px;cursor: pointer;"/>
@@ -80,14 +81,20 @@
         <div id="rightBox"></div>
         <img src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
         <div style="padding: 0 50px;" class="animate__animated animate__zoomIn">
+          <el-tooltip class="item" effect="dark" :content="blog.author_name" placement="left">
+            <el-avatar v-if="blog.author_profile" :src="blog.author_profile" style="float: left;cursor: pointer;margin-right: 10px;"></el-avatar>
+            <el-avatar v-else icon="el-icon-user-solid" style="float: left;cursor: pointer;margin-right: 10px;"></el-avatar>
+          </el-tooltip>
           <h2>{{ blog.title }}</h2>
           <span v-show="JSON.stringify(blog.file_urls) !== '{}'">Attachments:</span>
           <a v-for="(url,index) in blog.file_urls" :href="url" :key="index" target="_blank" style="margin: 0 10px;">{{ url.substring(url.lastIndexOf('/')+1) }}</a>
           <hr />
           <p v-html="blog.content"></p>
-          <p v-html="blog.code"></p>
+          <p v-show="JSON.stringify(blog.pic_urls) !== '{}'">Below is the related images:</p>
           <el-image v-for="(item,index) in blog.pic_urls" :key="'image_'+index" :src="item" style="display: block;margin-bottom: 20px;" :preview-src-list="previewArr">
           </el-image>
+          <p v-show="blog.code">Below is the related code:</p>
+          <prism-editor v-show="blog.code" class="my-editor height-300" v-model="blog.code" :lineNumbers=true :highlight="highlighter" :readonly=true></prism-editor>
           <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
             <img src="../assets/like-click.png" />
             <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
@@ -163,7 +170,7 @@
                       <h6 class="comment-name">{{ child.author_name }}</h6>
                       <span v-show="child.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
                       <span style="color: white;margin: 0 10px">reply</span>
-                      <h6 class="comment-name">{{ item.author_name }}</h6>
+                      <h6 class="comment-name">{{ child.father_name }}</h6>
                       <span v-show="item.author_name===blog.author_name" style="background-color: #707070;width: 50px;height: 20px;text-align: center;line-height: 20px;color: #dbdbdb;border-radius: 5px;margin-left: 10px;">author</span>
                       <div v-if="child.isliked">
                         <span style="float: right;margin-left: 10px;padding-top: 2px;font-size: 16px;color: #409EFF;">{{ child.like }}</span>
@@ -252,10 +259,22 @@
 import axios from 'axios'
 import Qs from 'qs'
 import VueFroala from 'vue-froala-wysiwyg'
+import { PrismEditor } from 'vue-prism-editor'
+import Prism from 'prismjs'
+import 'vue-prism-editor/dist/prismeditor.min.css'
+import { highlight, languages } from 'prismjs/components/prism-core'
+import 'prismjs/components/prism-clike'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/themes/prism-okaidia.css'
+import VueMzcLoading from 'vue-mzc-loading'
+import editor from '@/components/editor.vue'
 
 export default {
   components: {
-    VueFroala
+    PrismEditor,
+    editor,
+    VueFroala,
+    VueMzcLoading
   },
   data () {
     return {
@@ -278,8 +297,27 @@ export default {
       config: {
         heightMax: 330,
         heightMin: 330,
-        placeholderText: 'Type your answer...'
+        placeholderText: 'Type your answer...',
+        fileUploadURL: 'http://175.178.34.84/api/getfile',
+        fileUploadParams: {
+          username: this.username
+        },
+        quickInsertButtons: ['table', 'ul', 'ol', 'hr'],
+        toolbarButtons: ['bold', 'italic', 'underline', '|', 'fontFamily', 'fontSize', 'quote', '|',
+          'print', 'markdown', 'align', '|',
+          'html', 'insertLink', 'insertFile', '|',
+          'paragraphStyle', 'paragraphFormat', 'specialCharacters', '|',
+          'undo', 'redo', 'fullscreen'],
+        events: {
+          'file.uploaded': function (response) {
+            this.link = JSON.parse(response).link
+            sessionStorage.setItem('link', this.link)
+          }
+        },
+        imageUploadURL: 'http://175.178.34.84/api/getfile'
       },
+      answerText: '',
+      father_answer_id: '',
       value: 0
     }
   },
@@ -312,6 +350,7 @@ export default {
   },
   created () {
     this.username = this.$route.query.username
+    this.config.fileUploadParams.username = this.username
     this.searchContent = this.$route.query.searchContent
     this.searchCondition = this.$route.query.searchCondition
     this.inSearch = this.$route.query.inSearch
@@ -356,12 +395,35 @@ export default {
   },
   mounted: function () {
     document.body.style = 'overflow: hidden;'
+    Prism.highlightAll()
     this.timer = setInterval(this.get, 1000)
   },
   beforeDestroy () {
     clearInterval(this.timer)
   },
   methods: {
+    highlighter (code) {
+      var lang = this.Language
+      if (lang === 'C++') {
+        return highlight(code, languages.cpp)
+      } else if (lang === 'C') {
+        return highlight(code, languages.c)
+      } else if (lang === 'Java') {
+        return highlight(code, languages.java)
+      } else if (lang === 'Python') {
+        return highlight(code, languages.python)
+      } else if (lang === 'Rust') {
+        return highlight(code, languages.rust)
+      } else if (lang === 'Go') {
+        return highlight(code, languages.go)
+      } else if (lang === 'Javascript') {
+        return highlight(code, languages.javascript)
+      } else if (lang === 'markdown') {
+        return highlight(code, languages.markdown)
+      } else {
+        return highlight(code, languages.bash)
+      }
+    },
     get () {
       this.value = this.value + 1
     },
@@ -394,42 +456,36 @@ export default {
     selectSubPartition (command) {
       this.subPartition = command
     },
-    // user select the file wait for uploading
-    handleFileChange (e) {
-      const input = e.target
-      const files = e.target.files
-      const fileTip = document.getElementById('fileTip')
-      let tips = ''
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].size > 1024 * 1024 * 3) {
-          alert('文件大小不能超过3M, 请重新选择!')
-          input.value = ''
-          return false
-        }
-        tips += files[i].name
-        tips += ', '
-      }
-      tips = tips.substring(0, tips.length - 2)
-      if (tips.length > 40) {
-        tips = tips.substring(0, 40) + '...'
-      }
-      fileTip.innerHTML = tips
-      this.fileList = files
-    },
     // user submit the post
     submitPost () {
-      let fd = new FormData()
-      for (let i = 0; i < this.fileList.length; i++) {
-        fd.append('attachments[' + i + ']', this.fileList[i])
-      }
-      axios({
-        method: 'POST',
-        url: '/api/submitPost/',
-        data: fd,
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      if (this.answerText === '') {
+        this.$message.error('Please write your answer!')
+      } else {
+        let sendData = {
+          username: this.username,
+          question_id: this.blog.id,
+          father_answer_id: this.father_answer_id,
+          content: this.answerText
         }
-      })
+        axios({
+          method: 'POST',
+          url: 'http://175.178.34.84/api/Reply',
+          data: Qs.stringify(sendData)
+        }).then((response) => {
+          if (response.data.ok) {
+            this.$router.replace({
+              path: '/blank',
+              query: {
+                question_id: this.blog.id,
+                username: this.username,
+                searchCondition: this.searchCondition,
+                searchContent: this.searchContent,
+                inSearch: this.inSearch
+              }
+            })
+          }
+        })
+      }
     },
     // Determine the page where the user stay on
     handleSelect (key, keyPath) {
@@ -682,7 +738,7 @@ export default {
       }
     },
     search () {
-      alert('You have already click the search button, please click the back button if you want to search!')
+      alert('Please click the back button to go back to the main page if you want to search!')
     },
     // User click to go back to main
     backToMain () {
@@ -705,15 +761,15 @@ export default {
     },
     // User click to answer the blog
     answer (item) {
-      // let sendData = {
-      //   username: this.username,
-      //   question_id: this.blog.id,
-      //   father_answer_id: item.id
-      // }
       document.getElementById('mask').style.display = 'block'
       document.getElementById('textcode').style.display = 'block'
       document.getElementById('textcode').classList.remove('fadeout')
       document.getElementById('textcode').classList.add('fadein')
+      if (this.blog.id !== item.id) {
+        this.father_answer_id = item.id
+      } else {
+        this.father_answer_id = ''
+      }
     },
     // User click to close the answer pop up window
     closeAnwserBox () {
@@ -747,9 +803,7 @@ export default {
   left: 20%;
   top: 20%;
   display: none;
-}
-#pop-up-post {
-  height: 55%;
+  text-align: center;
 }
 .pop-up {
   position: fixed;
@@ -772,6 +826,43 @@ export default {
   border-radius: 5px;
   border: 1px solid gray;
   margin: 10% auto;
+  border: 0;
+  padding: 0;
+  padding-left: 15px;
+  padding-right: 45px;
+  /*  Do not let that box scale because of left padding*/
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-image: -webkit-linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: linear-gradient(bottom, #fcfaf6 0%, #eae3cf 100%);
+  background-image: -moz-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -ms-linear-gradient(bottom, #fcfaf6 23%, #eae3cf 62%);
+  background-image: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  color-stop(0, #fcfaf6),
+  color-stop(1, #eae3cf));
+  box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -webkit-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  -moz-box-shadow: inset 0px 5px 6px rgba(205,190,165,0.75),
+        inset 0px 0px 2px 1px rgba(205,190,165,0.75),
+        0px 1px rgba(255,255,255,0.1);
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  height: 45px;
+  width: 100%;
+  color: #97917e;
+  font-weight: bold;
+  font-size: 14px;
+  outline: none;
+  line-height: 18px;
+  -webkit-transition: all 1s;
 }
 #reset-title {
   position: relative;
@@ -782,6 +873,59 @@ export default {
   height: 12%;
   width: 60%;
   cursor: pointer;
+  background-color: #b73104;
+  background-image: -webkit-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: -o-linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  background-image: linear-gradient(top, rgba(255,185,145,0.8) 0%, rgba(255,215,190,0) 65%,rgba(255,185,145,0.2) 100%);
+  padding: 0px;
+  border: none;
+  margin: 0px;
+  outline: none;
+  display:inline-block;;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: white;
+  text-shadow: 0px 1px 2px #660300;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #a4381b;
+  border-radius: 30px;
+  -moz-border-radius: 30px;
+  box-shadow: inset 0px 1px rgba(255,185,145,1),
+        0px 2px 3px rgba(165,55,25,0.75);
+  -webkit-box-shadow: inset 0px 1px rgba(255,185,145,1),
+            0px 2px 3px rgba(165,55,25,0.75);
+  -moz-box-shadow: inset 0px 1px rgba(255,185,145,1),
+           0px 2px 3px rgba(165,55,25,0.75);
+    -moz-transition: all 1s ease-in;
+    /* WebKit */
+    -webkit-transition: all 1s ease-in;
+    /* Opera */
+    -o-transition: all 1s ease-in;
+    /* Standard */
+    transition: all 1s ease-in;
+}
+.clickBtn:hover {
+  background-color: #df620f;
+  border: 1px solid #df620f;
+  text-shadow: 0px 1px 3px #660300;
+  box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,0,0.65);
+  -webkit-box-shadow: inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
+  -moz-box-shadow:  inset 0px 1px rgba(245,180,107,1),
+              0px 2px 3px rgba(165,55,25,0.75),
+              0px 0px 15px 0px rgba(255,115,25,0.65);
 }
 .closeBtn {
   width: 5%;
@@ -793,31 +937,57 @@ export default {
   width: 20%;
   height: 100%;
   left: 0;
-  background-color: #bfbfbf;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
+}
+@-moz-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-ms-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@-o-keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
+}
+@keyframes animate {
+  from {background-position:0 0;}
+  to {background-position: 500px 0;}
 }
 #rightBox {
   position: fixed;
   width: 20%;
   height: 100%;
   left: 80%;
-  background-color: #bfbfbf;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
+  -webkit-animation: 10s linear 0s normal none infinite animate;
+  -moz-animation: 10s linear 0s normal none infinite animate;
+  -ms-animation: 10s linear 0s normal none infinite animate;
+  -o-animation: 10s linear 0s normal none infinite animate;
+  animation: 10s linear 0s normal none infinite animate;
   z-index: -9999;
 }
 .menu-item {
-  margin-left: 50px;
-}
-.searchBox {
-  position: fixed;
-  width: 450px;
-  top: 10px;
-  left: 360px;
+  margin-left: 50px !important;
 }
 .searchBox {
   position: fixed;
   width: 35%;
   top: 10px;
   left: 30%;
+  border: 1.5px solid #9fbee4;
+  border-radius: 6px;
+  border-bottom-width: 2.5px;
+}
+.searchBox:hover {
+  border-color: #388fe1;
 }
 .searchIcon {
   position: fixed;
@@ -964,7 +1134,7 @@ export default {
   clear: both;
   margin-top: 15px;
 }
-.comments-list .comment-avatar {
+.author-avatar, .comments-list .comment-avatar {
   width: 65px;
   height: 65px;
   position: relative;
@@ -1049,6 +1219,20 @@ export default {
   -webkit-border-radius: 0 0 4px 4px;
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px;
+}
+.my-editor {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  background-color: #201919;
+  color: #ccc;
+  border-left: 10px solid #656c70;
+  font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 5px;
+}
+.height-300 {
+  height: 300px;
 }
 .fadein {
   animation: fadein 1.5s ease 1;
@@ -1209,10 +1393,9 @@ export default {
 #cloud-intro{
   position: relative;
   height: 100%;
-  background: url(http://175.178.34.84/pics/p1);
-  background: url(http://175.178.34.84/pics/p1) 0 200px,
-              url(http://175.178.34.84/pics/p2) 0 300px,
-              url(http://175.178.34.84/pics/p3) 100px 250px;
+  background: url(http://175.178.34.84/pics/p1.png) 0 200px,
+              url(http://175.178.34.84/pics/p2.png) 0 300px,
+              url(http://175.178.34.84/pics/p3.png) 100px 250px;
   animation: wind 20s linear infinite;
 }
 @keyframes wind{
