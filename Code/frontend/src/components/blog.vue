@@ -95,21 +95,21 @@
           </el-image>
           <p v-show="blog.code">Below is the related code:</p>
           <prism-editor v-show="blog.code" class="my-editor height-300" v-model="blog.code" :lineNumbers=true :highlight="highlighter" :readonly=true></prism-editor>
-          <button v-if="blog.isliked" class="click_icon" @click="like($event,blog,0,false)">
-            <img src="../assets/like-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ blog.like }}</span>
-          </button>
-          <button v-else class="click_icon" @click="like($event,blog,0,false)">
+          <button v-if="blog.isliked" class="like" @click="like($event,blog,0,false)" style="background-color: #ff3300;">
             <img src="../assets/like.png" />
             <span style="color: white;">{{ blog.like }}</span>
           </button>
-          <button v-if="blog.isfollowed" class="click_icon" @click="follow($event,blog,false)">
-            <img src="../assets/follow-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ blog.follow }}</span>
+          <button v-else class="like" @click="like($event,blog,0,false)">
+            <img src="../assets/like.png" />
+            <span style="color: #bfbfbf;">{{ blog.like }}</span>
           </button>
-          <button v-else class="click_icon" @click="follow($event,blog,false)">
+          <button v-if="blog.isfollowed" class="follow" @click="follow($event,blog,false)" style="background-color: #ffcc00;">
             <img src="../assets/follow.png" />
             <span style="color: white;">{{ blog.follow }}</span>
+          </button>
+          <button v-else class="follow" @click="follow($event,blog,false)">
+            <img src="../assets/follow.png" />
+            <span style="color: #bfbfbf;">{{ blog.follow }}</span>
           </button>
           <div class="noclick_icon" @click="answer(blog)" style="cursor: pointer;">
             <i class="el-icon-chat-dot-square"></i>
@@ -220,21 +220,21 @@
         <div v-if="p_type === false" class="blog" v-for="(item,index) in subBlogs" :key="index+'_sub'">
           <h3 @click="skipToBlog(item)">{{ item.title }}</h3>
           <p @click="skipToBlog(item)">{{ item.content }}</p>
-          <button v-if="item.isliked" class="click_icon" @click="like($event,item,0,true)">
-            <img src="../assets/like-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ item.like }}</span>
-          </button>
-          <button v-else class="click_icon" @click="like($event,item,0,true)">
+          <button v-if="item.isliked" class="like" @click="like($event,item,0,true)">
             <img src="../assets/like.png" />
             <span style="color: white;">{{ item.like }}</span>
           </button>
-          <button v-if="item.isfollowed" class="click_icon" @click="follow($event,item,true)">
-            <img src="../assets/follow-click.png" />
-            <span style="color: #409EFF;font-weight: bold;">{{ item.follow }}</span>
+          <button v-else class="like" @click="like($event,item,0,true)">
+            <img src="../assets/like.png" />
+            <span style="color: #bfbfbf;">{{ item.like }}</span>
           </button>
-          <button v-else class="click_icon" @click="follow($event,item,true)">
+          <button v-if="item.isfollowed" class="follow" @click="follow($event,item,true)">
             <img src="../assets/follow.png" />
             <span style="color: white;">{{ item.follow }}</span>
+          </button>
+          <button v-else class="follow" @click="follow($event,item,true)">
+            <img src="../assets/follow.png" />
+            <span style="color: #bfbfbf;">{{ item.follow }}</span>
           </button>
           <div class="noclick_icon">
             <i class="el-icon-collection-tag"></i>
@@ -381,6 +381,12 @@ export default {
       axios({
         method: 'POST',
         url: 'http://175.178.34.84/api/GetAnswers',
+        data: Qs.stringify(sendData)
+      }),
+      // Add the view of this blog by one
+      axios({
+        method: 'POST',
+        url: 'http://175.178.34.84/api/AddViews',
         data: Qs.stringify(sendData)
       })
     ]).then((response) => {
@@ -1044,7 +1050,7 @@ export default {
   cursor: pointer;
   color: #82beec;
 }
-.click_icon, .follow-partition {
+.like, .follow, .follow-partition {
   box-sizing: border-box;
   width: 100px;
   height: 40px;
@@ -1054,15 +1060,19 @@ export default {
   line-height: 25px;
   border-color: transparent;
   border-radius: 3px;
-  background-color: #82beec;
   margin-right: 50px;
+  margin-bottom: 25px;
 }
-.click_icon img, .follow-partition img{
+.like img, .follow img, .follow-partition img{
   float: left;
 }
-.click_icon:hover, .follow-partition:hover{
+.follow:hover, .follow-partition:hover{
   cursor: pointer;
-  background-color: #b3d8ff;
+  background-color: #eee685;
+}
+.like:hover {
+  cursor: pointer;
+  background-color: #ff9090;
 }
 .noclick_icon {
   box-sizing: border-box;
