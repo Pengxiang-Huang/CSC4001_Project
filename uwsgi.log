@@ -1,6 +1,262 @@
-[pid: 3161252|app: 0|req: 1/1] 58.250.174.75 () {48 vars in 1037 bytes} [Mon Apr 18 13:03:51 2022] GET /api/testing => generated 704 bytes in 22700 msecs (HTTP/1.1 200) 7 headers in 213 bytes (1 switches on core 0)
-[pid: 3161250|app: 0|req: 1/2] 58.250.174.76 () {50 vars in 918 bytes} [Mon Apr 18 13:04:22 2022] POST /api/like/ => generated 9 bytes in 281 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
-[pid: 3161250|app: 0|req: 3/3] 58.250.174.76 () {50 vars in 918 bytes} [Mon Apr 18 13:04:23 2022] POST /myFollow/ => generated 2339 bytes in 286 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
-[pid: 3161249|app: 0|req: 1/4] 58.250.174.76 () {50 vars in 922 bytes} [Mon Apr 18 13:04:23 2022] POST /api/MyBlogs => generated 2 bytes in 293 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
-[pid: 3161250|app: 0|req: 3/5] 58.250.174.76 () {50 vars in 918 bytes} [Mon Apr 18 13:04:23 2022] POST /mainpage/ => generated 5084 bytes in 384 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
-[pid: 3161252|app: 0|req: 2/6] 58.250.174.76 () {50 vars in 922 bytes} [Mon Apr 18 13:04:23 2022] POST /unAnswered/ => generated 9342 bytes in 454 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 1/1] 58.250.174.75 () {52 vars in 1052 bytes} [Mon Apr 18 13:07:50 2022] POST /search => generated 10042 bytes in 704 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 3/2] 58.250.174.75 () {52 vars in 1070 bytes} [Mon Apr 18 13:08:27 2022] POST /api/getProfile/ => generated 58 bytes in 61 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 3/3] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:08:27 2022] POST /api/Groups/ => generated 4455 bytes in 272 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 1/4] 58.250.174.75 () {52 vars in 1072 bytes} [Mon Apr 18 13:08:27 2022] POST /api/GetQuestions => generated 576 bytes in 375 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 2/5] 58.250.174.75 () {52 vars in 1068 bytes} [Mon Apr 18 13:08:27 2022] POST /api/GetAnswers => generated 2 bytes in 373 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 2/6] 58.250.174.75 () {52 vars in 1064 bytes} [Mon Apr 18 13:08:27 2022] POST /api/AddViews => generated 9 bytes in 373 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+Not Found: /.env
+[pid: 3162063|app: 0|req: 4/7] 109.237.103.9 () {40 vars in 612 bytes} [Mon Apr 18 13:09:03 2022] GET /.env => generated 5419 bytes in 8 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 3/8] 58.250.174.75 () {52 vars in 1070 bytes} [Mon Apr 18 13:09:17 2022] POST /api/getProfile/ => generated 58 bytes in 59 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 6/9] 58.250.174.75 () {52 vars in 1066 bytes} [Mon Apr 18 13:09:17 2022] POST /api/MyGroups/ => generated 1587 bytes in 243 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 6/10] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:09:17 2022] POST /myFollow/ => generated 2391 bytes in 298 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 3/11] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:09:17 2022] POST /mainpage/ => generated 5084 bytes in 378 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 2/12] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:09:17 2022] POST /api/Groups/ => generated 4455 bytes in 485 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 3/13] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:09:17 2022] POST /api/MyBlogs => generated 10649 bytes in 622 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 2/14] 58.250.174.75 () {52 vars in 1052 bytes} [Mon Apr 18 13:09:17 2022] POST /search => generated 10042 bytes in 852 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 7/15] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:09:17 2022] POST /unAnswered/ => generated 9342 bytes in 393 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 5/16] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:09:54 2022] POST /api/getProfile/ => generated 58 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 8/17] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:09:54 2022] POST /myFollow/ => generated 2 bytes in 63 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 5/18] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:09:54 2022] POST /api/MyBlogs => generated 2 bytes in 61 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 6/19] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:09:54 2022] POST /api/MyGroups/ => generated 2 bytes in 191 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 3/20] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:09:54 2022] POST /api/Groups/ => generated 4455 bytes in 260 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 5/21] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:09:54 2022] POST /mainpage/ => generated 5084 bytes in 282 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 6/22] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:09:54 2022] POST /unAnswered/ => generated 9342 bytes in 416 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 5/23] 58.250.174.75 () {52 vars in 1070 bytes} [Mon Apr 18 13:10:19 2022] POST /api/getProfile/ => generated 58 bytes in 57 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 10/24] 58.250.174.75 () {52 vars in 1068 bytes} [Mon Apr 18 13:10:19 2022] POST /api/GetAnswers => generated 2 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 5/25] 58.250.174.75 () {52 vars in 1064 bytes} [Mon Apr 18 13:10:19 2022] POST /api/AddViews => generated 9 bytes in 67 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 6/26] 58.250.174.75 () {52 vars in 1072 bytes} [Mon Apr 18 13:10:19 2022] POST /api/GetQuestions => generated 576 bytes in 92 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 10/27] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:10:19 2022] POST /api/Groups/ => generated 4455 bytes in 241 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 11/28] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:10:20 2022] POST /search => generated 10042 bytes in 501 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 12/29] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:10:29 2022] POST /search => generated 10042 bytes in 561 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 6/30] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:12:15 2022] POST /search => generated 10042 bytes in 585 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 13/31] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:12:39 2022] POST /search => generated 10042 bytes in 519 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 14/32] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:12:59 2022] POST /search => generated 10042 bytes in 580 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 15/33] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:04 2022] POST /api/like/ => generated 9 bytes in 152 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 8/34] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:04 2022] POST /api/MyBlogs => generated 2 bytes in 64 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 8/35] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:04 2022] POST /myFollow/ => generated 2339 bytes in 226 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 8/36] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:04 2022] POST /mainpage/ => generated 5084 bytes in 308 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 8/37] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:04 2022] POST /unAnswered/ => generated 9342 bytes in 418 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 17/38] 58.250.174.76 () {50 vars in 910 bytes} [Mon Apr 18 13:13:17 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 8/39] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:17 2022] POST /api/MyBlogs => generated 2 bytes in 58 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 8/40] 58.250.174.76 () {50 vars in 906 bytes} [Mon Apr 18 13:13:17 2022] POST /api/MyGroups/ => generated 434 bytes in 192 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 9/41] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:17 2022] POST /myFollow/ => generated 2339 bytes in 227 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 10/42] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:17 2022] POST /api/Groups/ => generated 4455 bytes in 265 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 17/43] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:17 2022] POST /mainpage/ => generated 5084 bytes in 311 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 10/44] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:17 2022] POST /unAnswered/ => generated 9342 bytes in 418 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 18/45] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:13:20 2022] POST /search => generated 10042 bytes in 519 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 11/46] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:25 2022] POST /api/like/ => generated 9 bytes in 101 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 11/47] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:25 2022] POST /api/MyBlogs => generated 2 bytes in 63 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 11/48] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:25 2022] POST /myFollow/ => generated 2339 bytes in 221 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 19/49] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:13:25 2022] POST /mainpage/ => generated 5084 bytes in 284 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 9/50] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:13:25 2022] POST /unAnswered/ => generated 9342 bytes in 440 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 20/51] 58.250.174.74 () {48 vars in 861 bytes} [Mon Apr 18 13:13:48 2022] POST /search => generated 10042 bytes in 527 msecs (HTTP/1.1 200) 9 headers in 307 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 21/52] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:14:01 2022] POST /api/getGroup/ => generated 2 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 12/53] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:14:04 2022] POST /api/getGroup/ => generated 2 bytes in 64 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 13/54] 58.250.174.75 () {48 vars in 1134 bytes} [Mon Apr 18 13:14:06 2022] GET /admin/Our_project/file/ => generated 11622 bytes in 165 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 12/55] 58.250.174.75 () {46 vars in 925 bytes} [Mon Apr 18 13:14:07 2022] GET /admin/jsi18n/ => generated 3343 bytes in 68 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 22/56] 58.250.174.75 () {48 vars in 1140 bytes} [Mon Apr 18 13:14:08 2022] GET /admin/Our_project/picture/ => generated 16616 bytes in 185 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 23/57] 58.250.174.75 () {46 vars in 928 bytes} [Mon Apr 18 13:14:08 2022] GET /admin/jsi18n/ => generated 3343 bytes in 66 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 24/58] 58.250.174.75 () {48 vars in 1137 bytes} [Mon Apr 18 13:14:20 2022] GET /admin/Our_project/file/ => generated 11622 bytes in 116 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 25/59] 58.250.174.75 () {46 vars in 925 bytes} [Mon Apr 18 13:14:20 2022] GET /admin/jsi18n/ => generated 3343 bytes in 63 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 26/60] 58.250.174.75 () {48 vars in 1154 bytes} [Mon Apr 18 13:14:26 2022] GET /admin/Our_project/blog_questions/ => generated 27037 bytes in 156 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 27/61] 58.250.174.75 () {46 vars in 935 bytes} [Mon Apr 18 13:14:26 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 28/62] 58.250.174.75 () {48 vars in 1186 bytes} [Mon Apr 18 13:14:30 2022] GET /admin/Our_project/blog_questions/195/change/ => generated 14915 bytes in 139 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 29/63] 58.250.174.75 () {46 vars in 946 bytes} [Mon Apr 18 13:14:30 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 30/64] 58.250.174.75 () {48 vars in 1154 bytes} [Mon Apr 18 13:14:33 2022] GET /admin/Our_project/blog_questions/ => generated 27037 bytes in 148 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 31/65] 58.250.174.75 () {48 vars in 1143 bytes} [Mon Apr 18 13:14:42 2022] GET /admin/Our_project/picture/ => generated 16616 bytes in 132 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 13/66] 58.250.174.75 () {46 vars in 928 bytes} [Mon Apr 18 13:14:42 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 10/67] 58.250.174.75 () {48 vars in 1134 bytes} [Mon Apr 18 13:15:23 2022] GET /admin/Our_project/user/ => generated 16499 bytes in 193 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 14/68] 58.250.174.75 () {46 vars in 925 bytes} [Mon Apr 18 13:15:23 2022] GET /admin/jsi18n/ => generated 3343 bytes in 57 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 32/69] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:35 2022] POST /api/follow/ => generated 9 bytes in 109 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 33/70] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:35 2022] POST /api/MyBlogs => generated 2 bytes in 54 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 15/71] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:35 2022] POST /myFollow/ => generated 505 bytes in 96 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 15/72] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:35 2022] POST /mainpage/ => generated 5084 bytes in 303 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 15/73] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:35 2022] POST /unAnswered/ => generated 9342 bytes in 426 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 34/74] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:15:38 2022] POST /api/getProfile/ => generated 58 bytes in 53 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 16/75] 58.250.174.74 () {48 vars in 881 bytes} [Mon Apr 18 13:15:38 2022] POST /api/GetQuestions => generated 607 bytes in 102 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 12/76] 58.250.174.74 () {48 vars in 877 bytes} [Mon Apr 18 13:15:38 2022] POST /api/GetAnswers => generated 969 bytes in 154 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 12/77] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:38 2022] POST /api/Groups/ => generated 4455 bytes in 241 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 36/78] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:15:41 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 17/79] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:41 2022] POST /api/MyBlogs => generated 2 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 17/80] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:41 2022] POST /myFollow/ => generated 505 bytes in 105 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 18/81] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:15:41 2022] POST /api/MyGroups/ => generated 2 bytes in 195 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 36/82] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:41 2022] POST /api/Groups/ => generated 4455 bytes in 231 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162062|app: 0|req: 13/83] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:41 2022] POST /mainpage/ => generated 5084 bytes in 312 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 18/84] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:41 2022] POST /unAnswered/ => generated 9342 bytes in 400 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 37/85] 58.250.174.75 () {48 vars in 1162 bytes} [Mon Apr 18 13:15:44 2022] GET /admin/Our_project/user_like_question/ => generated 13749 bytes in 137 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 38/86] 58.250.174.75 () {46 vars in 939 bytes} [Mon Apr 18 13:15:44 2022] GET /admin/jsi18n/ => generated 3343 bytes in 62 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 39/87] 58.250.174.75 () {48 vars in 1150 bytes} [Mon Apr 18 13:15:45 2022] GET /admin/Our_project/user_like_answer/ => generated 12568 bytes in 125 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 40/88] 58.250.174.75 () {46 vars in 937 bytes} [Mon Apr 18 13:15:46 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 42/89] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:15:46 2022] POST /api/getProfile/ => generated 58 bytes in 48 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 18/90] 58.250.174.74 () {48 vars in 881 bytes} [Mon Apr 18 13:15:46 2022] POST /api/GetQuestions => generated 607 bytes in 99 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 14/91] 58.250.174.74 () {48 vars in 877 bytes} [Mon Apr 18 13:15:46 2022] POST /api/GetAnswers => generated 969 bytes in 145 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 42/92] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:46 2022] POST /api/Groups/ => generated 4455 bytes in 264 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 43/93] 58.250.174.75 () {48 vars in 1146 bytes} [Mon Apr 18 13:15:47 2022] GET /admin/Our_project/user/ => generated 16499 bytes in 138 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 44/94] 58.250.174.75 () {46 vars in 925 bytes} [Mon Apr 18 13:15:47 2022] GET /admin/jsi18n/ => generated 3343 bytes in 63 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 45/95] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:15:49 2022] POST /api/getProfile/ => generated 58 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 20/96] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:49 2022] POST /api/MyBlogs => generated 2 bytes in 57 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 20/97] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:49 2022] POST /myFollow/ => generated 505 bytes in 99 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162064|app: 0|req: 20/98] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:15:49 2022] POST /api/MyGroups/ => generated 2 bytes in 196 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 20/99] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:49 2022] POST /api/Groups/ => generated 4455 bytes in 232 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 15/100] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:15:49 2022] POST /mainpage/ => generated 5084 bytes in 260 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 46/101] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:15:49 2022] POST /unAnswered/ => generated 9342 bytes in 458 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3162063|app: 0|req: 47/102] 58.250.174.74 () {46 vars in 911 bytes} [Mon Apr 18 13:16:07 2022] GET /index/ => generated 566 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 48/103] 58.250.174.74 () {52 vars in 1028 bytes} [Mon Apr 18 13:16:14 2022] POST /login/ => generated 14 bytes in 84 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 49/104] 58.250.174.74 () {52 vars in 1046 bytes} [Mon Apr 18 13:16:15 2022] POST /api/getProfile/ => generated 58 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3162065|app: 0|req: 22/105] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:16:15 2022] POST /myFollow/ => generated 2 bytes in 63 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 17/106] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:15 2022] POST /api/MyBlogs => generated 2 bytes in 59 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3162064|app: 0|req: 21/107] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:16:15 2022] POST /api/MyGroups/ => generated 2 bytes in 184 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3162062|app: 0|req: 17/108] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:15 2022] POST /api/Groups/ => generated 4455 bytes in 260 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162065|app: 0|req: 22/109] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:16:15 2022] POST /mainpage/ => generated 5084 bytes in 310 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3162063|app: 0|req: 50/110] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:15 2022] POST /unAnswered/ => generated 9342 bytes in 409 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+*** Starting uWSGI 2.0.20 (64bit) on [Mon Apr 18 21:16:16 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
+Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
+Python main interpreter initialized at 0x55ab42b43d40
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 416880 bytes (407 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x55ab42b43d40 pid: 3163747 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 3163747)
+spawned uWSGI worker 1 (pid: 3163750, cores: 2)
+spawned uWSGI worker 2 (pid: 3163751, cores: 2)
+spawned uWSGI worker 3 (pid: 3163752, cores: 2)
+spawned uWSGI worker 4 (pid: 3163754, cores: 2)
+[pid: 3163752|app: 0|req: 1/1] 58.250.174.75 () {48 vars in 1164 bytes} [Mon Apr 18 13:16:24 2022] GET /admin/Our_project/blog_questions/ => generated 27037 bytes in 380 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 2/2] 58.250.174.75 () {46 vars in 935 bytes} [Mon Apr 18 13:16:25 2022] GET /admin/jsi18n/ => generated 3343 bytes in 62 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 1/3] 58.250.174.75 () {48 vars in 1181 bytes} [Mon Apr 18 13:16:39 2022] GET /admin/Our_project/blog_questions/?q=How+to => generated 26255 bytes in 362 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 0)
+[pid: 3163750|app: 0|req: 1/4] 58.250.174.75 () {46 vars in 944 bytes} [Mon Apr 18 13:16:39 2022] GET /admin/jsi18n/ => generated 3343 bytes in 231 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3163750|app: 0|req: 2/5] 58.250.174.74 () {52 vars in 1046 bytes} [Mon Apr 18 13:16:44 2022] POST /api/getProfile/ => generated 58 bytes in 62 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 3/6] 58.250.174.74 () {52 vars in 1048 bytes} [Mon Apr 18 13:16:44 2022] POST /api/GetQuestions => generated 1274 bytes in 146 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 3/7] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:44 2022] POST /api/Groups/ => generated 4455 bytes in 274 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163751|app: 0|req: 2/8] 58.250.174.74 () {52 vars in 1040 bytes} [Mon Apr 18 13:16:45 2022] POST /api/AddViews => generated 9 bytes in 288 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163751|app: 0|req: 2/9] 58.250.174.74 () {52 vars in 1044 bytes} [Mon Apr 18 13:16:45 2022] POST /api/GetAnswers => generated 3871 bytes in 647 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 3/10] 58.250.174.75 () {48 vars in 1200 bytes} [Mon Apr 18 13:16:46 2022] GET /admin/Our_project/blog_questions/?q=How+to+be+a => generated 25231 bytes in 154 msecs (HTTP/1.1 200) 10 headers in 511 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 4/11] 58.250.174.75 () {46 vars in 949 bytes} [Mon Apr 18 13:16:46 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 5/12] 58.250.174.75 () {56 vars in 1388 bytes} [Mon Apr 18 13:16:53 2022] POST /admin/Our_project/blog_questions/?q=How+to+be+a => generated 12316 bytes in 101 msecs (HTTP/1.1 200) 12 headers in 602 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 7/13] 58.250.174.74 () {52 vars in 1046 bytes} [Mon Apr 18 13:16:55 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 5/14] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:16:55 2022] POST /myFollow/ => generated 2 bytes in 60 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 7/15] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:55 2022] POST /api/MyBlogs => generated 2 bytes in 58 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 4/16] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:16:55 2022] POST /api/MyGroups/ => generated 2 bytes in 182 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 4/17] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:55 2022] POST /api/Groups/ => generated 4455 bytes in 230 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 6/18] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:16:55 2022] POST /mainpage/ => generated 5084 bytes in 305 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 3/19] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:16:55 2022] POST /unAnswered/ => generated 9342 bytes in 449 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 6/20] 58.250.174.75 () {56 vars in 1388 bytes} [Mon Apr 18 13:16:55 2022] POST /admin/Our_project/blog_questions/?q=How+to+be+a => generated 0 bytes in 415 msecs (HTTP/1.1 302) 13 headers in 692 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 8/21] 58.250.174.75 () {48 vars in 1359 bytes} [Mon Apr 18 13:16:56 2022] GET /admin/Our_project/blog_questions/?q=How+to+be+a => generated 9541 bytes in 117 msecs (HTTP/1.1 200) 11 headers in 608 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 7/22] 58.250.174.75 () {46 vars in 949 bytes} [Mon Apr 18 13:16:56 2022] GET /admin/jsi18n/ => generated 3343 bytes in 59 msecs (HTTP/1.1 200) 7 headers in 238 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 5/23] 58.250.174.75 () {52 vars in 1070 bytes} [Mon Apr 18 13:17:00 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 6/24] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:17:00 2022] POST /unAnswered/ => generated 530 bytes in 74 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 10/25] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:17:00 2022] POST /api/MyBlogs => generated 1332 bytes in 127 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 10/26] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:17:00 2022] POST /mainpage/ => generated 2339 bytes in 177 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 6/27] 58.250.174.75 () {52 vars in 1066 bytes} [Mon Apr 18 13:17:00 2022] POST /api/MyGroups/ => generated 1587 bytes in 201 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 6/28] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:17:00 2022] POST /myFollow/ => generated 2391 bytes in 227 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 6/29] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:17:00 2022] POST /api/Groups/ => generated 4455 bytes in 243 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 12/30] 58.250.174.74 () {52 vars in 1048 bytes} [Mon Apr 18 13:17:18 2022] POST /api/followGroup/ => generated 9 bytes in 110 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 7/31] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:19 2022] POST /api/MyGroups/ => generated 407 bytes in 211 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 13/32] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:17:19 2022] POST /api/Groups/ => generated 4455 bytes in 270 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 14/33] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:20 2022] POST /api/getGroup/ => generated 2 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+Internal Server Error: /api/testing
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 1622, in testing
+    delete_test_insert()
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 1627, in delete_test_insert
+    Blog_Questions.objects.get(title='How to be a perfect test engineer?').delete()
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/db/models/query.py", line 443, in get
+    raise self.model.MultipleObjectsReturned(
+Our_project.models.Blog_Questions.MultipleObjectsReturned: get() returned more than one Blog_Questions -- it returned 3!
+[pid: 3163752|app: 0|req: 14/34] 58.250.174.75 () {48 vars in 1037 bytes} [Mon Apr 18 13:17:14 2022] GET /api/testing => generated 68532 bytes in 18387 msecs (HTTP/1.1 500) 7 headers in 235 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 15/35] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:34 2022] POST /api/getGroup/ => generated 2 bytes in 66 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 16/36] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:37 2022] POST /api/getGroup/ => generated 2 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 17/37] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:43 2022] POST /api/getGroup/ => generated 2831 bytes in 199 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 18/38] 58.250.174.74 () {52 vars in 1046 bytes} [Mon Apr 18 13:17:46 2022] POST /api/getProfile/ => generated 58 bytes in 53 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3163750|app: 0|req: 9/39] 58.250.174.74 () {52 vars in 1040 bytes} [Mon Apr 18 13:17:46 2022] POST /api/AddViews => generated 9 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 9/40] 58.250.174.74 () {52 vars in 1048 bytes} [Mon Apr 18 13:17:46 2022] POST /api/GetQuestions => generated 1274 bytes in 106 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163750|app: 0|req: 9/41] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:17:46 2022] POST /api/Groups/ => generated 4455 bytes in 222 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 9/42] 58.250.174.74 () {52 vars in 1044 bytes} [Mon Apr 18 13:17:46 2022] POST /api/GetAnswers => generated 3871 bytes in 449 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163751|app: 0|req: 8/43] 58.250.174.74 () {52 vars in 1046 bytes} [Mon Apr 18 13:17:51 2022] POST /api/getProfile/ => generated 58 bytes in 53 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 8/44] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:17:51 2022] POST /myFollow/ => generated 2 bytes in 58 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 11/45] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:17:51 2022] POST /api/MyBlogs => generated 2 bytes in 68 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 10/46] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:17:51 2022] POST /unAnswered/ => generated 1787 bytes in 128 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 20/47] 58.250.174.74 () {52 vars in 1042 bytes} [Mon Apr 18 13:17:51 2022] POST /api/MyGroups/ => generated 407 bytes in 188 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3163752|app: 0|req: 20/48] 58.250.174.74 () {52 vars in 1034 bytes} [Mon Apr 18 13:17:51 2022] POST /mainpage/ => generated 3754 bytes in 217 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163750|app: 0|req: 11/49] 58.250.174.74 () {52 vars in 1038 bytes} [Mon Apr 18 13:17:51 2022] POST /api/Groups/ => generated 4455 bytes in 245 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 10/50] 58.250.174.74 () {48 vars in 879 bytes} [Mon Apr 18 13:18:00 2022] POST /api/getProfile/ => generated 58 bytes in 57 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3163754|app: 0|req: 12/51] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:18:00 2022] POST /api/MyBlogs => generated 2 bytes in 60 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
+[pid: 3163750|app: 0|req: 12/52] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:18:00 2022] POST /myFollow/ => generated 505 bytes in 122 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3163754|app: 0|req: 12/53] 58.250.174.74 () {48 vars in 875 bytes} [Mon Apr 18 13:18:00 2022] POST /api/MyGroups/ => generated 2 bytes in 179 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 22/54] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:18:00 2022] POST /unAnswered/ => generated 1787 bytes in 124 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3163752|app: 0|req: 22/55] 58.250.174.74 () {48 vars in 867 bytes} [Mon Apr 18 13:18:00 2022] POST /mainpage/ => generated 3754 bytes in 219 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)
+[pid: 3163751|app: 0|req: 10/56] 58.250.174.74 () {48 vars in 871 bytes} [Mon Apr 18 13:18:00 2022] POST /api/Groups/ => generated 4455 bytes in 246 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+*** Starting uWSGI 2.0.20 (64bit) on [Mon Apr 18 21:18:27 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
+Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
+Python main interpreter initialized at 0x5576767ecd40
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 416880 bytes (407 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x5576767ecd40 pid: 3164130 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 3164130)
+spawned uWSGI worker 1 (pid: 3164133, cores: 2)
+spawned uWSGI worker 2 (pid: 3164135, cores: 2)
+spawned uWSGI worker 3 (pid: 3164137, cores: 2)
+spawned uWSGI worker 4 (pid: 3164139, cores: 2)
+[pid: 3164137|app: 0|req: 1/1] 58.250.174.75 () {48 vars in 1037 bytes} [Mon Apr 18 13:18:35 2022] GET /api/testing => generated 704 bytes in 17154 msecs (HTTP/1.1 200) 7 headers in 213 bytes (1 switches on core 0)
+[pid: 3164139|app: 0|req: 1/2] 58.250.174.75 () {48 vars in 1049 bytes} [Mon Apr 18 13:19:01 2022] GET /index/ => generated 566 bytes in 165 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+[pid: 3164137|app: 0|req: 3/3] 58.250.174.75 () {52 vars in 1070 bytes} [Mon Apr 18 13:19:01 2022] POST /api/getProfile/ => generated 58 bytes in 67 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
+[pid: 3164137|app: 0|req: 3/4] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:19:01 2022] POST /mainpage/ => generated 2339 bytes in 180 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3164139|app: 0|req: 3/5] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:19:01 2022] POST /unAnswered/ => generated 530 bytes in 143 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
+[pid: 3164139|app: 0|req: 3/6] 58.250.174.75 () {52 vars in 1066 bytes} [Mon Apr 18 13:19:01 2022] POST /api/MyGroups/ => generated 1587 bytes in 273 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3164135|app: 0|req: 1/7] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:19:01 2022] POST /api/MyBlogs => generated 1332 bytes in 470 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3164133|app: 0|req: 2/8] 58.250.174.75 () {52 vars in 1058 bytes} [Mon Apr 18 13:19:01 2022] POST /myFollow/ => generated 2391 bytes in 570 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3164133|app: 0|req: 2/9] 58.250.174.75 () {52 vars in 1062 bytes} [Mon Apr 18 13:19:01 2022] POST /api/Groups/ => generated 4455 bytes in 581 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
+[pid: 3164135|app: 0|req: 3/10] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:19:17 2022] POST /mainpage/ => generated 2339 bytes in 751 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3164139|app: 0|req: 5/11] 58.250.174.76 () {50 vars in 906 bytes} [Mon Apr 18 13:19:17 2022] POST /api/MyGroups/ => generated 434 bytes in 748 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3164137|app: 0|req: 5/12] 58.250.174.76 () {50 vars in 898 bytes} [Mon Apr 18 13:19:17 2022] POST /myFollow/ => generated 2339 bytes in 797 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 1)
+[pid: 3164133|app: 0|req: 3/13] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:19:18 2022] POST /unAnswered/ => generated 530 bytes in 80 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
+[pid: 3164137|app: 0|req: 5/14] 58.250.174.76 () {50 vars in 902 bytes} [Mon Apr 18 13:19:17 2022] POST /api/Groups/ => generated 4455 bytes in 3447 msecs (HTTP/1.1 200) 9 headers in 306 bytes (1 switches on core 0)

@@ -1619,4 +1619,9 @@ def testing(request):
 
     result['System_test'] = System_Test.test()
 
+    delete_test_insert()
+
     return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
+
+def delete_test_insert():
+    Blog_Questions.objects.filter(title='How to be a perfect test engineer?').delete()
