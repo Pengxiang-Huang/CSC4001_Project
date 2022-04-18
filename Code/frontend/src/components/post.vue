@@ -3,7 +3,7 @@
     <div class="context">
       <div class="wrapper">
         <div class="typing-demo">
-          Encode Your Blog Here.
+          Post Your Blog Here.
         </div>
       </div>
     </div>
@@ -560,7 +560,7 @@ div[class^="text"]::after {
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid;
-  font-family: Courier;
+  font-family: 'myfont';
   font-size: 50px;
   color: white;
 }
