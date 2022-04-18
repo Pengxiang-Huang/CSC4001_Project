@@ -72,6 +72,7 @@ export default {
           url: 'http://175.178.34.84/api/verify',
           data: Qs.stringify(senddata)
         }).then(response => {
+          sessionStorage.setItem('isLogin', true)
           this.$message.success(' Welcome to our community !')
           router.push({
             path: '/home/:username',
