@@ -92,7 +92,8 @@
       <div v-if="index === 'Main'" class="tab">
         <div id="leftBox"></div>
         <div id="rightBox"></div>
-        <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <!-- <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/> -->
+        <div class="bk-btn" v-show="inSearch === true" src="../assets/back.png" @click="backToMain" ><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
         <el-tabs :value="activeTab" @tab-click="handleClick">
           <el-tab-pane></el-tab-pane>
           <el-tab-pane name="first">
@@ -1590,14 +1591,22 @@ export default {
   100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
 }
 .blog {
-  border-bottom: 1px solid gray;
+  border-bottom: 2px solid gray;
+  border-top: 2px solid gray;
+  border-left: 3px solid gray;
+  border-right: 3px solid gray;
+  border-radius:30px;
+  margin-left: 30px;
   padding: 0 50px;
   font-size: 20px;
   line-height: 30px;
 }
+.blog:hover {
+  background-color: #eaeaead5;
+}
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
-  color: #2e60c4;
+  color: #0a52e2;
 }
 .like, .follow, .follow-partition {
   box-sizing: border-box;
@@ -2026,4 +2035,34 @@ p {
     opacity: 1;
     transition: 0s
 }
+.bk-btn {
+  height: 52px;
+  width: 52px;
+  background-color: rgb(26, 221, 133);
+  border-radius: 50%;
+  position: fixed;
+  left: 80%;
+  cursor: pointer;
+}
+
+.bk-btn .bk-btn-triangle {
+  position: relative;
+  top: 13px;
+  left: 10.4px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-right: 13px solid white;
+}
+
+.bk-btn .bk-btn-bar {
+  position: relative;
+  background-color: white;
+  height: 7.8px;
+  width: 13px;
+  top: -3.64px;
+  left: 22.88px;
+}
+
 </style>
