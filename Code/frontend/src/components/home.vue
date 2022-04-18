@@ -32,9 +32,6 @@
                    icon="el-icon-search"
                    @click="search"
                    circle></el-button>
-        <!-- <el-button class="postIcon"
-                   @click="skipToPost"
-                   round>Post</el-button> -->
         <button class="postIcon" @click="skipToPost" ><span>Click!</span><span>Post Blog</span></button>
         <el-dropdown trigger="click"
                      placement="bottom"
@@ -1455,20 +1452,9 @@ export default {
   background-color: rgb(32, 129, 181);
   cursor: pointer;
 }
-.btn-12{
-  position: relative;
-  right: 20px;
-  bottom: 20px;
-  border:none;
-  box-shadow: none;
-  width: 130px;
-  height: 40px;
-  line-height: 42px;
-  -webkit-perspective: 230px;
-  perspective: 230px;
-}
 .postIcon span {
   background: rgb(0,172,238);
+  font-family: 'Georgia';
   background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
   display: block;
   position: absolute;

@@ -18,6 +18,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.0.0",
     "@fortawesome/vue-fontawesome": "^2.0.6",
+    "animate.css": "^4.1.1",
     "axios": "^0.26.0",
     "babel-plugin-prismjs": "^2.1.0",
     "bootstrap": "^5.1.3",
