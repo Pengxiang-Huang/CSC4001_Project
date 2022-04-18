@@ -2,3 +2,7 @@
   font-family: 'myfont';
   src: url(./Snell-Roundhand.ttf);
 }
+@font-face {
+  font-family: 'myfont2';
+  src: url(./chinese.ttf);
+}
