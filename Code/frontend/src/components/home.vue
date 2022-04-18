@@ -1,7 +1,15 @@
 <template>
   <div>
     <div class="initbackground" v-show="showbackground(2)">
-      <div id="cloud-intro"></div>
+      <div class="anitext" >
+        <h1 class="loadtext">Loading....</h1>
+        <div class="container">
+          <span class="bar-fill bar"></span>
+          <span class="bar-inside bar"></span>
+        </div>
+      </div>
+      <div id="cloud-intro">
+      </div>
       <div id="frame">
         <div id="wave"></div>
         <div id="boat"></div>
@@ -57,7 +65,8 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <img src="../assets/log_out.png" class="logout" @click="logout" />
+        <!-- <img src="../assets/log_out.png" class="logout" @click="logout" /> -->
+        <button class="logout" @click="logout" >Log Out</button>
       </el-menu>
       <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox" @keyup.enter.native="search">
         <el-button v-if="searchCondition !== 'All'" slot="prepend" icon="el-icon-close" style="padding: 0;width: 140px;font-size: 12px;" @click="cancel($event)" round>{{ searchCondition }}</el-button>
@@ -1168,6 +1177,7 @@ export default {
 }
 .menu-item {
   font-family: 'myfont2' !important;
+  font-size: 20px;
   margin-left: 2% !important;
 }
 .searchBox {
@@ -1256,12 +1266,6 @@ export default {
   position: fixed;
   top: 10px;
   right: 8%;
-  cursor: pointer;
-}
-.logout {
-  position: fixed;
-  top: 10px;
-  right: 2%;
   cursor: pointer;
 }
 #user {
@@ -1833,5 +1837,193 @@ export default {
   z-index: 1001;
   background-color: white;
   display: none;
+}
+.mytext{
+  font-family: 'myfont';
+  color: white;
+}
+.postIcon {
+  position: fixed;
+  top: 10px;
+  right: 25%;
+  width: 0;
+  height: 0;
+  font-size: 18px;
+  -webkit-perspective: 230px;
+  perspective: 230px;
+  border:none;
+  box-shadow: none;
+  background-color: rgb(32, 129, 181);
+  cursor: pointer;
+}
+.postIcon span {
+  background: rgb(0,172,238);
+  font-family: 'myfont';
+  background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
+  display: block;
+  position: absolute;
+  width: 130px;
+  height: 40px;
+  border-radius: 5px;
+  margin:0;
+  line-height: 40px;
+  padding: auto 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+.postIcon span:nth-child(1) {
+  -webkit-transform: rotateX(90deg);
+  -moz-transform: rotateX(90deg);
+  transform: rotateX(90deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon span:nth-child(2) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.postIcon:hover span:nth-child(1) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+}
+.postIcon:hover span:nth-child(2) {
+  color: transparent;
+  -webkit-transform: rotateX(-90deg);
+  -moz-transform: rotateX(-90deg);
+  transform: rotateX(-90deg);
+}
+.anitext {
+  background-color: red;
+  top: 10%;
+  left: 35%;
+  height: 0;
+  position: fixed;
+}
+.loadtext{
+  text-transform: uppercase;
+  font-size: 4em;
+  letter-spacing: 4px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #000, rgb(65, 55, 55), #000);
+  background-repeat: no-repeat;
+  background-size: 80%;
+  animation: animate 2s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(11, 0, 0, 0);
+}
+@keyframes animate {
+  0% {
+    background-position: -500%;
+  }
+  100% {
+    background-position: 500%;
+  }
+}
+.container {
+  width: 300px;
+  margin: 50px auto 0;
+  text-align: center;
+  position: fixed;
+  top: 20%;
+  left: 42%;
+}
+.bar-fill {
+  border-radius: 5px;
+  margin: auto;
+  background:  #1269e6 100%;
+  width: 200px;
+  height: 40px;
+  display: block;
+  position: absolute;
+  top: 0;
+}
+
+.bar-inside {
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  margin: auto;
+  background: white;
+  width: 190px;
+  height: 30px;
+  display: block;
+  z-index: 3;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  transform-origin: 100% 50%;
+  transform: scalex(1);
+  animation: processing 2s infinite;
+}
+
+p {
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 2px;
+}
+
+@keyframes processing {
+  0% {
+    transform: scalex(1);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  10%{
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+  100% {
+    transform: scalex(0);
+  }
+}
+.logout {
+  font-family: 'Georgia';
+  position: fixed;
+  top: 1px;
+  height: 30px;
+  right: 2%;
+  cursor: pointer;
+  margin: 1rem;
+  background-color: #34bced;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+}
+.logout:hover{
+   background:#fff;
+   box-shadow:0px 2px 10px 5px #97B1BF;
+   color:#000;
+}
+
+.logout:after {
+    content: "";
+    background: #f1c40f;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.logout:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
 }
 </style>
