@@ -97,6 +97,7 @@
                   name="two"
                   class="dropdown-select">
             <option value="">Sub-Partition</option>
+            <option value="Project">Project</option>
             <option value="Project1">Project1</option>
             <option value="Project2">Project2</option>
             <option value="Project3">Project3</option>
@@ -239,7 +240,7 @@ export default {
       this.$router.go(-1)
     },
     submit () {
-      console.log(sessionStorage.getItem('link'))
+      // console.log(sessionStorage.getItem('link'))
       this.link = sessionStorage.getItem('link')
       if (this.title === '') {
         this.$message.error('Please conclude your title!')
@@ -250,11 +251,15 @@ export default {
       } else if (this.blogtext === '') {
         this.$message.error('Please write your blog!')
       } else {
+        var mysendcode = this.code
+        if (mysendcode === '// include any code you want to here') {
+          mysendcode = ''
+        }
         let senddata = {
           title: this.title,
           group_type: this.partition,
           sub_group_type: this.subpartition,
-          code: this.code,
+          code: mysendcode,
           content: this.blogtext,
           author_name: this.username,
           lang: this.Language,
