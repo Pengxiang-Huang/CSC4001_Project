@@ -30,8 +30,9 @@ from .models import sub_group
 from .models import file
 import hashlib
 import markdown
-from . import Unit_Testing
-from . import Component_Testing
+from . import Unit_Test
+from . import Component_Test
+from . import System_Test
 
 # 重写python的datetime类型
 class ComplexEncoder(json.JSONEncoder):
@@ -1629,8 +1630,10 @@ def testing(request):
 
     result = {}
 
-    result['Unit_test'] = Unit_Testing.test()
+    result['Unit_test'] = Unit_Test.test()
 
-    result['Component_test'] = Component_Testing.test()
+    result['Component_test'] = Component_Test.test()
+
+    result['System_test'] = System_Test.test()
 
     return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')

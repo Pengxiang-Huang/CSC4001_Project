@@ -44,4 +44,11 @@ module.exports = {
     ]
   ]
 };
-```
+```  
+---
+#### Testing  
+ + You can try testing our Website using the test suites we provided by typing http://175.178.34.84/api/testing  
+  + It will automatically do the Following testing:  
+    + Unit Testing: includes 19 test files and over 70+ test cases
+    + Component Testing: includes 6 test files and over 10 test cases
+    + System Testing: includes 1 test files and 1 over-all test case 

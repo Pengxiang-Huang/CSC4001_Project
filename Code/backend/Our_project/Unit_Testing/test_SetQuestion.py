@@ -70,7 +70,10 @@ def invalid_group_sub_group():
     req.POST["lang"] = "Rust"
     
     response = views.setQuestion(req)
-    if (response.status_code == 200 and b'Invalid group name or sub_group_name!' == response.content):
+    response = views.setQuestion(req)
+    json_data = json.loads(response.content)
+    data = json_data
+    if (response.status_code == 200 and data['ok'] == 0):
         return 1
     return 0
 

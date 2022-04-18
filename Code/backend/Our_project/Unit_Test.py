@@ -1,12 +1,10 @@
 from .Unit_Testing import test_code
-from .Unit_Testing import test_register
 from .Unit_Testing import test_login
 from .Unit_Testing import test_logout
 from .Unit_Testing import test_update
 from .Unit_Testing import test_sendEmail
 from .Unit_Testing import test_SetQuestion
 from .Unit_Testing import test_SearchQuestion
-from .Unit_Testing import test_mainpage
 from .Unit_Testing import test_my_follow
 from .Unit_Testing import test_my_group
 from .Unit_Testing import test_unAnswered
@@ -36,115 +34,105 @@ def test():
     else:
         data["test-code()"] = "FAILED"
     
-    # 2. test view.register
-    if (test_register.test() == 1):
-        data["test-register()"] = "PASS"
-    else:
-        data["test-register()"] = "FAILED"
 
-    # 3. test views.login()
+    # 2. test views.login()
     if (test_login.test() == 1):
         data["test-login()"] = "PASS"
     else:
         data["test-login()"] = "FAILED"
 
-    # 4. test views.lougout()
+    # 3. test views.lougout()
     if (test_logout.test() == 1):
         data["test-out()"] = "PASS"
     else:
         data["test-out()"] = "FAILED"
 
-    # 5. test views.update()
+    # 4. test views.update()
     if (test_update.test() == 1):
         data["test-update()"] = "PASS"
     else:
         data["test-update()"] = "FAILED"
 
-    # 6. test sendEmail()
+    # 5. test sendEmail()
     if (test_sendEmail.test() == 1):
         data["test-sendEmail()"] = "PASS"
     else:
         data["test-sendEmail()"] = "FAILED"
 
-    # 7. test SetQuestion()
+    # 6. test SetQuestion()
     if (test_SetQuestion.test() == 1):
         data["test_SetQuestion()"] = "PASS"
     else:
         data["test_SetQuestion()"] = "FAILED"
 
-    # 8. test SearchQuestion()
+    # 7. test SearchQuestion()
     if (test_SearchQuestion.test() == 1):
         data["test SearchQuestion()"] = "PASS"
     else:
         data["test SearchQuestion()"] = "FAILED"
 
-    # 9. test mainpage()
-    if (test_mainpage.test() == 1):
-        data["test Mainpage()"] = "PASS"
-    else:
-        data["test Mainpage()"] = "FAILED"
 
-    # 10. test my_follow()
+    # 9. test my_follow()
     if (test_my_follow.test() == 1):
         data["test my_follow()"] = "PASS"
     else:
         data["test my_follow()"] = "FAILED"
 
-    # 11. test my_group()
+    # 10. test my_group()
     if (test_my_group.test() == 1):
         data["test my_group()"] = "PASS"
     else:
         data["test my_group()"] = "FAILED"
 
-    # 12 test unAnswered()
+    # 11 test unAnswered()
     if (test_unAnswered.test() == 1):
         data["test unAnswered()"] = "PASS"
     else:
         data["test unAnswered()"] = "FAILED"
 
-    # 13 test like
+    # 12 test like
     if (test_like.test() == 1):
         data["test like()"] = "PASS"
     else:
         data["test like()"] = "FAILED"
 
-    # 14 test follow
+    # 13 test follow
     if (test_follow.test() == 1):
         data["test follow()"] = "PASS"
     else:
         data["test follow()"] = "FAILED"
 
-    # 15 test getGroup()
+    # 14 test getGroup()
     if (test_getGroup.test() == 1):
         data["test getGroup()"] = "PASS"
     else:
         data["test getGroup()"] = "FAILED"
 
-    # 16 test getGroup()
+    # 15 test getGroup()
     if (test_groups.test() == 1):
         data["test groups()"] = "PASS"
     else:
         data["test groups()"] = "FAILED"
     
-    # 17 test MyGroups()
+    # 16 test MyGroups()
     if (test_MyGroups.test() == 1):
         data["test MyGroups()"] = "PASS"
     else:
         data["test MyGroups()"] = "FAILED"
 
-    # 18 test GetQuestions()
+    # 17 test GetQuestions()
     if (test_GetQuestions.test() == 1):
         data["test GetQuestions()"] = "PASS"
     else:
         data["test GetQuestions()"] = "FAILED"
 
-    # 19 test run_Code()
+    # 18 test run_Code()
     if (test_run_code.test() == 1):
         data["test run_code()"] = "PASS"
     else:
         data["test run_code()"] = "FAILED"
 
-    # 20 test MyBlogs()
+    # 19 test MyBlogs()
     if (test_MyBlogs.test() == 1):
         data["test MyBlogs()"] = "PASS"
     else:
