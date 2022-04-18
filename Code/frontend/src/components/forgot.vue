@@ -153,6 +153,7 @@ export default {
   align-items: center;
   justify-content: center;
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
+  text-align: center;
 }
 .wrapper {
   position: relative;
