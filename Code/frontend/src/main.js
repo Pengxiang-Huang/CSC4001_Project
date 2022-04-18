@@ -25,6 +25,8 @@ import 'froala-editor/js/third_party/font_awesome.min'
 import 'froala-editor/js/third_party/image_tui.min'
 import 'froala-editor/css/froala_editor.pkgd.min.css'
 import VueFroala from 'vue-froala-wysiwyg'
+import 'animate.css'
+import TextHighlight from 'vue-text-highlight'
 import '../static/font/font.css'
 Prism.highlightAll()
 Vue.prototype.GLOBAL = global
@@ -34,6 +36,7 @@ library.add(faArrowLeft)
 library.add(faArrowRight)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('PrismEditor', PrismEditor)
+Vue.component('text-highlight', TextHighlight)
 Vue.use(VueFroala)
 Vue.use(ElementUI)
 Vue.use(VueQuillEditor)
