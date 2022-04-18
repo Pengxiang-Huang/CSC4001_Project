@@ -25,9 +25,9 @@
                text-color="#ffffff"
                active-text-color="#d3c90a">
         <el-menu-item index="Main"
-                      class="menu-item">Main</el-menu-item>
+                      class="menu-item">主页面</el-menu-item>
         <el-menu-item index="Partitions"
-                      class="menu-item">Partitions</el-menu-item>
+                      class="menu-item">分区</el-menu-item>
         <el-button class="searchIcon"
                    icon="el-icon-search"
                    @click="search"
