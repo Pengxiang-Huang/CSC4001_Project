@@ -103,6 +103,7 @@ export default{
           data: Qs.stringify(sendData)
         }).then((response) => {
           if (response.data === 'Success Login!') {
+            sessionStorage.setItem('isLogin', true)
             this.$message.success('Welcome!')
             this.$router.push({
               path: '/home/:username',

@@ -25,9 +25,9 @@
                text-color="#ffffff"
                active-text-color="#d3c90a">
         <el-menu-item index="Main"
-                      class="menu-item">Main</el-menu-item>
+                      class="menu-item">主页面</el-menu-item>
         <el-menu-item index="Partitions"
-                      class="menu-item">Partitions</el-menu-item>
+                      class="menu-item">分区</el-menu-item>
         <el-button class="searchIcon"
                    icon="el-icon-search"
                    @click="search"
@@ -1080,7 +1080,7 @@ export default {
   width: 20%;
   height: 100%;
   left: 0;
-  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
   -webkit-animation: 10s linear 0s normal none infinite animate;
   -moz-animation: 10s linear 0s normal none infinite animate;
   -ms-animation: 10s linear 0s normal none infinite animate;
@@ -1109,7 +1109,7 @@ export default {
   width: 20%;
   height: 100%;
   left: 80%;
-  background: #2980b9 url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png') repeat 0 0;
+  background: #2980b9 url('http://175.178.34.84/pics/blue.png') repeat 0 0;
   -webkit-animation: 10s linear 0s normal none infinite animate;
   -moz-animation: 10s linear 0s normal none infinite animate;
   -ms-animation: 10s linear 0s normal none infinite animate;
@@ -1372,10 +1372,9 @@ export default {
 #cloud-intro{
   position: relative;
   height: 100%;
-  background: url(http://175.178.34.84/pics/p1);
-  background: url(http://175.178.34.84/pics/p1) 0 200px,
-              url(http://175.178.34.84/pics/p2) 0 300px,
-              url(http://175.178.34.84/pics/p3) 100px 250px;
+  background: url(http://175.178.34.84/pics/p1.png) 0 200px,
+              url(http://175.178.34.84/pics/p2.png) 0 300px,
+              url(http://175.178.34.84/pics/p3.png) 100px 250px;
   animation: wind 20s linear infinite;
 }
 @keyframes wind{
