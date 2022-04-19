@@ -40,6 +40,8 @@ Thanks for `Froala` and `Sphere engine` as a plug-in in this project.
 #### Try running frontend code.
 The develop environment is: Vue2, so simply you should have  `Vue.js` `npm` `nodejs` in your local computer
 
+since we have put our code on server, you can just run the frontend in your local environment, all api will be connected to our server. 
+
 + git clone our code 
 
 + `cd Code/frontend`
