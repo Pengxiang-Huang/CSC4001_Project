@@ -37,6 +37,29 @@ Thanks for `Froala` and `Sphere engine` as a plug-in in this project.
 + To get the up-to-state code, please run `git pull origin main`
 + When you change the source code, you can reset the whole project by `sh reset_backend.sh` 
 
+#### Try running frontend code.
+
++ git clone our code 
+
++ `cd Code/frontend`
+
++ npm install
++ npm run dev
+
+#### Try running backend code.
+
++ First, get into the backend directory:
+
++ `cd Code/backend`
+
++ Install all the dependencies package: 
+
++	`pip3 install -r requirements.txt`
+
++ Run on localhost:
+
++ `python3 manage.py runserver`
+
 ---
 #### Testing  
  + You can try testing our Website using the test suites we provided by typing http://175.178.34.84/api/testing  
