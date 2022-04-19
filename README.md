@@ -38,6 +38,7 @@ Thanks for `Froala` and `Sphere engine` as a plug-in in this project.
 + When you change the source code, you can reset the whole project by `sh reset_backend.sh` 
 
 #### Try running frontend code.
+The develop environment is: Vue2, so simply you should have  `Vue.js` `npm` `nodejs` in your local computer
 
 + git clone our code 
 
@@ -47,6 +48,7 @@ Thanks for `Froala` and `Sphere engine` as a plug-in in this project.
 + npm run dev
 
 #### Try running backend code.
+The develop environment is: django, so you should have `python3`  `pip3` in your local environment to run the backend.
 
 + First, get into the backend directory:
 
@@ -59,6 +61,8 @@ Thanks for `Froala` and `Sphere engine` as a plug-in in this project.
 + Run on localhost:
 
 + `python3 manage.py runserver`
+
+Our database use `mysql`, if you are intersted in, feel free to download our inital database.
 
 ---
 #### Testing  
