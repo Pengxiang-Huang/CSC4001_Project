@@ -1,50 +1,42 @@
-# CSC4001_Project
-This is the CUHKSZ software engineering project. 
+# CSC4001_Project: CUHKSZ-Overflow
 
-项目文件：
+## Objective
+
+Our project, CUHKSZ-Overflow, mainly aims to provide a Q&A platform for CUHKSZ programmers who have technical questions about their Computer Science courses' projects or assignments in CUHK(SZ).
+
+**Our Team:**
+
+- frontend: [Demario-Huang](https://github.com/Demario-Huang), [Andy-Lee](https://github.com/Andy-Account)
+
+- backend:  [David-Qin](https://github.com/QinPR), [handsbro666](https://github.com/handsBro666)
+
+If you have any issue about our project, feel free to raise up.
+
+## Demo
+You can see the demo on http://175.178.34.84/index/. 🤩
+
+Notice that you need to use CUHKSZ email account, only valid `(student_id/staff)@link.cuhk.edu.cn` email will be accepted. 
+
+Thanks for `Froala` and `Sphere engine` as a plug-in in this project. 
+
+## Project Information
+**File Tree:**
 
 ```bash
 .
 ├── Code       // source code of both backend and frontend
-├── Docs	   // Several Documents we wrote related to this project
-├── fs		   // stores the files uploaded
-├── pictures   
-├── profiles
+├── Docs	   // Several Documents and specification
+├── fs		   // stores the server files uploaded, used as a backup
+├── pictures   // backup pics
+├── profiles  // store users profiles, used as backup
 ├── README.md
 ├── reset_backend.sh  // A bash script that reset the backend
 └── uwsgi.log		  // error logs here
 ```
 
 + To get the up-to-state code, please run `git pull origin main`
-+ When you change the source code, you can reset the whole project by `sh reset_backend.sh`
++ When you change the source code, you can reset the whole project by `sh reset_backend.sh` 
 
-
-## Frontend Environment Configuration
-if you want to run the code in local computer, you should configure your environment such below:
-
-run the command `npm i font-awesome -S` in front end to install the package or some icons won't appear.  
-To run the online-code editor `prismjs` on your own computer, you should run the following command:
-`npm install prismjs`
-`npm install babel-plugin-prismjs`
-`npm install vue-prismjs-editor`
-and add those following code on `.babelrc`
-```
-module.exports = {
-  presets: ["@vue/cli-plugin-babel/preset"],
-  plugins: [
-    // 这块是增加的prismjs的配置
-    [
-      "prismjs",
-      {
-        languages: ["javascript", "css", "markup"],
-        plugins: ["line-numbers"],
-        theme: "okaidia",
-        css: true
-      }
-    ]
-  ]
-};
-```  
 ---
 #### Testing  
  + You can try testing our Website using the test suites we provided by typing http://175.178.34.84/api/testing  
