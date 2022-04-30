@@ -13,7 +13,7 @@ Our project, CUHKSZ-Overflow, mainly aims to provide a Q&A platform for CUHKSZ p
 If you have any issue about our project, feel free to raise up.
 
 ## Demo
-You can see the demo on http://175.178.34.84/index/. 🤩
+You can see the demo on http://www.cuhksz-stackoverflow.cn/. 🤩
 
 Notice that you need to use CUHKSZ email account, only valid `(student_id/staff)@link.cuhk.edu.cn` email will be accepted. 
 
