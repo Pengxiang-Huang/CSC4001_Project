@@ -369,6 +369,11 @@ def setQuestion(request):
             return HttpResponse('Receive empty content!')
         content_format = "HTML"
 
+        try:
+          StringText =  request.POST['StringText']
+        except:
+          return HttpResponse('Receive empty stringtext!')
+
         fs_url = ""
         pics_url = ""
         try:
@@ -396,17 +401,29 @@ def setQuestion(request):
                                             code = code, lang = lang)
        
         new_q_id = new_question.id
-        index_list = filter_word([new_q_id, title, content]) # id, dict_title, dict_content
+        print(StringText[len(StringText)-24:])
+        if (StringText[len(StringText)-24:] == "Powered by Froala Editor"):
+          StringText = StringText[0:len(StringText)-24]
+        print(StringText)
+        index_list = filter_word([new_q_id, title, StringText]) # id, dict_title, dict_content
         
         print(index_list)
 
-
         conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
         cursor = conn.cursor()
-        sql = 'select * from Our_project_A'
-        cursor.execute(sql)
-        a=cursor.fetchone()
-        print(a[0])
+        for item in index_list:
+            mydata = []
+            mydata.append(item)
+            if item[0][0].isalpha():
+                sql = 'insert into Our_project_{} values(%s,%s,%s,%s);'.format(item[0][0].upper())
+                res = cursor.executemany(sql, mydata)
+                conn.commit()
+                print("ordinary insert done")
+            else:
+                sql = 'insert into Our_project_{} values(%s,%s,%s,%s);'.format('OTHERS')
+                res = cursor.executemany(sql, mydata)
+                conn.commit()
+                print("insert into others done")
         cursor.close()
         # store the files url and pics url
 

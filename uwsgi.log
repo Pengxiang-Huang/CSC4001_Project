@@ -1,280 +1,117 @@
-Sun May  1 10:31:53 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-Sun May  1 10:31:53 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-!!! uWSGI process 1702543 got Segmentation Fault !!!
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 18:31:53 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
-bind(): Address already in use [core/socket.c line 769]
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 18:32:14 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
-Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
-Python main interpreter initialized at 0x5556a3f27ee0
-python threads support enabled
-your server socket listen backlog is limited to 100 connections
-your mercy for graceful operations on workers is 60 seconds
-mapped 416880 bytes (407 KB) for 8 cores
-*** Operational MODE: preforking+threaded ***
-WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x5556a3f27ee0 pid: 1703189 (default app)
-*** uWSGI is running in multiple interpreter mode ***
-spawned uWSGI master process (pid: 1703189)
-spawned uWSGI worker 1 (pid: 1703192, cores: 2)
-spawned uWSGI worker 2 (pid: 1703194, cores: 2)
-spawned uWSGI worker 3 (pid: 1703195, cores: 2)
-spawned uWSGI worker 4 (pid: 1703196, cores: 2)
-[pid: 1703196|app: 0|req: 2/1] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:26 2022] POST /login/ => generated 14 bytes in 1654 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
-[pid: 1703196|app: 0|req: 3/2] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:27 2022] POST /login/ => generated 14 bytes in 880 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 1)
-[pid: 1703196|app: 0|req: 3/3] 58.250.174.74 () {52 vars in 1088 bytes} [Sun May  1 10:32:28 2022] POST /api/getProfile/ => generated 58 bytes in 58 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 0)
-[pid: 1703196|app: 0|req: 4/4] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 10:32:28 2022] POST /myFollow/ => generated 2 bytes in 62 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
-[pid: 1703196|app: 0|req: 5/5] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 10:32:28 2022] POST /api/Groups/ => generated 4475 bytes in 270 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-[pid: 1703195|app: 0|req: 2/6] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:28 2022] POST /login/ => generated 14 bytes in 2537 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 1)
-[pid: 1703195|app: 0|req: 2/7] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:27 2022] POST /login/ => generated 14 bytes in 2712 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
-[pid: 1703196|app: 0|req: 7/8] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 10:32:30 2022] POST /api/MyBlogs => generated 532 bytes in 83 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
-[pid: 1703196|app: 0|req: 7/9] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 10:32:30 2022] POST /unAnswered/ => generated 987 bytes in 93 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
-[pid: 1703194|app: 0|req: 2/10] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:28 2022] POST /login/ => generated 14 bytes in 2881 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
-[pid: 1703194|app: 0|req: 2/11] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:28 2022] POST /login/ => generated 14 bytes in 2731 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 1)
-[pid: 1703192|app: 0|req: 2/12] 58.250.174.74 () {52 vars in 1084 bytes} [Sun May  1 10:32:29 2022] POST /api/MyGroups/ => generated 403 bytes in 2207 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
-[pid: 1703192|app: 0|req: 2/13] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 10:32:28 2022] POST /mainpage/ => generated 5591 bytes in 2793 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-(('apples', 1, 4, 4),)
-hahaha
-[pid: 1703196|app: 0|req: 8/14] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 10:32:36 2022] POST /search => generated 3079 bytes in 260 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
-Not Found: /fuN3
-[pid: 1703196|app: 0|req: 9/15] 172.104.138.223 () {34 vars in 531 bytes} [Sun May  1 10:58:10 2022] GET /fuN3 => generated 5413 bytes in 32 msecs (HTTP/1.0 404) 7 headers in 214 bytes (1 switches on core 0)
-[pid: 1703195|app: 0|req: 4/16] 58.250.174.74 () {52 vars in 1088 bytes} [Sun May  1 11:15:45 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
-[pid: 1703192|app: 0|req: 4/17] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 11:15:45 2022] POST /myFollow/ => generated 2 bytes in 62 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
-[pid: 1703195|app: 0|req: 4/18] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:15:45 2022] POST /api/MyBlogs => generated 532 bytes in 77 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
-[pid: 1703195|app: 0|req: 5/19] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:15:46 2022] POST /unAnswered/ => generated 987 bytes in 91 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
-[pid: 1703192|app: 0|req: 4/20] 58.250.174.74 () {52 vars in 1084 bytes} [Sun May  1 11:15:45 2022] POST /api/MyGroups/ => generated 403 bytes in 195 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
-[pid: 1703196|app: 0|req: 11/21] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:15:45 2022] POST /api/Groups/ => generated 4475 bytes in 230 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-[pid: 1703196|app: 0|req: 11/22] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 11:15:45 2022] POST /mainpage/ => generated 5591 bytes in 324 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
-(('apples', 1, 4, 4),)
-hahaha
-[pid: 1703196|app: 0|req: 12/23] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:15:53 2022] POST /search => generated 3079 bytes in 207 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-(('apples', 1, 4, 4),)
-hahaha
-[pid: 1703196|app: 0|req: 13/24] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:17:56 2022] POST /search => generated 3079 bytes in 233 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
-(('apples', 1, 4, 4),)
-hahaha
-[pid: 1703196|app: 0|req: 14/25] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:18:30 2022] POST /search => generated 3079 bytes in 224 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-Sun May  1 11:18:51 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-Sun May  1 11:18:51 2022 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 19:18:51 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
-bind(): Address already in use [core/socket.c line 769]
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 19:19:12 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
-Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
-Python main interpreter initialized at 0x56168257eee0
-python threads support enabled
-your server socket listen backlog is limited to 100 connections
-your mercy for graceful operations on workers is 60 seconds
-mapped 416880 bytes (407 KB) for 8 cores
-*** Operational MODE: preforking+threaded ***
-WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x56168257eee0 pid: 1710902 (default app)
-*** uWSGI is running in multiple interpreter mode ***
-spawned uWSGI master process (pid: 1710902)
-spawned uWSGI worker 1 (pid: 1710905, cores: 2)
-spawned uWSGI worker 2 (pid: 1710907, cores: 2)
-spawned uWSGI worker 3 (pid: 1710908, cores: 2)
-spawned uWSGI worker 4 (pid: 1710910, cores: 2)
-[pid: 1710908|app: 0|req: 1/1] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:19:21 2022] POST /login/ => generated 14 bytes in 1350 msecs (HTTP/1.1 200) 10 headers in 464 bytes (1 switches on core 0)
-[pid: 1710908|app: 0|req: 2/2] 58.250.174.74 () {52 vars in 1088 bytes} [Sun May  1 11:19:23 2022] POST /api/getProfile/ => generated 58 bytes in 71 msecs (HTTP/1.1 200) 9 headers in 303 bytes (1 switches on core 1)
-[pid: 1710907|app: 0|req: 2/3] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 11:19:23 2022] POST /myFollow/ => generated 2 bytes in 2893 msecs (HTTP/1.1 200) 9 headers in 302 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 2/4] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:19:23 2022] POST /unAnswered/ => generated 987 bytes in 2882 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 2/5] 58.250.174.74 () {52 vars in 1084 bytes} [Sun May  1 11:19:23 2022] POST /api/MyGroups/ => generated 403 bytes in 3120 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 2/6] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:19:23 2022] POST /api/MyBlogs => generated 532 bytes in 3153 msecs (HTTP/1.1 200) 9 headers in 304 bytes (1 switches on core 1)
-[pid: 1710907|app: 0|req: 2/7] 58.250.174.74 () {52 vars in 1076 bytes} [Sun May  1 11:19:23 2022] POST /mainpage/ => generated 5591 bytes in 3203 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 2/8] 58.250.174.74 () {52 vars in 1080 bytes} [Sun May  1 11:19:23 2022] POST /api/Groups/ => generated 4475 bytes in 3327 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-apples
-[pid: 1710910|app: 0|req: 3/9] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:19:30 2022] POST /search => generated 3079 bytes in 218 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 1)
-apples
-[pid: 1710910|app: 0|req: 4/10] 58.250.174.74 () {52 vars in 1070 bytes} [Sun May  1 11:26:18 2022] POST /search => generated 3079 bytes in 219 msecs (HTTP/1.1 200) 9 headers in 305 bytes (1 switches on core 0)
-[pid: 1710910|app: 0|req: 5/11] 80.82.78.39 () {38 vars in 479 bytes} [Sun May  1 11:34:36 2022] GET / => generated 573 bytes in 6 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 6/12] 103.161.177.129 () {44 vars in 658 bytes} [Sun May  1 11:54:45 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
-[pid: 1710910|app: 0|req: 7/13] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:05:10 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 8/14] 58.250.174.74 () {46 vars in 831 bytes} [Sun May  1 12:05:20 2022] POST /login/ => generated 14 bytes in 86 msecs (HTTP/1.1 200) 10 headers in 478 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 10/15] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:05:20 2022] POST /api/getProfile/ => generated 58 bytes in 55 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 4/16] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:20 2022] POST /unAnswered/ => generated 987 bytes in 90 msecs (HTTP/1.1 200) 9 headers in 318 bytes (1 switches on core 0)
-[pid: 1710907|app: 0|req: 3/17] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:05:20 2022] POST /myFollow/ => generated 1771 bytes in 185 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710908|app: 0|req: 4/18] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:20 2022] POST /api/MyBlogs => generated 3097 bytes in 170 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710908|app: 0|req: 4/19] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:05:20 2022] POST /api/MyGroups/ => generated 1205 bytes in 206 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 4/20] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:20 2022] POST /api/Groups/ => generated 4475 bytes in 245 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 10/21] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:05:20 2022] POST /mainpage/ => generated 5591 bytes in 316 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710908|app: 0|req: 5/22] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:05:40 2022] POST /SetQuestion => generated 9 bytes in 71 msecs (HTTP/1.1 200) 9 headers in 316 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 12/23] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:05:40 2022] POST /api/getProfile/ => generated 58 bytes in 62 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 0)
-[pid: 1710908|app: 0|req: 7/24] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:40 2022] POST /unAnswered/ => generated 1469 bytes in 131 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710908|app: 0|req: 7/25] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:05:40 2022] POST /myFollow/ => generated 1771 bytes in 212 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 6/26] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:05:40 2022] POST /api/MyGroups/ => generated 1205 bytes in 207 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1710907|app: 0|req: 4/27] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:40 2022] POST /api/MyBlogs => generated 3603 bytes in 203 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1710905|app: 0|req: 6/28] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:05:40 2022] POST /api/Groups/ => generated 4475 bytes in 260 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1710910|app: 0|req: 12/29] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:05:40 2022] POST /mainpage/ => generated 5591 bytes in 297 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-Sun May  1 12:06:16 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:06:16 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
-bind(): Address already in use [core/socket.c line 769]
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:06:34 2022] ***
-compiled with version: 9.3.0 on 06 March 2022 03:37:57
-os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
-nodename: VM-20-8-ubuntu
-machine: x86_64
-clock source: unix
-pcre jit disabled
-detected number of CPU cores: 2
-current working directory: /data/wwwroot/CSC4001_Project/Code
-writing pidfile to uwsgi.pid
-detected binary path: /usr/local/bin/uwsgi
-chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
-your processes number limit is 15359
-your memory page size is 4096 bytes
-detected max file descriptor number: 1048576
-building mime-types dictionary from file /etc/mime.types...567 entry found
-lock engine: pthread robust mutexes
-thunder lock: disabled (you can enable it with --thunder-lock)
-uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
-Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
-Python main interpreter initialized at 0x55d8724f1ee0
-python threads support enabled
-your server socket listen backlog is limited to 100 connections
-your mercy for graceful operations on workers is 60 seconds
-mapped 416880 bytes (407 KB) for 8 cores
-*** Operational MODE: preforking+threaded ***
-WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x55d8724f1ee0 pid: 1719389 (default app)
-*** uWSGI is running in multiple interpreter mode ***
-spawned uWSGI master process (pid: 1719389)
-spawned uWSGI worker 1 (pid: 1719392, cores: 2)
-spawned uWSGI worker 2 (pid: 1719394, cores: 2)
-spawned uWSGI worker 3 (pid: 1719395, cores: 2)
-spawned uWSGI worker 4 (pid: 1719397, cores: 2)
-[pid: 1719395|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:06:41 2022] GET / => generated 573 bytes in 1238 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
-[pid: 1719395|app: 0|req: 3/2] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:06:43 2022] POST /api/getProfile/ => generated 58 bytes in 78 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 1)
-[pid: 1719395|app: 0|req: 4/3] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:06:43 2022] POST /unAnswered/ => generated 1469 bytes in 111 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719395|app: 0|req: 4/4] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:06:43 2022] POST /api/MyBlogs => generated 3603 bytes in 209 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719397|app: 0|req: 1/5] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:06:43 2022] POST /myFollow/ => generated 1771 bytes in 3106 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719394|app: 0|req: 2/6] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:06:43 2022] POST /api/Groups/ => generated 4475 bytes in 3192 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719392|app: 0|req: 1/7] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:06:43 2022] POST /api/MyGroups/ => generated 1205 bytes in 3191 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719394|app: 0|req: 2/8] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:06:43 2022] POST /mainpage/ => generated 5591 bytes in 3260 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
+[pid: 1726071|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:34:44 2022] GET / => generated 566 bytes in 1260 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+[['test', 335, 1, 2], ['fuck', 335, 1, 1], ['kernel', 335, 0, 1], ['power', 335, 0, 1], ['Froala', 335, 0, 1], ['Editor', 335, 0, 1]]
+[['test', 336, 1, 2], ['fuck', 336, 1, 1], ['kernel', 336, 0, 1], ['power', 336, 0, 1], ['Froala', 336, 0, 1], ['Editor', 336, 0, 1]]['test', 335, 1, 2]
+
+['test', 336, 1, 2]
 Internal Server Error: /SetQuestion
 Traceback (most recent call last):
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 399, in setQuestion
-    index_list = filter_word([new_q_id, title, content]) # id, dict_title, dict_content
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 1660, in filter_word
-    doc_title = nlp(blog_tilte)
-NameError: name 'blog_tilte' is not defined
-[pid: 1719395|app: 0|req: 5/9] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:06:56 2022] POST /SetQuestion => generated 64735 bytes in 732 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726074|app: 0|req: 2/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:34:59 2022] POST /SetQuestion => generated 71813 bytes in 3090 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
 Internal Server Error: /SetQuestion
 Traceback (most recent call last):
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 399, in setQuestion
-    index_list = filter_word([new_q_id, title, content]) # id, dict_title, dict_content
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 1660, in filter_word
-    doc_title = nlp(blog_tilte)
-NameError: name 'blog_tilte' is not defined
-[pid: 1719397|app: 0|req: 2/10] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:07:01 2022] POST /SetQuestion => generated 64735 bytes in 785 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726074|app: 0|req: 2/3] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:00 2022] POST /SetQuestion => generated 71813 bytes in 2047 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+[['test', 337, 1, 2], ['fuck', 337, 1, 1], ['kernel', 337, 0, 1], ['power', 337, 0, 1], ['Froala', 337, 0, 1], ['Editor', 337, 0, 1]]
+['test', 337, 1, 2]
 Internal Server Error: /SetQuestion
 Traceback (most recent call last):
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
   File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 399, in setQuestion
-    index_list = filter_word([new_q_id, title, content]) # id, dict_title, dict_content
-  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 1660, in filter_word
-    doc_title = nlp(blog_tilte)
-NameError: name 'blog_tilte' is not defined
-[pid: 1719395|app: 0|req: 6/11] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:07:02 2022] POST /SetQuestion => generated 64735 bytes in 662 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
-Sun May  1 12:07:39 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-Sun May  1 12:07:39 2022 - uWSGI worker 1 screams: UAAAAAAH my master disconnected: i will kill myself !!!
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:07:39 2022] ***
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726074|app: 0|req: 3/4] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:02 2022] POST /SetQuestion => generated 71813 bytes in 1827 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
+[['test', 339, 1, 2], ['fuck', 339, 1, 1], ['kernel', 339, 0, 1], ['power', 339, 0, 1], ['Froala', 339, 0, 1], ['Editor', 339, 0, 1]]
+[['test', 338, 1, 2], ['fuck', 338, 1, 1], ['kernel', 338, 0, 1], ['power', 338, 0, 1], ['Froala', 338, 0, 1], ['Editor', 338, 0, 1]]
+['test', 339, 1, 2]
+['test', 338, 1, 2]
+[['test', 340, 1, 2], ['fuck', 340, 1, 1], ['kernel', 340, 0, 1], ['power', 340, 0, 1], ['Froala', 340, 0, 1], ['Editor', 340, 0, 1]]
+[['test', 341, 1, 2], ['fuck', 341, 1, 1], ['kernel', 341, 0, 1], ['power', 341, 0, 1], ['Froala', 341, 0, 1], ['Editor', 341, 0, 1]]
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726075|app: 0|req: 2/5] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:01 2022] POST /SetQuestion => generated 71813 bytes in 5709 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
+[pid: 1726075|app: 0|req: 2/6] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:01 2022] POST /SetQuestion => generated 71813 bytes in 5485 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+['test', 340, 1, 2]
+['test', 341, 1, 2]
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 414, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726073|app: 0|req: 2/7] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:02 2022] POST /SetQuestion => generated 71813 bytes in 5308 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+[pid: 1726073|app: 0|req: 2/8] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:02 2022] POST /SetQuestion => generated 71813 bytes in 5474 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:35:31 2022] ***
 compiled with version: 9.3.0 on 06 March 2022 03:37:57
 os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
 nodename: VM-20-8-ubuntu
@@ -294,7 +131,7 @@ lock engine: pthread robust mutexes
 thunder lock: disabled (you can enable it with --thunder-lock)
 probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
 bind(): Address already in use [core/socket.c line 769]
-*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:07:47 2022] ***
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:35:36 2022] ***
 compiled with version: 9.3.0 on 06 March 2022 03:37:57
 os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
 nodename: VM-20-8-ubuntu
@@ -314,53 +151,283 @@ lock engine: pthread robust mutexes
 thunder lock: disabled (you can enable it with --thunder-lock)
 uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
 Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
-Python main interpreter initialized at 0x56169d3cfee0
+Python main interpreter initialized at 0x56047d003ee0
 python threads support enabled
 your server socket listen backlog is limited to 100 connections
 your mercy for graceful operations on workers is 60 seconds
 mapped 416880 bytes (407 KB) for 8 cores
 *** Operational MODE: preforking+threaded ***
-WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x56169d3cfee0 pid: 1719657 (default app)
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x56047d003ee0 pid: 1726439 (default app)
 *** uWSGI is running in multiple interpreter mode ***
-spawned uWSGI master process (pid: 1719657)
-spawned uWSGI worker 1 (pid: 1719660, cores: 2)
-spawned uWSGI worker 2 (pid: 1719662, cores: 2)
-spawned uWSGI worker 3 (pid: 1719663, cores: 2)
-spawned uWSGI worker 4 (pid: 1719665, cores: 2)
-[pid: 1719663|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:07:51 2022] GET / => generated 573 bytes in 1531 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
-[['test', 328, 1, 1], ['<', 328, 0, 2], ['p', 328, 0, 1], ['>', 328, 0, 2], ['12345</p><p', 328, 0, 1], ['data', 328, 0, 1], ['f', 328, 0, 1], ['id="pbf', 328, 0, 1], ['style="text', 328, 0, 1], ['align', 328, 0, 1], ['center', 328, 0, 1], ['font', 328, 0, 2], ['size', 328, 0, 1], ['14px', 328, 0, 1], ['margin', 328, 0, 1], ['30px', 328, 0, 1], ['opacity', 328, 0, 1], ['0.65', 328, 0, 1], ['family', 328, 0, 1], ['san', 328, 0, 1], ['serif;">powere', 328, 0, 1], ['href="https://www.froala.com', 328, 0, 1], ['wysiwyg', 328, 0, 1], ['editor?pb=1', 328, 0, 1], ['title="froala', 328, 0, 1], ['Editor">Froala', 328, 0, 1], ['Editor</a></p', 328, 0, 1]]
-[pid: 1719663|app: 0|req: 2/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:08:08 2022] POST /SetQuestion => generated 9 bytes in 1214 msecs (HTTP/1.1 200) 9 headers in 316 bytes (1 switches on core 1)
-[pid: 1719663|app: 0|req: 4/3] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:08:09 2022] POST /api/MyGroups/ => generated 1205 bytes in 238 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719663|app: 0|req: 5/4] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:08:09 2022] POST /myFollow/ => generated 1771 bytes in 265 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[['test', 329, 1, 1], ['<', 329, 0, 2], ['p', 329, 0, 1], ['>', 329, 0, 2], ['12345</p><p', 329, 0, 1], ['data', 329, 0, 1], ['f', 329, 0, 1], ['id="pbf', 329, 0, 1], ['style="text', 329, 0, 1], ['align', 329, 0, 1], ['center', 329, 0, 1], ['font', 329, 0, 2], ['size', 329, 0, 1], ['14px', 329, 0, 1], ['margin', 329, 0, 1], ['30px', 329, 0, 1], ['opacity', 329, 0, 1], ['0.65', 329, 0, 1], ['family', 329, 0, 1], ['san', 329, 0, 1], ['serif;">powere', 329, 0, 1], ['href="https://www.froala.com', 329, 0, 1], ['wysiwyg', 329, 0, 1], ['editor?pb=1', 329, 0, 1], ['title="froala', 329, 0, 1], ['Editor">Froala', 329, 0, 1], ['Editor</a></p', 329, 0, 1]]
-[pid: 1719662|app: 0|req: 2/5] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:08:07 2022] POST /SetQuestion => generated 9 bytes in 2669 msecs (HTTP/1.1 200) 9 headers in 316 bytes (1 switches on core 0)
-[pid: 1719662|app: 0|req: 2/6] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:09 2022] POST /api/Groups/ => generated 4475 bytes in 416 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719663|app: 0|req: 6/7] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:09 2022] POST /unAnswered/ => generated 3879 bytes in 223 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719663|app: 0|req: 6/8] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:09 2022] POST /api/MyBlogs => generated 6135 bytes in 346 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719665|app: 0|req: 2/9] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:08:09 2022] POST /api/getProfile/ => generated 58 bytes in 1558 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 0)
-[pid: 1719665|app: 0|req: 2/10] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:08:09 2022] POST /mainpage/ => generated 5591 bytes in 1765 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719663|app: 0|req: 7/11] 58.250.174.74 () {46 vars in 831 bytes} [Sun May  1 12:08:59 2022] POST /login/ => generated 14 bytes in 86 msecs (HTTP/1.1 200) 10 headers in 478 bytes (1 switches on core 0)
-[pid: 1719662|app: 0|req: 4/12] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:08:59 2022] POST /api/getProfile/ => generated 58 bytes in 56 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 0)
-[pid: 1719663|app: 0|req: 9/13] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:08:59 2022] POST /myFollow/ => generated 1771 bytes in 196 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719662|app: 0|req: 5/14] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:59 2022] POST /unAnswered/ => generated 3879 bytes in 226 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719663|app: 0|req: 9/15] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:59 2022] POST /api/MyBlogs => generated 6135 bytes in 349 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719662|app: 0|req: 5/16] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:08:59 2022] POST /mainpage/ => generated 5591 bytes in 383 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719660|app: 0|req: 2/17] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:08:59 2022] POST /api/MyGroups/ => generated 1205 bytes in 1530 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
-[pid: 1719660|app: 0|req: 2/18] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:08:59 2022] POST /api/Groups/ => generated 4475 bytes in 1574 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
-[pid: 1719663|app: 0|req: 10/19] 123.160.221.22 () {36 vars in 448 bytes} [Sun May  1 12:09:08 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1719665|app: 0|req: 3/20] 123.160.221.22 () {36 vars in 448 bytes} [Sun May  1 12:09:11 2022] GET / => generated 573 bytes in 7 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
-[pid: 1719663|app: 0|req: 11/21] 123.160.221.22 () {36 vars in 448 bytes} [Sun May  1 12:09:23 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1719665|app: 0|req: 4/22] 101.227.1.198 () {50 vars in 871 bytes} [Sun May  1 12:11:10 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1719665|app: 0|req: 5/23] 101.227.1.199 () {42 vars in 773 bytes} [Sun May  1 12:11:10 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-[pid: 1719665|app: 0|req: 6/24] 211.95.50.8 () {50 vars in 883 bytes} [Sun May  1 12:11:14 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
-[pid: 1719665|app: 0|req: 7/25] 211.95.50.8 () {42 vars in 785 bytes} [Sun May  1 12:11:14 2022] GET / => generated 573 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 1)
-Not Found: /favicon.ico
-[pid: 1719662|app: 0|req: 6/26] 101.227.1.198 () {50 vars in 893 bytes} [Sun May  1 12:11:16 2022] GET /favicon.ico => generated 5434 bytes in 8 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 0)
-Invalid HTTP_HOST header: 'cuhksz-stackoverflow.cn'. You may need to add 'cuhksz-stackoverflow.cn' to ALLOWED_HOSTS.
-Bad Request: /
-[pid: 1719665|app: 0|req: 8/27] 111.7.96.179 () {50 vars in 880 bytes} [Sun May  1 12:11:19 2022] GET / => generated 59588 bytes in 45 msecs (HTTP/1.1 400) 2 headers in 67 bytes (1 switches on core 0)
-Invalid HTTP_HOST header: 'cuhksz-stackoverflow.cn'. You may need to add 'cuhksz-stackoverflow.cn' to ALLOWED_HOSTS.
-Bad Request: /
-[pid: 1719662|app: 0|req: 7/28] 111.7.96.179 () {42 vars in 782 bytes} [Sun May  1 12:11:19 2022] GET / => generated 59064 bytes in 37 msecs (HTTP/1.1 400) 2 headers in 67 bytes (1 switches on core 1)
-Not Found: /favicon.ico
-[pid: 1719663|app: 0|req: 12/29] 211.95.50.8 () {50 vars in 905 bytes} [Sun May  1 12:11:20 2022] GET /favicon.ico => generated 5448 bytes in 7 msecs (HTTP/1.1 404) 7 headers in 214 bytes (1 switches on core 0)
+spawned uWSGI master process (pid: 1726439)
+spawned uWSGI worker 1 (pid: 1726443, cores: 2)
+spawned uWSGI worker 2 (pid: 1726445, cores: 2)
+spawned uWSGI worker 3 (pid: 1726446, cores: 2)
+spawned uWSGI worker 4 (pid: 1726448, cores: 2)
+[pid: 1726448|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:35:40 2022] GET / => generated 566 bytes in 1290 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+here is my test, i will test my kernel here. fuck.Powered by Froala Editor
+[['test', 342, 1, 2], ['fuck', 342, 1, 1], ['kernel', 342, 0, 1], ['power', 342, 0, 1], ['Froala', 342, 0, 1], ['Editor', 342, 0, 1]]
+['test', 342, 1, 2]
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 415, in setQuestion
+    res = cursor.executemany(sql, list(item))
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 173, in executemany
+    return self._do_execute_many(
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/pymysql/cursors.py", line 196, in _do_execute_many
+    v = values % escape(next(args), conn)
+TypeError: not enough arguments for format string
+[pid: 1726446|app: 0|req: 1/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:35:52 2022] POST /SetQuestion => generated 71815 bytes in 2132 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
+[pid: 1726446|app: 0|req: 2/3] 121.46.142.244 () {40 vars in 661 bytes} [Sun May  1 12:36:13 2022] GET /api/MyGroups/ => generated 30 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 220 bytes (1 switches on core 1)
+[pid: 1726446|app: 0|req: 3/4] 121.46.142.244 () {40 vars in 547 bytes} [Sun May  1 12:41:50 2022] HEAD /api/AddViews => generated 9 bytes in 1 msecs (HTTP/1.1 200) 7 headers in 211 bytes (1 switches on core 1)
+Sun May  1 12:42:47 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:42:47 2022 - uWSGI worker 3 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:42:47 2022 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:42:47 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
+bind(): Address already in use [core/socket.c line 769]
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:42:49 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
+Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
+Python main interpreter initialized at 0x5653eb205ee0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 416880 bytes (407 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 1 seconds on interpreter 0x5653eb205ee0 pid: 1728287 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 1728287)
+spawned uWSGI worker 1 (pid: 1728290, cores: 2)
+spawned uWSGI worker 2 (pid: 1728292, cores: 2)
+spawned uWSGI worker 3 (pid: 1728293, cores: 2)
+spawned uWSGI worker 4 (pid: 1728295, cores: 2)
+[pid: 1728295|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:42:55 2022] GET / => generated 566 bytes in 1260 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+.Powered by Froala Editor
+here is my test, my test is fuck. is an a hello.Powered by Froala Editor
+[['test', 343, 1, 2], ['fuck', 343, 1, 1], ['hello', 343, 0, 1], ['power', 343, 0, 1], ['Froala', 343, 0, 1], ['Editor', 343, 0, 1]]
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 439, in setQuestion
+    data['ok'] = 1
+TypeError: list indices must be integers or slices, not str
+[pid: 1728295|app: 0|req: 2/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:43:24 2022] POST /SetQuestion => generated 61836 bytes in 932 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:47:34 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
+bind(): Address already in use [core/socket.c line 769]
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:47:37 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
+Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
+Python main interpreter initialized at 0x55bcf63acee0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 416880 bytes (407 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x55bcf63acee0 pid: 1729545 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 1729545)
+spawned uWSGI worker 1 (pid: 1729553, cores: 2)
+spawned uWSGI worker 2 (pid: 1729555, cores: 2)
+spawned uWSGI worker 3 (pid: 1729556, cores: 2)
+spawned uWSGI worker 4 (pid: 1729558, cores: 2)
+[pid: 1729558|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:47:44 2022] GET / => generated 566 bytes in 1270 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+Powered by Froala Editor
+here is my test, my test is fuck. is an a hello.P
+Powered by Froala Editor
+here is my test, my test is fuck. is an a hello.P
+[['test', 344, 1, 2], ['fuck', 344, 1, 1], ['hello', 344, 0, 1], ['p', 344, 0, 1]]
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 439, in setQuestion
+    data['ok'] = 1
+TypeError: list indices must be integers or slices, not str
+[pid: 1729558|app: 0|req: 2/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:47:59 2022] POST /SetQuestion => generated 61731 bytes in 1357 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 1)
+[['test', 345, 1, 2], ['fuck', 345, 1, 1], ['hello', 345, 0, 1], ['p', 345, 0, 1]]
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+Internal Server Error: /SetQuestion
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/data/wwwroot/CSC4001_Project/Code/backend/./Our_project/views.py", line 439, in setQuestion
+    data['ok'] = 1
+TypeError: list indices must be integers or slices, not str
+[pid: 1729556|app: 0|req: 1/3] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:47:58 2022] POST /SetQuestion => generated 61731 bytes in 2600 msecs (HTTP/1.1 500) 9 headers in 340 bytes (1 switches on core 0)
+Sun May  1 12:50:33 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:50:33 2022 - uWSGI worker 4 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+!!! uWSGI process 1729558 got Segmentation Fault !!!
+malloc(): unsorted double linked list corrupted
+Sun May  1 12:50:33 2022 - uWSGI worker 3 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:50:33 2022 - uWSGI worker 3 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:50:33 2022 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+Sun May  1 12:50:33 2022 - uWSGI worker 2 screams: UAAAAAAH my master disconnected: i will kill myself !!!
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:50:33 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+probably another instance of uWSGI is running on the same address (127.0.0.1:8000).
+bind(): Address already in use [core/socket.c line 769]
+*** Starting uWSGI 2.0.20 (64bit) on [Sun May  1 20:50:36 2022] ***
+compiled with version: 9.3.0 on 06 March 2022 03:37:57
+os: Linux-5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021
+nodename: VM-20-8-ubuntu
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 2
+current working directory: /data/wwwroot/CSC4001_Project/Code
+writing pidfile to uwsgi.pid
+detected binary path: /usr/local/bin/uwsgi
+chdir() to /data/wwwroot/CSC4001_Project/Code/backend/
+your processes number limit is 15359
+your memory page size is 4096 bytes
+detected max file descriptor number: 1048576
+building mime-types dictionary from file /etc/mime.types...567 entry found
+lock engine: pthread robust mutexes
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to TCP address 127.0.0.1:8000 fd 3
+Python version: 3.8.10 (default, Nov 26 2021, 20:14:08)  [GCC 9.3.0]
+Python main interpreter initialized at 0x5623f236fee0
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 416880 bytes (407 KB) for 8 cores
+*** Operational MODE: preforking+threaded ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x5623f236fee0 pid: 1730146 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 1730146)
+spawned uWSGI worker 1 (pid: 1730149, cores: 2)
+spawned uWSGI worker 2 (pid: 1730151, cores: 2)
+spawned uWSGI worker 3 (pid: 1730152, cores: 2)
+spawned uWSGI worker 4 (pid: 1730153, cores: 2)
+[pid: 1730151|app: 0|req: 1/1] 58.250.174.74 () {44 vars in 867 bytes} [Sun May  1 12:50:40 2022] GET / => generated 566 bytes in 1276 msecs (HTTP/1.1 200) 7 headers in 221 bytes (1 switches on core 0)
+Powered by Froala Editor
+here is my test, my test is fuck. is an a hello.
+Powered by Froala Editor
+here is my test, my test is fuck. is an a hello.
+[['test', 346, 1, 2], ['fuck', 346, 1, 1], ['hello', 346, 0, 1]]
+[['test', 347, 1, 2], ['fuck', 347, 1, 1], ['hello', 347, 0, 1]]
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+ordinary insert done
+[pid: 1730152|app: 0|req: 2/2] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:50:50 2022] POST /SetQuestion => generated 9 bytes in 2835 msecs (HTTP/1.1 200) 9 headers in 316 bytes (1 switches on core 0)
+[pid: 1730152|app: 0|req: 2/3] 58.250.174.74 () {46 vars in 843 bytes} [Sun May  1 12:50:52 2022] POST /SetQuestion => generated 9 bytes in 1453 msecs (HTTP/1.1 200) 9 headers in 316 bytes (1 switches on core 1)
+[pid: 1730151|app: 0|req: 3/4] 58.250.174.74 () {46 vars in 849 bytes} [Sun May  1 12:50:53 2022] POST /api/getProfile/ => generated 58 bytes in 69 msecs (HTTP/1.1 200) 9 headers in 317 bytes (1 switches on core 1)
+[pid: 1730151|app: 0|req: 4/5] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:50:53 2022] POST /mainpage/ => generated 5592 bytes in 360 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
+[pid: 1730151|app: 0|req: 4/6] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:50:53 2022] POST /unAnswered/ => generated 12646 bytes in 540 msecs (HTTP/1.1 200) 9 headers in 320 bytes (1 switches on core 1)
+[pid: 1730153|app: 0|req: 2/7] 58.250.174.74 () {46 vars in 837 bytes} [Sun May  1 12:50:53 2022] POST /myFollow/ => generated 1772 bytes in 2241 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
+[pid: 1730153|app: 0|req: 2/8] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:50:53 2022] POST /api/Groups/ => generated 4475 bytes in 2303 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 1)
+[pid: 1730149|app: 0|req: 2/9] 58.250.174.74 () {46 vars in 845 bytes} [Sun May  1 12:50:53 2022] POST /api/MyGroups/ => generated 1205 bytes in 2327 msecs (HTTP/1.1 200) 9 headers in 319 bytes (1 switches on core 0)
+[pid: 1730149|app: 0|req: 2/10] 58.250.174.74 () {46 vars in 841 bytes} [Sun May  1 12:50:53 2022] POST /api/MyBlogs => generated 15335 bytes in 2835 msecs (HTTP/1.1 200) 9 headers in 320 bytes (1 switches on core 1)
