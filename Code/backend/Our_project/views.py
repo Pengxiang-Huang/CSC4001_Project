@@ -425,6 +425,7 @@ def setQuestion(request):
                 conn.commit()
                 print("insert into others done")
         cursor.close()
+        conn.close()
         # store the files url and pics url
 
         for i in range(0, len(fs_url)):
@@ -459,34 +460,12 @@ def searchQuestion(request):
         username = request.POST['username']
         userid = User.objects.filter(username = username).values()[0]['id']
         
-        DBlist = []
-        #get the db values of all contents
-        titleDB = Blog_Questions.objects.values('title').order_by('id')
-        for title in titleDB:   
-            DBlist.append(title['title'].upper())
 
         if (scope=='All'):
-            # start to search
-            #test
-        
-            for DBitem in DBlist:
-                similarity = 0
-                for title in questionElem:
-                    if title in DBitem:
-                        similarity += 1
-                answerList.append(similarity)
-            #answerList contains all similarity in the order of id
-            
-            maxSimilrty = len(questionElem)
-            positionList = []
-            searchValue = maxSimilrty
-            while(searchValue != 0):
-            # positionlist contains the index of content, descending by similarity.
-                for i in range(len(answerList)):    #here i is the index of the similarity list.
-                    if (answerList[i] == searchValue):
-                        positionList.append(i)
-                #update the similarity
-                searchValue -= 1
+
+            conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
+            cursor = conn.cursor()
+
 
             #finially, return the searched answer
             ALL_blogs = Blog_Questions.objects.values()
