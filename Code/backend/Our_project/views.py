@@ -16,6 +16,7 @@ from sphere_engine import CompilersClientV4
 from sphere_engine.exceptions import SphereEngineException
 import requests
 import urllib.request
+import pymysql
 
 from .models import User
 from .models import Blog_Questions
@@ -393,8 +394,20 @@ def setQuestion(request):
         new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
                                             content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
                                             code = code, lang = lang)
-
+       
         new_q_id = new_question.id
+        index_list = filter_word([new_q_id, title, content]) # id, dict_title, dict_content
+        
+        print(index_list)
+
+
+        conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
+        cursor = conn.cursor()
+        sql = 'select * from Our_project_A'
+        cursor.execute(sql)
+        a=cursor.fetchone()
+        print(a[0])
+        cursor.close()
         # store the files url and pics url
 
         for i in range(0, len(fs_url)):
@@ -437,6 +450,8 @@ def searchQuestion(request):
 
         if (scope=='All'):
             # start to search
+            #test
+        
             for DBitem in DBlist:
                 similarity = 0
                 for title in questionElem:
@@ -1643,37 +1658,38 @@ def filter_word(blog_list):
   # load the deep learning dataset
   nlp = spacy.load('en_core_web_sm')
 
-  doc_title = nlp(blog_tilte)
+  doc_title = nlp(blog_title)
   doc_content = nlp(blog_content)
 
   #创建字典 {token名字：出现的次数}
-  token_dict_title = {}
-  token_dict_content = {}
+  token_dict = {}
 
   #遍历标题所有数据
   for token in doc_title:
     if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
       lemma_token = token.lemma_ # transform it to normal form (lemma)
-      if lemma_token in token_dict_title:
-        token_dict_title[lemma_token] += 1
+      if lemma_token in token_dict:
+        token_dict[lemma_token][0] += 1
       else:
-        token_dict_title[lemma_token] = 1
+        token_dict[lemma_token] = [1,0]
   
   #遍历内容所有数据
   for token in doc_content:
     if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
       lemma_token = token.lemma_ # transform it to normal form (lemma)
-      if lemma_token in token_dict_content:
-        token_dict_content[lemma_token] += 1
+      if lemma_token in token_dict:
+        token_dict[lemma_token][1] += 1
       else:
-        token_dict_content[lemma_token] = 1
+        token_dict[lemma_token] = [0,1]
 
-  # 返回的结果
-  # [blog_id(int),dict_title, dict_content]
   result_list = []
-  result_list.append(blog_id)
-  result_list.append(token_dict_title)
-  result_list.append(token_dict_content)
+
+  for (key,value) in token_dict.items():
+    mylist = []
+    mylist.append(key)
+    mylist.append(blog_id)
+    mylist.append(value[0])
+    mylist.append(value[1])
+    result_list.append(mylist)
 
   return result_list
-  

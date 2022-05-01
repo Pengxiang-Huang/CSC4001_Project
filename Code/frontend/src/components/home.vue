@@ -1597,6 +1597,7 @@ export default {
   border-right: 3px solid gray;
   border-radius:30px;
   margin-left: 30px;
+  margin-right: 30px;
   padding: 0 50px;
   font-size: 20px;
   line-height: 30px;
