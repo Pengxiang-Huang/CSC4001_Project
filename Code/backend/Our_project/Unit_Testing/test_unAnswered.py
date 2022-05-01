@@ -24,6 +24,8 @@ def normal_test1():
     json_data = json.loads(response.content)
     data = json_data
 
+    if (len(data) <= 1):
+        return 1
     index = random.randint(1, len(data)-1)
     blog_test = data['blog' + str(index)]    # verify 1 blog's data randomly
     if not (blog_test):

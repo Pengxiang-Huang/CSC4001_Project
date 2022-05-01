@@ -30,6 +30,8 @@ from .models import sub_group
 from .models import file
 import hashlib
 import markdown
+import spacy
+
 from . import Unit_Test
 from . import Component_Test
 from . import System_Test
@@ -398,6 +400,7 @@ def setQuestion(request):
         for i in range(0, len(fs_url)):
             if fs_url[i] == ".":
                 extension = fs_url[i:]
+                print(extension)
         if (fs_url != ""):
             if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
                 pic = picture.objects.create(url = fs_url, question = new_q_id, group_name = None)
@@ -1378,8 +1381,8 @@ def run_code(request):
             except:
                 lang = "Python"
 
-            accessToken = '1963c8460eedcdf0d6aa233a8c6e1021'
-            endpoint = 'a3e69f92.compilers.sphere-engine.com'
+            accessToken = '988ee724e12e4b4add3d9b8baf105b56'
+            endpoint = 'c63f7566.compilers.sphere-engine.com'
 
             client = CompilersClientV4(accessToken, endpoint)
 
@@ -1534,10 +1537,10 @@ def Reply(request):
 
         try:
             fs_url = request.POST['files_url']
-            pics_url = request.POST['pics_url']
+            print(fs_url)
         except:
             fs_url = ""
-            pics_url = ""
+            print("nothing")
         
         content = request.POST["content"]
         content_format = "HTML"
@@ -1545,10 +1548,16 @@ def Reply(request):
         Answer = Blog_Answers.objects.create(question_id=question_id, father_answer_id=father_answer_id, content=content, content_format = content_format, like = 0, author_id = userid)
         answer_id = Answer.id
 
+        for i in range(0, len(fs_url)):
+            if fs_url[i] == ".":
+                extension = fs_url[i:]
+
         if (fs_url != ""):
-            fs = file.objects.create(url = fs_url, corresponding_question = question_id, corresponding_answer = answer_id)
-        if (pics_url != ""):
-            pic = picture.objects.create(url = pics_url, question_id = question_id, answer_id = answer_id)
+            print(extension)
+            if (extension == ".jpg" or extension == ".png" or extension == ".JPG" or extension == ".PNG" or extension == ".GIF" or extension == ".gif" or extension == ".JPEG" or extension == ".jpeg"):
+                pic = picture.objects.create(url = fs_url, answer = answer_id, group_name = None)
+            else:
+                fs = file.objects.create(url = fs_url, corresponding_answer = answer_id)
 
         # If the reply has pictures and files, upload them
         data["ok"] = 1
@@ -1625,3 +1634,46 @@ def testing(request):
 
 def delete_test_insert():
     Blog_Questions.objects.filter(title='How to be a perfect test engineer?').delete()
+
+def filter_word(blog_list):
+  blog_id = blog_list[0]
+  blog_title = blog_list[1]
+  blog_content = blog_list[2]
+
+  # load the deep learning dataset
+  nlp = spacy.load('en_core_web_sm')
+
+  doc_title = nlp(blog_tilte)
+  doc_content = nlp(blog_content)
+
+  #创建字典 {token名字：出现的次数}
+  token_dict_title = {}
+  token_dict_content = {}
+
+  #遍历标题所有数据
+  for token in doc_title:
+    if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
+      lemma_token = token.lemma_ # transform it to normal form (lemma)
+      if lemma_token in token_dict_title:
+        token_dict_title[lemma_token] += 1
+      else:
+        token_dict_title[lemma_token] = 1
+  
+  #遍历内容所有数据
+  for token in doc_content:
+    if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
+      lemma_token = token.lemma_ # transform it to normal form (lemma)
+      if lemma_token in token_dict_content:
+        token_dict_content[lemma_token] += 1
+      else:
+        token_dict_content[lemma_token] = 1
+
+  # 返回的结果
+  # [blog_id(int),dict_title, dict_content]
+  result_list = []
+  result_list.append(blog_id)
+  result_list.append(token_dict_title)
+  result_list.append(token_dict_content)
+
+  return result_list
+  
