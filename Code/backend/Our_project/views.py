@@ -452,9 +452,14 @@ def searchQuestion(request):
         similarity = 0
         answerList = []
         #get the infor
-        question = request.POST['content'] #question in test
-        question = question.upper()
-        questionElem = question.split(' ')
+        question1 = request.POST['content'] #question in test
+        # question = question.upper()
+        # questionElem = question.split(' ')
+        question2 = search_spilt(question1)
+        dim = question2[0]
+        question = question2[1]
+        target_vec = question2[2]
+
         scope = request.POST['scope']
 
         username = request.POST['username']
@@ -462,9 +467,86 @@ def searchQuestion(request):
         
 
         if (scope=='All'):
-
             conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
             cursor = conn.cursor()
+            Answer_T = []
+            Answer_C = []
+            blockNumberTotalList = []
+            lenList = len(question)
+            searchIndex = 1
+            for item in question:
+                if item[0].isalpha:
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                    # print(a)
+                    # print(len(a))
+                else:  
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                
+                for i in range(len(a)):
+                    if a[i][1] not in blockNumberTotalList: blockNumberTotalList.append(a[i][1])
+                    Ttemp1 = [0]*(lenList+1)
+                    Ctemp1 = [0]*(lenList+1)
+                    Ttemp1[0] = a[i][1]
+                    Ttemp1[searchIndex] = a[i][2]
+                    Ctemp1[0] = a[i][1]
+                    Ctemp1[searchIndex] = a[i][3]
+                    Answer_T.append(Ttemp1)
+                    Answer_C.append(Ctemp1)
+                searchIndex += 1
+            searchIndex -= 1
+            # print(blockNumberTotalList)
+            print(Answer_T)
+            print(Answer_C)
+              
+
+            finalT = {}
+            finalC = {}
+            for item in blockNumberTotalList:
+                temp1 = [0]*(lenList)
+                temp2 = [0]*(lenList)
+                finalT[item] = temp1
+                finalC[item] = temp2
+
+            # print(finalT)
+            # print(finalC,"nima")
+            for item in Answer_T:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalT[blocknumber][i-1] = item[i]
+
+          
+            for item in Answer_C:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalC[blocknumber][i-1] = item[i]
+            print(finalT)
+            print(finalC)# content
+          
+            blog_vec_list = []
+            my_dict = {} . 
+            for (key,value) in finalT.items():
+              blog_id = key
+              title_value = value
+              content_value = finalC[key]
+              vec = []
+              vec.append(blog_id)
+              for j in range(0, len(title_value)):
+                myvalue = 3 * title_value[j] + content_value[j]
+                vec.append(myvalue)
+              blog_vec_list.append(vec)
+
+            print(blog_vec_list)
+            result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
+            print(result_list)
+
+
+
 
 
             #finially, return the searched answer
@@ -1689,3 +1771,59 @@ def filter_word(blog_list):
     result_list.append(mylist)
 
   return result_list
+
+def search_spilt(title):
+  nlp = spacy.load('en_core_web_sm')
+  
+  doc_title = nlp(title)
+
+  token_dict = {}
+
+  for token in doc_title:
+    if not (token.is_punct or token.is_stop):
+      lemma_token = token.lemma_
+      if lemma_token in token_dict:
+        token_dict[lemma_token] += 1
+      else:
+        token_dict[lemma_token] = 1
+  
+  word_list = []
+  count_list = []
+  dim = 0
+  for (key,value) in token_dict.items():
+    dim += 1
+    word_list.append(key)
+    count_list.append(value)
+  
+  result = [dim, word_list,count_list]
+
+  return result
+
+
+# quick sort
+def quicksort_blog(dim, target_vec, blog_vec_list, l, r):
+    if(l < r):
+        pivot = partition(dim, target_vec, blog_vec_list, l, r)
+        quicksort_blog(dim, target_vec, blog_vec_list, l, pivot - 1)
+        quicksort_blog(dim, target_vec, blog_vec_list, pivot + 1, r)
+    return blog_vec_list
+
+def partition(dim, target_vec, blog_vec_list, l, r):
+    pivot = r
+    i = l
+    for j in range(l,r):
+        if innerProduct(dim, blog_vec_list[j], target_vec) > innerProduct(dim, blog_vec_list[pivot], target_vec):
+            blog_vec_list[j], blog_vec_list[i] = blog_vec_list[i], blog_vec_list[j]
+            i += 1
+
+    blog_vec_list[i], blog_vec_list[pivot] = blog_vec_list[pivot], blog_vec_list[i]
+
+    return i
+
+
+def innerProduct(dim, blog_vec, target_vec):
+  result = 0
+  for i in range(1, dim+1):
+    result += target_vec[i-1] * blog_vec[i]
+
+  return result 
