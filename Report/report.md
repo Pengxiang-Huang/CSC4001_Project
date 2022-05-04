@@ -125,8 +125,172 @@ When User goes into the blogs page. They could see the blog's parition and its s
 <img src="pic/User_Interface/Complie.png" alt="Complie" style="zoom:50%;" />
 
 ​	In post part, User are also allowed to write their code as a supplement material. they could also run the code to see the output. Typically, User are allowed to write the code without environmental configuration, they could also write code in an ipad or a phone. The online compiler support many language include C, C++, Python, Rust... The running time and memory used will be shown on webpage just as an open Jude system. The code will be highlighted due to different language, different language has different highlighted method, and they will also be used here to improve user coding feeling. 
+---  
 
-##  Test
+##  Test  
+
+- For the explanation of our test part, it will be divided into 3 sub-sections. In the first section, the introduction of test-files arrangement will be introduced. In the second sectiosn,  we will explain the design-idea of test files, including what test suites we are leveraging, what functions we are testing, and how we make sure the test suites are have a good coverage of cases. In the third section, we will report about the testing results.
+
+---
+
+**Test-Part1: Overall arrangement of test files**
+
+To ensure the functionality, robusty, Genarality of our programs, we implemented the Unit tests, Component tests, and system test based on blackbox testing. The arrangement of test files are showing below:
+
+- For Unit Testing, it includes 19 test files, based on blackbox testing:
+    
+    <img src="pic/TEST/unit.png" alt="UNIT" style="zoom:50%;" />
+    
+    Figure 1: the files conduct Unit Tests. 
+    
+    - As it is shown above,  we leverage these 19 unit-test files to ensure the correctness of the basic APIs and functions we defined in the project. The brief explanations of each of these files will be shown in the later part.
+- For Component Testing, it includes 6 test files based on blackbox testing:
+    
+    <img src="pic/TEST/Component.png" alt="COMPONENT" style="zoom:50%;" />
+    
+    Figure 2: the files conduct Component Tests. 
+    
+    - We leverage 6 component test files to conduct the component testing. In the component testing, we mainly test the significant functions we provided to users in our website, such as click-on-like button, login system, and so on.
+- For the System Testing, it includes one overall file merged by the component tests:
+    
+    <img src="pic/TEST/system.png" alt="SYSTEM" style="zoom:50%;" />
+    
+    Figure 3: the file conducts System Test. 
+    
+    - We merge all the component tests and add some links to these component tests suites to form a overall testing over the system. The details will be explained in the next part.
+- Based on the structure of Unit-Test, Component-Test and System-Test as shown above, we get the whole structure of our test part:
+
+<img src="pic/TEST/structure_testings.png" alt="structure" style="zoom:50%;" />
+
+---
+
+**Test-Part2: Design ideas of test files**
+
+In this part, we will explain the corresponding function that each file tests, as well as the design idea of each test file briefly. 
+
+For the unit-test:
+
+1. `test_code.py`
+    
+    This file test the `views.encode()` function. 
+    
+    `views.encode()` is expected to randomly generate a code with length of 6. This test file would call this function 100 times and check whether the generated code gets repeated. If there are repeated generated codes in 100 times, it means the randomness is not strong enough, thus this file would through “FAILED” as result.
+    
+2. `test_follow.py`
+    
+    The function this file testing is `views.follow(request)` which is expected to perform the function of empower follow another user by clicking the follow-button we provided in frontend. There are 3 test cases involved in this file: 1. the case with normal valid input. 2. the case with an invalid input: input with GET request, while the function is designed to only accept POST request. 3. request with a non-exist username. 
+    
+    For the case tests the normal valid input, this test file will check the status of response and the return value. For the case tests the invalid input, this test file will check whether the error message is accordant with what we expected it to throw. 
+    
+3. `test_followGroup().py`
+    
+    This file test the `views.followGroup()`, which is expected to empower user to follow one specific group by clicking button we provided. There are 4 test cases involves: 1. normal and valid input of following a group. 2. request with GET request. 3. request with an invalid user’s name 4. follow a non-exsiting group’s name. 
+    
+    As the same idea we illustate in `test_follow.py`, we check the status and return value of the normal valid input. And compare the error message to what we expect to receive for the 3 invalid inputs. 
+    
+4. `test_getGroup.py`
+    
+    This test file tests the `views.getGroup()`funciton, which is expected to return all the related blog of one group (such as all the blogs related to CSC4001-Project).  There are one test case for the valid and normal input and two test cases  for the invalid cases. Specially, for the test for normal valid input, it should also check the contents that return to ensure it doesn’t return an empty value for one of the return values. 
+    
+5. `test_GetQuestion.py`
+    
+    This test file tests the `views.GetQuestions(request)` function, which is design to return the contents, titles, amount of likes, follows, etc, when user enter into a specific blog. There are one test case for the normal input and two test cases for the boundary testing. 
+    
+6. `test_groups.py` 
+    
+    This test file tests the `views.groups(request)` function, which is expected to return all the groups, as well as each's description, url of picture,
+    number of follows, and whether the current user follow in main-page. There are one normal case to check whether it returns the groups’ information correctly and two invalid cases to check whether this function is robust enough when user try some invalid inputs. 
+    
+7. `test_like.py` 
+    
+    This test file tests `views.like(request)` . Since this function is expected to add the amount of like when user who never like this blog/answers clicks the like-botton, and cancel the like when the user already likes it, there are two cases for normal inputs: 1. like one blog/answer, 2. cancel like. There are two boundary test cases included as well.
+    
+8. `test_login.py` 
+    
+    This test file test the `views.login()`. Since this function is the function that require the most robusty, we consider some specials cases that main encounter when using this function. 
+    
+    First, we test login with user name and correct password. In the second case, we test login with user name and wrong password. In the third case, we test login with sessions (because we keep sessions valid for 1 day if the already login and user can avoid login again within 1 day). In the fourth case, we test login with valid cookies. 
+    
+9. `test_logout.py` 
+    
+    This file tests `views.logout()` which is expected to enable the user to quit the system and direct him/her to the login page. One normal test case and two boundary(also invalid) test cases are included. 
+    
+10.  `test_my_follow.py` 
+    This file tests `views.my_follow()` , which functions returning all the blog that the current user is following. We would check whether it would return the corret number of blogs that the user is following, as well as whether the contents are valid. There are also two test cases for invlid request method and non-exsited user name.
+    
+11. `test_my_group.py` 
+    
+    This file tests `views.my_group()` , which is expected to return groups that the current user is following. There are one normal input for testing and two invlid and rare inputs for testing as well. 
+    
+12. `test_MyBlogs()` 
+    
+    This file tests `views.MyBlogs()` , which functions by returning all the blogs posted by the current user. We check whether the returned blogs are actually posted by the current user to ensure that the current user get a correct result.
+    
+13. `test_MyGroups()` 
+    
+    This file tests `views.MyGroups()`, which is a function inherits from `views.groups()`. it includes totally 3 cases in this file. 
+    
+14. `test_run_code.py` 
+    
+    This file tests the function of execution of Online compiler we leverage. For the normal and requent input, we test source code as `print("hello world")` and language as `Python`. As well as some invalid input like introducing buggy code to the source code, or use a non-consistent language, or directly not specify the language of source code. 
+    
+15. `test_Search_Question.py` 
+    
+    This test file test the functionality of our search engine. We introduce 5 test cases in this file. For example, search the question with chinese, with english. Or, search the questions within spedific scope. We compare the search result with wht we expect to get to evaluate whether this functions work normally. 
+    
+16. `test_sendEmail.py` 
+    
+    This file test the Email-sending function which is the basic function when user registers. It includes 3 test cases to check whether the email has been successfully sent out and also the ability to handle the invalid email address. 
+    
+17.  `test_SetQuestion.py` 
+    This file test the basic function `views.setQuestion()` which empower the user to post a new question with title, content, source code, language, corresponding group. Except for one test case that the user post a complete question. We also introduce another 4 test cases to test the situation when user post a question without tile, or without specific group, or without any contetn, or without his/her name included. We check whether this functions is able to handle all of this possible situations.  
+    
+18. `test_unAnswered.py` 
+    
+    This file test the function `views.unAnswered()` , which is expected to return all the Blogs with nobody answers it. We specifc check whether the returning blogs actually got no one answer. And also, two boundary tests are included. 
+    
+19. `test_update.py` 
+    
+    This file specially test the functions `views.update()` which is in charge of enabling users to change password and username. We check whether the user can successfully update the password or user name by checking into the database after calling this function. And there are 3 test cases included in this unit-test file.
+    
+
+After explaining the design of 19 unit-test files, we continue to briefly introduce the idea that we utilize to design the Component testing. There are 6 files to perform the component testing and together test the correctness of  blog posting, like-follow component, login-logout component, main page component, blog delivering component, and register component:
+
+1. `test_register.py` 
+    
+    In this component testing file, we test all the functions during the process of register a new account. It includes email sending, user name checking, and database updating. We includes three test cases to verify its correctness. 
+    
+2. `test_login_then_logout.py` 
+    
+    In this component testing file, we consider login and logout functions together to test ensure there will be noting wrong when user login first, then logout the system. Also, when designing the test cases, we specially consider the situations with cookies and sessions to ensure they functions well in this component. 
+    
+3. `test_Blog.py` 
+    
+    This component testing file tests the correct function of delevering a blog to user when he/she click on the blog. 
+    
+4. `test_Post.py` 
+    
+    We introduce 5 test cases here to test all the functions exposing to users when posting a quesiton, such as running the code, storing the whole question(title, contents, corresponding groups, source code...) to database. Among the 5 test cases, there are 1 case with normal and valid inputs and 4 cases covering the special situations.
+    
+5. `test_mainpage.py` 
+    
+    This test file tests the basic functions we expose in the main page. Except for checking the status of response (expected to be 200), it also check the values that are returned to make sure they are not empty. 
+    
+6. `test_like_follow.py` 
+    
+    This component test file test the like-follow system of our website. It includes 4 test cases to cover the possible situations such as the user clicks likes on a blog/answer then follow it, or click on like/follow on a blog/question twice. 
+    
+
+After introducing the component testing, we link all the components together to form a whole journal of using our website in `System_Test.py` . The whole process of using the website as shown below is tested:
+
+<img src="pic/TEST/sys_test.png" alt="sys_test" style="zoom:50%;" />
+
+---
+
+**Test-Part3: Testing results**
+
+We test our programs using the Unit testing, Component testing, and System testing files we explain above. The results return show that our programs pass all of the testing cases except the API for searching question as it shown in the below figure. Then, we debug the API for searching questions and finally get all the test cases passed.
+<img src="pic/TEST/test_result.JPG" alt="result" style="zoom:100%;" />
 
 ##  Lessons Learned
 
