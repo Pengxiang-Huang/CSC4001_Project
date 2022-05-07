@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!--animation text-->
     <div class="context">
       <div class="wrapper">
         <div class="typing-demo">
@@ -7,6 +8,7 @@
         </div>
       </div>
     </div>
+    <!--animation background squres-->
     <div class="area">
       <ul class="circles">
         <li></li>
@@ -21,6 +23,7 @@
         <li></li>
       </ul>
     </div>
+    <!--input title -->
     <div class="title-input">
       <input type="text"
              v-model="title"
@@ -28,6 +31,7 @@
              placeholder="Typing your tilte in here!">
       <label for="input1">Title:</label>
     </div>
+    <!--plugin for content editor-->
     <div class="editarea">
       <div class="text-area">
         <div class="textcode">
@@ -38,6 +42,7 @@
         </div>
       </div>
     </div>
+    <!--used for user to write and run their code -->
     <div class="codearea">
       <div class="language-js">
         <el-dropdown @command="SelectLanguage"
@@ -72,6 +77,7 @@
         <pre class="line-numbers"><code class="language-xml line-numbers" v-text="codeResult"></code></pre>
       </div>
     </div>
+    <!--user need to chose their partition and subpartition-->
     <div class="chose">
       <section class="containers">
         <div class="dropdown">
@@ -112,10 +118,16 @@
         </div>
       </section>
     </div>
-    <div class="sendbtn">
+    <!--loading btn, used for protect the post process-->
+    <div class="sendbtn" v-if="!isposting">
       <button class="btn"
               @click="submit">POST</button>
     </div>
+    <!-- loading btn -->
+    <div class="sendbtn" v-else>
+      <vue-mzc-loading title="Wait for post..."> </vue-mzc-loading>
+    </div>
+    <!--btn for user to go back home -->
     <div class="goback">
       <button class="btnback"
               @click="goback">Go back</button>
@@ -124,37 +136,37 @@
 </template>
 
 <script>
-import { PrismEditor } from 'vue-prism-editor'
-import Prism from 'prismjs'
-import 'vue-prism-editor/dist/prismeditor.min.css'
-import { highlight, languages } from 'prismjs/components/prism-core'
+import { PrismEditor } from 'vue-prism-editor' // used for the code editor
+import Prism from 'prismjs' // code editor
+import 'vue-prism-editor/dist/prismeditor.min.css' // code editor theme
+import { highlight, languages } from 'prismjs/components/prism-core' // code highlight
 import 'prismjs/components/prism-clike'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/themes/prism-okaidia.css'
-import editor from '@/components/editor.vue'
-import VueFroala from 'vue-froala-wysiwyg'
-import VueMzcLoading from 'vue-mzc-loading'
+import VueFroala from 'vue-froala-wysiwyg' // text conetent editor
+import VueMzcLoading from 'vue-mzc-loading' // loading animation component
 import axios from 'axios'
 import Qs from 'qs'
 export default {
   components: {
     PrismEditor,
-    editor,
     VueFroala,
     VueMzcLoading
   },
   data: () => ({
-    code: '// include any code you want to here',
+    code: '// include any code you want to here', // bind the code conetent with code editor component
     lineNumbers: true,
     Language: 'C++',
     partition: '',
     subpartition: '',
     codeResult: '// code result will be shown here',
     isloading: false,
+    isposting: false,
     blogtext: '',
     title: '',
     username: '',
     link: '',
+    // configuration for text editor
     config: {
       heightMax: 330,
       heightMin: 330,
@@ -169,6 +181,7 @@ export default {
         'html', 'insertLink', 'insertFile', '|',
         'paragraphStyle', 'paragraphFormat', 'specialCharacters', '|',
         'undo', 'redo', 'fullscreen'],
+      // used for upload the file and image to our server
       events: {
         'file.uploaded': function (response) {
           this.link = JSON.parse(response).link
@@ -179,14 +192,17 @@ export default {
     }
   }),
   created () {
+    // recieve the params passed from home
     this.username = this.$route.params['username']
     this.config.fileUploadParams.username = this.username
   },
   mounted () {
+    // highlight all code in the editor
     Prism.highlightAll()
     document.body.style = 'overflow: auto;'
   },
   methods: {
+    // highlight all code based on different language
     highlighter (code) {
       var lang = this.Language
       if (lang === 'C++') {
@@ -209,10 +225,12 @@ export default {
         return highlight(code, languages.bash)
       }
     },
+    // set the language that user default
     SelectLanguage (command) {
       this.Language = command
       console.log(this.Language)
     },
+    // run the code on server and return back the result
     runcode () {
       console.log(this.partition)
       this.isloading = true
@@ -236,12 +254,18 @@ export default {
         console.log(error)
       })
     },
+    // return back to home
     goback () {
       this.$router.go(-1)
     },
+    // submit all the blog content to server
     submit () {
       // console.log(sessionStorage.getItem('link'))
       this.link = sessionStorage.getItem('link')
+      this.isposting = true
+      console.log(this.blogtext)
+      var el = document.createElement('div')
+      el.innerHTML = this.blogtext
       if (this.title === '') {
         this.$message.error('Please conclude your title!')
       } else if (this.partition === '') {
@@ -263,13 +287,15 @@ export default {
           content: this.blogtext,
           author_name: this.username,
           lang: this.Language,
-          files_url: this.link
+          files_url: this.link,
+          StringText: el.innerText
         }
         axios({
           method: 'post',
           url: 'http://175.178.34.84/SetQuestion',
           data: Qs.stringify(senddata)
         }).then((response) => {
+          this.isposting = false
           if (response.data.ok === 0) {
             this.$message.error('can not found the corresponding subpartition, please try again!')
           } else {
@@ -293,6 +319,7 @@ export default {
   margin: 0px;
   padding: 0px;
 }
+
 .my-editor {
   margin-top: 30px;
   background-color: #201919;
@@ -303,13 +330,15 @@ export default {
   line-height: 1.5;
   padding: 5px;
 }
+
 .prism-editor__textarea:focus {
   outline: none;
 }
+
 .height-300 {
   height: 300px;
 }
-/*background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);*/
+
 #app {
   background: linear-gradient(253deg,  #3b69cd, #71a1eb);
   font-family: "Exo", sans-serif;
@@ -318,18 +347,21 @@ export default {
   text-align: center;
   overflow-x: hidden;
 }
+
 .codearea {
   position: absolute;
   top: 45rem;
   width: 100%;
   margin-left: auto;
 }
+
 .editarea {
   position: absolute;
   top: 10rem;
   width: 100%;
   margin-left: auto;
 }
+
 div[class^="language-"] {
   position: relative;
   width: 100%;
@@ -339,6 +371,7 @@ div[class^="language-"] {
   border-radius: 16px;
   max-width: 45rem;
 }
+/*输入框的背景*/
 div[class$="js"]::before {
   display: block;
   position: absolute;
@@ -347,6 +380,7 @@ div[class$="js"]::before {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
 }
+
 div[class^="language"]::after {
   position: absolute;
   top: 1rem;
@@ -360,6 +394,7 @@ div[class^="language"]::after {
   -webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
+
 span.copy-btn {
   position: absolute;
   z-index: 3;
@@ -369,9 +404,11 @@ span.copy-btn {
   cursor: pointer;
   color: rgba(255, 255, 255, 0.4);
 }
+
 span.copy-btn:hover {
   color: rgba(255, 255, 255, 0.6);
 }
+
 div.copy-code {
   width: 100%;
   background: #282c34;
@@ -383,6 +420,7 @@ div.copy-code {
   font-weight: normal;
   color: rgba(255, 255, 255, 0.6);
 }
+
 /*Background begin here*/
 .context {
   left: 25%;
@@ -403,7 +441,7 @@ div.copy-code {
   width: 100%;
   height: 100%;
 }
-
+/*动态方块*/
 .circles li {
   position: absolute;
   display: block;
@@ -473,6 +511,7 @@ div.copy-code {
   animation-delay: 15s;
   animation-duration: 45s;
 }
+
 .circles li:nth-child(9) {
   left: 20%;
   width: 15px;
@@ -480,6 +519,7 @@ div.copy-code {
   animation-delay: 2s;
   animation-duration: 35s;
 }
+
 .circles li:nth-child(10) {
   left: 85%;
   width: 150px;
@@ -487,6 +527,7 @@ div.copy-code {
   animation-delay: 0s;
   animation-duration: 11s;
 }
+
 @keyframes animate {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -499,6 +540,7 @@ div.copy-code {
     border-radius: 50%;
   }
 }
+
 .dropdowns {
   font-family: Menlo;
   display: block;
@@ -508,6 +550,7 @@ div.copy-code {
   font-size: 0.75rem;
   color: #ccc;
 }
+
 div[class^="text-"] {
   position: relative;
   background: #dee1e6;
@@ -517,6 +560,7 @@ div[class^="text-"] {
   max-width: 60rem;
   height: 25rem;
 }
+
 div[class$="area"]::before {
   display: block;
   position: absolute;
@@ -525,6 +569,7 @@ div[class$="area"]::before {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
 }
+
 div[class^="text"]::after {
   position: absolute;
   top: 1rem;
@@ -538,15 +583,19 @@ div[class^="text"]::after {
   -webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
+
 .textcode {
   height: 20rem;
 }
+
 .fr-toolbar .fr-command.fr-btn {
   width: auto !important;
 }
+
 .fr-toolbar .fr-command.fr-btn i {
   width: auto !important;
 }
+
 .wrapper {
   /*This part is important for centering*/
   display: flex;
@@ -564,16 +613,19 @@ div[class^="text"]::after {
   font-size: 50px;
   color: white;
 }
+
 @keyframes typing {
   from {
     width: 0;
   }
 }
+
 @keyframes blink {
   50% {
     border-color: transparent;
   }
 }
+
 .sendbtn {
   position: absolute;
   height: 10rem;
@@ -617,6 +669,7 @@ div[class^="result-"] {
   max-width: 45rem;
   height: 10rem;
 }
+
 div[class$="area"]::before {
   display: block;
   position: absolute;
@@ -625,6 +678,7 @@ div[class$="area"]::before {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
 }
+
 div[class^="result"]::after {
   position: absolute;
   top: 1rem;
@@ -638,6 +692,7 @@ div[class^="result"]::after {
   -webkit-box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
   box-shadow: 18px 0 0 0 #ffbd2e, 36px 0 0 0 #27c93f;
 }
+
 .containers {
   width: 400px;
   text-align: center;
@@ -647,7 +702,7 @@ div[class^="result"]::after {
   margin: 0 20px;
   vertical-align: top;
 }
-
+/*chose partition and subpartion*/
 .dropdown {
   display: inline-block;
   position: relative;
@@ -739,8 +794,6 @@ div[class^="result"]::after {
   cursor: pointer;
 }
 
-/* Fix for IE 8 putting the arrows behind the select element. */
-
 .lt-ie9 .dropdown {
   z-index: 1;
 }
@@ -752,8 +805,6 @@ div[class^="result"]::after {
 .lt-ie9 .dropdown-select:focus {
   z-index: 3;
 }
-
-/* Dirty fix for Firefox adding padding where it shouldn't. */
 
 @-moz-document url-prefix() {
   .dropdown-select {
@@ -799,6 +850,7 @@ div[class^="result"]::after {
   background: #444;
   text-shadow: 0 1px rgba(0, 0, 0, 0.4);
 }
+
 .chose {
   position: absolute;
   top: 80%;
@@ -807,9 +859,11 @@ div[class^="result"]::after {
   width: 400px;
   text-align: center;
 }
+
 .line-numbers {
   height: 140px;
 }
+
 .title-input {
   position: absolute;
   top: 8rem;
@@ -817,6 +871,7 @@ div[class^="result"]::after {
   width: 50%;
   transform: translate(-50%, -50%);
 }
+
 .title-input input {
   display: inline-block;
   left: 50%;
@@ -830,6 +885,7 @@ div[class^="result"]::after {
   font-family: "PingFang SC";
   font-size: 16px;
 }
+
 .title-input input + label {
   position: absolute;
   top: 0;
@@ -842,9 +898,11 @@ div[class^="result"]::after {
   padding: 0 50px;
   background: linear-gradient(253deg, #2eb8d3, #40afe2, #3b69cd);
 }
+
 .title-input input[type="text"]:focus + label {
   border-radius: 10px;
 }
+
 .goback {
   position: absolute;
   height: 10rem;
@@ -854,6 +912,7 @@ div[class^="result"]::after {
   align-items: center;
   justify-content: center;
 }
+
 .btnback {
   width: 80px;
   height: 30px;
@@ -877,6 +936,7 @@ div[class^="result"]::after {
   color: #fff;
   transform: translateY(-7px);
 }
+/*用来破解froala在服务器上显示未购买权限的问题*/
 .fr-wrapper > div[style*="z-index: 9999"] {
   position: absolute;
   top: -10000px;

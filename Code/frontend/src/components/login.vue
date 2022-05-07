@@ -1,6 +1,7 @@
 <template>
   <div id="body">
     <div class="container-login">
+      <!--The header for user jump to sign up or forget password -->
       <div class="header-login">
         <div class="header-login-box">
           <span class="header-text-position">
@@ -11,6 +12,7 @@
              id="forgetpassword"><i class="fa fa-question"></i>&nbsp;&nbsp;Forgot Password?</router-link>
         </div>
       </div>
+      <!--The animation logo -->
       <div class="logo">
           <div class="switch-left">
             <div class="pad-left"></div>
@@ -27,7 +29,8 @@
         <line x1="47" y1="107" x2="120" y2="30" stroke-linecap="round"/>
         <line x1="65" y1="130" x2="137" y2="100" stroke-linecap="round"/>
       </svg>
-    </div>
+      </div>
+      <!--The login form -->
       <div class="login-box">
         <div class="login">
           <h1>Authentication</h1>
@@ -68,8 +71,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import Qs from 'qs'
+import axios from 'axios' // used for connect with backend
+import Qs from 'qs' // used for stringfy the data
 export default{
   name: 'login',
   data () {
@@ -81,6 +84,7 @@ export default{
     }
   },
   computed: {
+    // used for hide or show the password
     buttonLabel () {
       return (this.showPassword) ? 'Hide' : 'Show'
     }
@@ -89,6 +93,7 @@ export default{
     toggleShow () {
       this.showPassword = !this.showPassword
     },
+    // used for user submit the login form to server
     submit () {
       if (this.username === '' || this.password === '') {
         this.$message.error('please input your username and password!')
@@ -396,10 +401,12 @@ transform: translate(-50%,-75%) rotate(360deg);
   color: #fff;
   font-family: serif;
 }
+
 #register {
   padding: 5px 150px;
   display: flex;
 }
+
 #forgetpassword {
   padding: 5px 150px;
   display: flex;

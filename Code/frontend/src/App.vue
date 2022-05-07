@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style>
+/* global configuration */
 #app {
   font-family: 'Georgia','Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

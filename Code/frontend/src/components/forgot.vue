@@ -1,7 +1,9 @@
 <template>
+  <!--used for user to find back the password-->
   <div id="app">
     <div class="wrapper">
       <h2>Password Reset</h2>
+      <!-- information box-->
       <div class="formBox">
         <div class="input-box">
           <input type="text"
@@ -74,6 +76,7 @@ export default {
     }
   },
   methods: {
+    // send the email to the user account
     send () {
       var check = /[0-9]{9}@link\.cuhk\.edu\.cn/
       if (this.email === '' || !check.test(this.email)) {
@@ -82,6 +85,7 @@ export default {
         let mysendData = {
           email: this.email
         }
+        // send the verification code to user account
         axios({
           method: 'post',
           url: 'http://175.178.34.84' + '/sendEmail/',
@@ -94,6 +98,7 @@ export default {
         this.$message.success('Verification code has been sent to your account')
       }
     },
+    // submit the reset password form to backend
     submit () {
       var regExp = /[0-9]{9}@link\.cuhk\.edu\.cn/
       if (this.email === '' || !regExp.test(this.email)) {
@@ -104,7 +109,7 @@ export default {
         this.$message.error('please confirm your password')
       } else if (this.password1 !== this.password2) {
         this.$message.error('The passwords are not the same, please check it!')
-      } else if (this.veri_code !== this.correct_code) {
+      } else if (this.veri_code !== this.correct_code) { // check the verification code is correct
         this.$message.error('The verication code is not correct, please try again !')
       } else {
         let senddata = {
@@ -112,6 +117,7 @@ export default {
           username: this.username,
           newVal: this.password1
         }
+        // update the user password
         axios({
           method: 'POST',
           url: 'http://175.178.34.84' + '/updateInformation/',
@@ -120,6 +126,7 @@ export default {
           if (response.data === 'Password Reset successfully!') {
             this.$message.success('Reset Successfully')
             sessionStorage.setItem('isLogin', true)
+            // reset the username and jump to the home page
             this.$router.push({
               path: '/home/:username',
               name: 'home',
@@ -131,7 +138,7 @@ export default {
             this.$message.error('Reset Failed, please try again !')
           }
         }).catch(error => {
-          this.$message.error('Reset Failed!')
+          this.$message.error('Can not found the username, Reset Failed!')
           console.log(error)
         })
       }
@@ -148,6 +155,7 @@ export default {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
 #app {
   min-height: 100vh;
   display: flex;
@@ -156,6 +164,7 @@ export default {
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
   text-align: center;
 }
+
 .wrapper {
   position: relative;
   max-width: 430px;
@@ -166,6 +175,7 @@ export default {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   animation: box-login 3s;
 }
+
 @keyframes box-login {
   0% {
     transform: rotateX(100deg);
@@ -175,12 +185,14 @@ export default {
     transform: rotateX(0deg);
   }
 }
+
 .wrapper h2 {
   position: relative;
   font-size: 22px;
   font-weight: 600;
   color: #333;
 }
+
 .wrapper h2::before {
   content: "";
   position: absolute;
@@ -191,13 +203,16 @@ export default {
   border-radius: 12px;
   background: #4070f4;
 }
+
 .wrapper .formBox {
   margin-top: 30px;
 }
+
 .wrapper .formBox .input-box {
   height: 52px;
   margin: 18px 0;
 }
+
 .formBox .input-box input {
   height: 100%;
   width: 100%;
@@ -212,20 +227,24 @@ export default {
   transition: all 0.3s ease;
   display: flex;
 }
+
 .input-box input:focus,
 .input-box input:valid {
   border-color: #6083e4;
 }
+
 .formBox .policy {
   display: flex;
   align-items: center;
 }
+
 .formBox h3 {
   color: #160303;
   font-size: 14px;
   font-weight: 500;
   margin-left: 10px;
 }
+
 .input-box.button input {
   color: #fff;
   letter-spacing: 1px;
@@ -234,9 +253,11 @@ export default {
   cursor: pointer;
   display: inline-block;
 }
+
 .input-box.button input:hover {
   background: #4871e2;
 }
+
 .input-box.button1 input {
   height: 40px;
   width: 80px;
@@ -247,18 +268,22 @@ export default {
   cursor: pointer;
   display: flex;
 }
+
 .input-box.button1 input:hover {
   background: #4871e2;
 }
+
 .formBox .text h3 {
   color: #333;
   width: 100%;
   text-align: center;
 }
+
 .formBox .text h3 a {
   color: #4070f4;
   text-decoration: none;
 }
+
 .formBox .text h3 a:hover {
   text-decoration: underline;
 }

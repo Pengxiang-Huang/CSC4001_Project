@@ -1,3 +1,4 @@
+/* import the fancy font used for other components */
 @font-face {
   font-family: 'myfont';
   src: url(./Snell-Roundhand.ttf);
