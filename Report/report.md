@@ -6,7 +6,27 @@
 
 
 
-## System Arcgitectual Design by DFD
+## System Arcgitectual Design by DFD  
+
+To better inllustrate how data flows in our website as well as asist in explaining the mechanism of our work, this report will provide you some Data Flow Diagrams and several detailed explanations regarding these DFDs. The components of systems we plan to describe below are: Login and Register module, Main page which delevers blogs, Question Posting system, and Searching Engine.   
+<img src="pic/DFD/Login_and_registration.png" alt="DFD1" style="zoom:40%;" />  
+
+For the Login and register module, our website provides users three main functions:
+1. User can go into the registration part and register a new account by entering his/her email and password. Both backend and frontend will check the registation status and show it on the screen(if the username has already been registered, the status message would display error.) If what users type are valid, they will be guided to the email confirmation page and a confirmation email would be sent to user’s email address. The verification code is used to activate the user account, and after email confirmed, the corresponding user information would be stored into user database. 
+2. If the user has already got an account, he/she can directly enter the email and password for login. the login status would be shown on screen after backend checking. 
+3. We empower user to use email to reset the password, if he/she forget the password. For the safety consideration, there will also be a confirmation code sent by email. Once confirmed, the new password of users would be stored into database. 
+  
+<img src="pic/DFD/Main_page.png" alt="DFD2" style="zoom:40%;" />
+For the mainpage module, two main messages will be shown to the current user: Question(blog) information and Groups & sub-groups information. Of course, there are several other non-crucial information like amount of likes, follows, views, will be also deliered to users in main page, while will not be included in DFD.
+1. For the Questions(blogs), they will be retrieved from backend and through a ranking system and to be recommended to the current user.  Finally, the correponding blogs will be shown in the frontend. 
+2. For the groups and sub-groups information, they will be retrieved from database. They will first go through a filter to distinguish the groups that are followed by users or not. Finally, they will be delivered to user in together. 
+  
+<img src="pic/DFD/Ranking_system.png" alt="DFD3" style="zoom:40%;" />
+For the search engine module, the basic data flow is chunking the user input and get the corresponding results in database according to the similarities. Since the detailed mechanism will be explained in the following part, we don’t introduce it too much here. The above figure is the corresponding DFD. 
+  
+<img src="pic/DFD/User_upload_answer.png" alt="DFD4" style="zoom:40%;" />
+For the upload questions, the content of questions goes through a text editor and becomes pretty(in html format). Then, the content will be stored in the Question database. The pictures and files will be separately stored into the storage file in the cloud server. For creating a new answers under a blog, the data flow is very similar with the one of uploading new questions. Answers will be stored in the anwer database and file, pictures will be stored into the cloud. The third flow is regarding the online compiling part, the code and language will be sent to the online compiler, after the execution of code, the runing result will be displayed to users.  
+
 
 ##  Detailed Description of Components by UML
 
@@ -292,7 +312,14 @@ After introducing the component testing, we link all the components together to 
 We test our programs using the Unit testing, Component testing, and System testing files we explain above. The results return show that our programs pass all of the testing cases except the API for searching question as it shown in the below figure. Then, we debug the API for searching questions and finally get all the test cases passed.
 <img src="pic/TEST/test_result.JPG" alt="result" style="zoom:100%;" />
 
-##  Lessons Learned
+##  Lessons Learned  
+- Team work
+
+During the whole process, our group enjoys a great team work and the team work gives us a valueable experience of working and developing the software within a group. Our group start thinking of the main idea of our website in February and start coding at the begining at the start of March. When thinking of the main idea of our software, our groups discuss on the project specification and main functions together for times. During the process, we learn the lesson about the values of team work -  combine the wisdom of all the members together and give out a more rational, innovative, and feasible idea that all the members have the will to work on it. During the coding process, we learn the second lesson from team work: a clear and responsible division of work to each member. Before our group start working, we discuss on the schedule that each member plan to complete in each week. The responsible division of workload and clear schedule of work smooth the process of developing software together and let all of us focus more on the work. To conclude, we learn a lot from the great team work and got a experience about how a crucial role that team work plays in the software developing. 
+
+- Knowledge about the cooperative development of backend and frontend
+
+At first, it is not easy for our group’s frontend engineers and backend engineers to effectively develop the software in a parallel way because there are many dependences between frontend and backend. We realize this problem and decide to pursuit a way that backend and frontend can be developed together in a more effecient way. Therefore, we choose to deploy the development environment to the cloud server at the very begining. In this way, frontend engineers can access the APIs provided by backend which is deployed on the cloud and therefore avoid the time-comsuming process of merging code of frontend and backend during the process of development. On the other hand, backend engineers can also access the static resources of frontend from the cloud server during developing. In addition every members can access the cloud server and see the logs of program when bugs emerges.  This development model brings several conveniences to us and provides a lesson of cooperative development of backend and frontend.
 
 ##  Conclusion
 
