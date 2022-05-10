@@ -1,4 +1,4 @@
-`
+
 
 <div style="font-size: 24px;">
     <center>
@@ -23,7 +23,7 @@
 </div>
 <div style="page-break-after:always;"></div>
 
-`
+**Report outline**
 
 [TOC]
 
@@ -384,7 +384,16 @@ We test our programs using the Unit testing, Component testing, and System testi
 
 ##  Lessons Learned
 
+### Frontend Learning 
 
+**Member HuangPengxiang:** From this Project, I have learned how to use Vue, as a frontend frame, to build our webpage and connect to the backend in order to transfer the data. Also, we have implemented many web actions to make our webpage more fancy and more applied to attract users. In fact, There are amount of webpage actions in our frontend like login, search, post, delete. Those actions requires many buttons and data transportation, which many cause many bugs. I took enormous time to design our page and also debug those web actions, it is tedious work when the web actions increase. Most Importantly, both the members in frontend and backend follow the strict rule of api function, which maintain a development path for us. We also made the development timeline and devide those tasks into different pieces, and we followed our schedule and have a meeting to cover the progress each week. It guarantee us to finish the huge project in time. The cohesive teamwork and coorperations make sure we could  finished our project successfully step by step. 
+
+**below is the exmple of our api function during the developing progress:**
+
+<img src="pic/api.png" alt="api" style="zoom:35%;" />
 
 ##  Conclusion
 
+​	In Conclusion, to help our programmers in CUHKSZ improve the learning and problem-solving efficiency, we created the CUHKSZ-Overflow. It also offered a social media for students share their idea,  exchange their thoughts and solve their learning issues. Meanwhile, We also provide the online complier for all of the user, which provide users write, compile, and run their code on our web server so that they will no longer confiure the environement on their local host and they could wirte their code on their ipad. More Importantly, we also provide a powerful search engine, which enables user find the relevant answers in a relative short time.  
+
+​	For the E-R diagram and database design, we matain our all tables in our database in 3NF form to avoid the redundancy as we could, we also design B tree method to increase our query speed in order to provide user a faster searching speed. 
