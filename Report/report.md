@@ -1,5 +1,3 @@
-
-
 <div style="font-size: 24px;">
     <center>
      <img src="pic/logo.png" style="zoom:80%;" />
@@ -23,8 +21,6 @@
 </div>
 <div style="page-break-after:always;"></div>
 
-**Report outline**
-
 [TOC]
 
 ##  Introduction
@@ -35,7 +31,7 @@
 
 ​	Based on the inspiration of public Q&A platform Stack-Overflow, our group thinks it is necessary to design a similar Q&A platform for programmers in CUHKSZ. It could help them solve their technical questions in time which could save their much time in finishing homework. programmers could use this platform to browse their questions on website and they will get the relevant answer immediately since there are many students who have already taken this course and they may encounter the similar problems. Also, the platform is more friendly. Programmers could use their nickname rather than true name and it is totally private for others. Therefore it would not make them shame about their questions. The platform also supports many formats of questions, which means programmers could use code block to express their specific question rather than word. It is much more efficient and clearer to use code block to express their idea. So students could find the help on our website when they encounter some difficult bugs.
 
-​	Our group also wants to build it as a social community for those programmers who want to raise some interesting topic to discuss with others. Programmers will have a platform to share their learning experience and their own suggestions to those younger students. And this friendly environment will also encourage more programmers to learn skills and be more creative and productive.
+​	Our group also wants to build it as a social community for those programmers who want to raise some interesting topics to discuss with others. Programmers will have a platform to share their learning experience and their own suggestions to those younger students. And this friendly environment will also encourage more programmers to learn skills and be more creative and productive.
 
 ​	In the view of above, our groups borrow the ideas from the famous used app called Stack- Overflow in CS community, and we hope to create a CUHKSZ version for programmers in our school. This website can be used to upload the questions relevant to their course homework, support user use code block to express their problem and specific need. The website also will rank the high-quality answer and recommended every member in this community to read on their homepage, which raise interest for every community member to learn. By knowing the drawback of current Q&A mode, hopefully this system can boost the motivation for programmers to raise question and solve question immediately in CUHKSZ. Thus, empower every CUHKSZer programming skill.
 
@@ -49,26 +45,11 @@
 
 ### Key Features
 
-​	Our system is mainly composed of 6 parts, including registration and login, searching relevant questions, posting new questions, replying the questions, displaying the highlight and hot questions or topic, ranking the excellent answers. Users could upload their questions online and also have the access to invite other people to answer their questions. They also could browse those hot questions that remain answered to see if they could help or join in the discussion. Moreover, the searching function is also valid for users. They are allowed to search the questions by themselves with various filter types that could narrow down their searching range. More details of these features will be included in later sections.
-
-| Module ID | Module Name | Frontend Functions                  | Backend Functions                                | Description     |
-| --------- | ----------- | ----------------------------------- | ------------------------------------------------ | --------------- |
-| 1         | Login       | check the username valid, password, | check if exist username, check password correct, | Login for users |
-| 2         |             |                                     |                                                  |                 |
-| 3         |             |                                     |                                                  |                 |
-| 4         |             |                                     |                                                  |                 |
-| 5         |             |                                     |                                                  |                 |
-| 6         |             |                                     |                                                  |                 |
-| 7         |             |                                     |                                                  |                 |
-| 8         |             |                                     |                                                  |                 |
-| 9         |             |                                     |                                                  |                 |
-
-
+​	Our system is mainly composed of 6 parts, including registration, login and logout, searching relevant questions, posting new questions, replying the questions, displaying hot questions. In the registration part, users could register an account by validating their email. In the login and logout part, users could log in the system with their own accounts and log out the system. In the searching part, users could search the questions with various filter types, such as searching the questions in CSC4001 or in CSC4001 Project. In the post part, users could upload their quesitons with pictures or files, they can also run their code online in the code compiler provided by our system. In the reply part, users could answer the questions with pictures or files, they can also give a like to the answers proposed by others. In the display part, some blogs will be displayed in the 'Hot Blogs' part in the descending order of the popularity value. The value is highly related to the amounts of likes, favors and views and the create time. The newer the questions posted, the larger amounts of likes, favors and views, the higher value of the popularity will be. Apart from those six parts, the system provides many humanized functions, such as the reset of the username or password and the upload of profile. 
 
 ### Highlights
 
-#### cloud deployment and website access by domain name
-
+#### Cloud deployment and website access by domain name
 ​	Distinguish from running the code in the local terminal and access the website by localhost, our project is deployed on the cloud server, so our project can be accessed directly by typing the URL [http://175.178.34.84](http://175.178.34.84/) without compiling and running the code in the terminal, thus leading to a more efficient way. Furthermore, a specific domain name is applied to make our project become more conspicuous, characteristic and elegant. In this case, our website can be accessed by typing the URL [http://www.cuhksz-stackoverflow.cn](http://www.cuhksz-stackoverflow.cn/). In short, we design and implement a website with an attractive domain name being easy to remember and a remote access from other devices.
 
 #### Search engine implementation - NLP and inverted index design in database
@@ -92,6 +73,29 @@
 | 3    | learn  | {2}     |
 | 4    | code   | {3}     |
 | ..   | ..     | ..      |
+
+<center><b>Table 1.3.2.2 - Inverted Index</b></center>
+
+​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then list all the blogs in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
+
+#### Online complier and code editor highlight
+
+​	Distinguish from the traditioal communication platform, our platform provides a code editor for users to write the code. It is worth noting that the editor supports the highlight of different kinds of programming language, which improves the coding experience of the users and enhances the visiualization of the code, thus providing a comfortable and convenient coding environment for users. Moreover, our platform provides an online complier for users to run the code online. There is no need for users to open the local IDE to edit their codes and run their codes to see the results. With the application of the online complier, users can directly write the code in the code editor and then run the code to see the results online, which is a kind of convenient and efficient approach.
+
+### Project Statistics
+
+| Module ID | Module Name | Frontend Functions                                           | Backend Functions                                            | Description          |
+| --------- | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------- |
+| 1         | Login       | check the username and password                              | check if username exists, check if password is correct       | Login for users      |
+| 2         | Register    | check the username, password and email                       | check if username exists                                     | Register for users   |
+| 3         | Email       | validate the email                                           | send code to the mailbox                                     | Email validation     |
+| 4         | Search      | show the search results                                      | find the corresponding blogs in database according to the search consitions | Search the quesitons |
+| 5         | Post        | check title, content, partition and sub partition and display the post | store the related info into database                         | Post for users       |
+| 6         | Reply       | check the content and display the reply                      | store the related info into database                         | Reply for users      |
+| 7         | Reset       | check the username and password                              | check if username exists                                     | Reset for users      |
+| 8         | Profile     | upload the profile image                                     | write the image file into the local storage                  | Upload profile       |
+| 9         | Like        | update the button status and the amounts of like             | update the related info in the database                      | Like blog            |
+| 10        | Follow      | update the button status and the amounts of favors           | update the related info in the database                      | Follow blog          |
 
 <center><b>Table 1.3.2.2 - Inverted Index</b></center>
 
@@ -383,6 +387,7 @@ We test our programs using the Unit testing, Component testing, and System testi
 <img src="pic/TEST/test_result.JPG" alt="result" style="zoom:100%;" />
 
 ##  Lessons Learned
+
 
 ### Frontend Learning 
 
