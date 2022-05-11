@@ -9,6 +9,7 @@
         <hr>
         <b>Course Project Report, Group 18</b>
         <br>
+      	<br>
         <b>CUHKSZ-Overflow: An Online Forum For CUHKSZ Programmers</b>
         <hr>
         <p style="font-size: 20px;">Author:</p >
@@ -23,9 +24,9 @@
 
 [TOC]
 
-##  Introduction
+##  1 Introduction
 
-### Background & Motivation
+### 1.1 Background & Motivation
 
 ​	Our group observe that many student-programmers from CUHKSZ may encounter many familiar programming questions in their project or assignment. Their solutions mainly include: searching online, emailing TAs or professors, uploading questions in WeChat group, or assigning an office hour. Searching online sometimes may not be an efficient way, because the blog or some guidance information may not directly answer the assignment question. Even worse, programmers need to spend much time on filtering the huge amount of information and it becomes hard for them to get answers when the homework question is not relevant to the results on website. Uploading questions on WeChat group could get the detailed guidance and answer. But the new WeChat group will be created every semester for other students who may encounter the same problems. The connection between students already taken this course with the students taking this course right now is broken in this way. Raising questions in office hour is not convenient for programmers to solve their question immediately since they need to make an appointment and wait until that day comes. Therefore, our group would like to take the first step to change the current situation.
 
@@ -35,24 +36,25 @@
 
 ​	In the view of above, our groups borrow the ideas from the famous used app called Stack- Overflow in CS community, and we hope to create a CUHKSZ version for programmers in our school. This website can be used to upload the questions relevant to their course homework, support user use code block to express their problem and specific need. The website also will rank the high-quality answer and recommended every member in this community to read on their homepage, which raise interest for every community member to learn. By knowing the drawback of current Q&A mode, hopefully this system can boost the motivation for programmers to raise question and solve question immediately in CUHKSZ. Thus, empower every CUHKSZer programming skill.
 
-### Project Overview
+### 1.2 Project Overview
 
 ​	Our project, CUHKSZ-Stack-Overflow, mainly aims to provide a Q&A platform for CUHKSZ programmers who have technical questions about their Computer Science courses' projects or assignments in CUHK(SZ). It also offers a social channel where some of students, especially senior students, could share their programming and working experience, provide the guidance in CS learning, and give the specific suggestions to the other younger students who may encounter the same problem or situation. Since many students may be afraid of seeking assistance from the professor and the teaching assistants through WeChat, email or office hour, we hope to create an environment where students could bravely post their programming problems while other students or teachers would willingly to see and reply those questions. Hopefully this kind of communication will help students fully understand their homework, improve their programming skills and enable them to accumulate programming experience. Eventually, those communication and connection could save much time for students learning CS and also reduce the teaching load for TA at the same time, which definitely will enhance both learning and teaching qualities in Computer Science courses.
 
-### Objective
+### 1.3 Objective
 
 ​	Our thoughts of the system design come from a famous Q&A application Stack Overflow, which is a public platform building the definitive collection of coding Q&A for professional and enthusiast programmers. In detail, our system is divided into the frontend part and the backend part. In the frontend, users can perform many operations, including registering and logging in their accounts, posting and replying the questions, following questions or partitions, giving a like to questions or answers and setting filters and searching questions. In the backend, developers and servers deal with the data transfer and management, including performing transactions in the database, executing corresponding functions according to the invokes from frontend and setting the relevant URL for the connection between frontend and backend. Moreover, an administrator account is designed for the management of the whole application. In short, our goal is to provide a satisfied and perfect CUHKSZ-Stack-Overflow Q&A system particularly for programmers in CUHKSZ.
 
-### Key Features
+### 1.4 Key Features
 
 ​	Our system is mainly composed of 6 parts, including registration, login and logout, searching relevant questions, posting new questions, replying the questions, displaying hot questions. In the registration part, users could register an account by validating their email. In the login and logout part, users could log in the system with their own accounts and log out the system. In the searching part, users could search the questions with various filter types, such as searching the questions in CSC4001 or in CSC4001 Project. In the post part, users could upload their quesitons with pictures or files, they can also run their code online in the code compiler provided by our system. In the reply part, users could answer the questions with pictures or files, they can also give a like to the answers proposed by others. In the display part, some blogs will be displayed in the 'Hot Blogs' part in the descending order of the popularity value. The value is highly related to the amounts of likes, favors and views and the create time. The newer the questions posted, the larger amounts of likes, favors and views, the higher value of the popularity will be. Apart from those six parts, the system provides many humanized functions, such as the reset of the username or password and the upload of profile. 
 
-### Highlights
+### 1.5 Highlights
 
-#### Cloud deployment and website access by domain name
+#### 1.5.1 Cloud deployment and website access by domain name
+
 ​	Distinguish from running the code in the local terminal and access the website by localhost, our project is deployed on the cloud server, so our project can be accessed directly by typing the URL [http://175.178.34.84](http://175.178.34.84/) without compiling and running the code in the terminal, thus leading to a more efficient way. Furthermore, a specific domain name is applied to make our project become more conspicuous, characteristic and elegant. In this case, our website can be accessed by typing the URL [http://www.cuhksz-stackoverflow.cn](http://www.cuhksz-stackoverflow.cn/). In short, we design and implement a website with an attractive domain name being easy to remember and a remote access from other devices.
 
-#### Search engine implementation - NLP and inverted index design in database
+#### 1.5.2 Search engine implementation - NLP and inverted index design in database
 
 ​	Initially, we use string match method which aims to divide the whole sentences into several words and find blogs whose title contains those words. It has some limitations. At first, the method cannot detect the words with tense inconsistency. For example, the word "make" in the search contents cannot find blogs whose title contains the word "made". Additionally, those words which do not have semantic meaning will also be considered in string match, thus causing a imperfect search results to some degree. For example, the search contents "how to learn programming" may find blogs whose title contains the word "to". Therefore, we improve our search engine algorithm and adopt the natural language processing algorithm.
 
@@ -78,11 +80,11 @@
 
 ​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then list all the blogs in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
 
-#### Online complier and code editor highlight
+#### 1.5.3 Online complier and code editor highlight
 
 ​	Distinguish from the traditioal communication platform, our platform provides a code editor for users to write the code. It is worth noting that the editor supports the highlight of different kinds of programming language, which improves the coding experience of the users and enhances the visiualization of the code, thus providing a comfortable and convenient coding environment for users. Moreover, our platform provides an online complier for users to run the code online. There is no need for users to open the local IDE to edit their codes and run their codes to see the results. With the application of the online complier, users can directly write the code in the code editor and then run the code to see the results online, which is a kind of convenient and efficient approach.
 
-### Project Statistics
+### 1.6 Project Statistics
 
 | Module ID | Module Name | Frontend Functions                                           | Backend Functions                                            | Description          |
 | --------- | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------- |
@@ -99,14 +101,85 @@
 
 <center><b>Table 1.3.2.2 - Inverted Index</b></center>
 
-## System Arcgitectual Design by DFD
+LOC (lines of code) is showing in the appendix.
 
-### System Architecture
+## 2 System Arcgitectual Design by DFD
 
-### DFDs
+### 2.1 System Architecture
+
+<img src="pic/ER.png" alt="ER" style="zoom:50%;" />
+
+​	In our project, we have totally 7 entity sets and 5 relationship sets. The table gives an detailed interpretation of these sets.
+
+
+
+| Entity / Relationship Sets Name | Description                                                  |
+| ------------------------------- | ------------------------------------------------------------ |
+| user                            | Stores the username, password, email, profile and etc. of the user's account |
+| group                           | Stores the name, the description and etc. of the group       |
+| sub_group                       | Stores the name of the group and the name of the sub group   |
+| blog_questions                  | Stores the title, the author, the group type, the sub group type, the content and etc. of the blog |
+| blog_answers                    | Stores the question id, the father answer id, the content and etc. of the answer |
+| attached file                   | Stores the URL of the file, the question id, the answer id and etc. |
+| attached picture                | Stores the URL of the picture, the question id, the answer id and etc. |
+| user like answer                | Stores the user id and the answer id, which means the answer is liked by the user |
+| user like question              | Stores the user id and the question id, which means the question is liked by the user |
+| user follow question            | Stores the user id and the question id, which means the question is followed by the user |
+| user follow group               | Stores the user id and the group name, which means the group is followed by the user |
+| user view question              | Stores the user id, the question id and the viewing times    |
+
+**The Relational Schemas:**
+
+| Schemas                                                      |
+| ------------------------------------------------------------ |
+| user(<u>id</u>, email, username, password, photo, major, grade, create_time, update_time) |
+| group(<u>id</u>, group_name, description, create_time, update_time, amount_of_follows) |
+| sub_group(<u>id</u>, group_name, sub_group_name)             |
+| blog_questions(<u>id</u>, title, author_id, group_type, sub_group_type, content, code, lang, content_format, like, follow, hot, create_time, update_time, views) |
+| blog_answers(<u>id</u>, question_id, father_answer_id, content, code, lang, content_format, like, author_id, create_time) |
+| attached_file(<u>id</u>, url, corresponding_question, corresponding_answer, create_time) |
+| attached_picture(<u>id</u>, url, question, answer, group_name, create_time) |
+
+**Below list the foreign key referencing:**
+
+* "group_name" in sub_group refers to "group_name" in group: each sub group belongs to a group.
+* "author_id" in blog_questions refers to "id" in user: each blog belongs to a user.
+* "group_type" in blog_questions refers to "group_name" in group: each blog belongs to a group.
+* "sub_group_type" in blog_questions refers to "sub_group_name" in sub_group: each blog belongs to a sub group.
+* "question_id" in blog_answers refers to "id" in blog_questions: each answer belongs to a blog.
+* "author_id" in blog_answers refers to "id" in user: each answer belongs to a user.
+* "corresponding_question" in attached_file refers to "id" in blog_questions and "corresponding_answer" in attached_file refers to "id" in blog_answers: each file belongs to a question or an answer.
+* "question" in attached_picture refers to "id" in blog_questions, "answer" in attached_picture refers to "id" in blog_answers" and group_name" in attached_picture refers to "group_name" in group: each picture belongs to a question, an answer or a group.
+
+**Normalization**
+
+​	In our project, we spare a lot of effort on normalization. At first, we intend to reach the first normal form, so we reconstruct our database. For example, "Table 1" shows our initial design of the group table where has a tuple of sub group name. Therefore, we split the group table into group table (Table 2) and sub group table (Table 3). In this case, the first normal form is achieved.
+
+| id   | group_name | sub_group_name                  | description     | create_time | update_time | amount_of_follows |
+| ---- | ---------- | ------------------------------- | --------------- | ----------- | ----------- | ----------------- |
+| 1    | CSC4001    | {Assignment1, Assignment2, ...} | Database System | 2022-04-30  | null        | 100               |
+
+<center><b>Table 1</b></center>
+
+| id   | group_name | description     | create_time | update_time | amount_of_follows |
+| ---- | ---------- | --------------- | ----------- | ----------- | ----------------- |
+| 1    | CSC4001    | Database System | 2022-04-30  | null        | 100               |
+
+<center><b>Table 2</b></center>
+
+| id   | group_name | sub_group_name |
+| ---- | ---------- | -------------- |
+| 1    | CSC4001    | Assignment1    |
+| 2    | CSC4001    | Assignment2    |
+
+<center><b>Table 3</b></center>
+
+​	Based on the first normal form, we also try to reach the second and third normal form. As a result, we create an unique id for each table to enable all nonprime attributes are fully functionally dependent on the primary key (id). Apparently, there does not exist nonprime attributes in our tables transitively dependent on the primary key (id). Therefore, the second normal form and third normal form are also implemented.
+
+### 2.2 DFDs
 
 ​	To better inllustrate how data flows in our website as well as asist in explaining the mechanism of our work, this report will provide you some Data Flow Diagrams and several detailed explanations regarding these DFDs. The components of systems we plan to describe below are: Login and Register module, Main page which delevers blogs, Question Posting system, and Searching Engine.   
-<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Login_and_registration.png" alt="DFD1" style="zoom:40%;" />  
+<img src="pic/DFD/Login_and_registration.png" alt="Login_and_registration" style="zoom:50%;" />
 
 ​	For the Login and register module, our website provides users three main functions:
 
@@ -114,21 +187,23 @@
 2. If the user has already got an account, he/she can directly enter the email and password for login. the login status would be shown on screen after backend checking. 
 3. We empower user to use email to reset the password, if he/she forget the password. For the safety consideration, there will also be a confirmation code sent by email. Once confirmed, the new password of users would be stored into database. 
 
-<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Main_page.png" alt="DFD2" style="zoom:40%;" />
+<img src="pic/DFD/Main_page.png" alt="Main_page" style="zoom:50%;" />
 	For the mainpage module, two main messages will be shown to the current user: Question(blog) information and Groups & sub-groups information. Of course, there are several other non-crucial information like amount of likes, follows, views, will be also deliered to users in main page, while will not be included in DFD.
 
 1. For the Questions(blogs), they will be retrieved from backend and through a ranking system and to be recommended to the current user.  Finally, the correponding blogs will be shown in the frontend. 
 2. For the groups and sub-groups information, they will be retrieved from database. They will first go through a filter to distinguish the groups that are followed by users or not. Finally, they will be delivered to user in together. 
 
-<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Ranking_system.png" alt="DFD3" style="zoom:40%;" />
+<img src="pic/DFD/Ranking_system.png" alt="Ranking_system" style="zoom:50%;" />
 	For the search engine module, the basic data flow is chunking the user input and get the corresponding results in database according to the similarities. Since the detailed mechanism will be explained in the following part, we don’t introduce it too much here. The above figure is the corresponding DFD. 
 
-<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/User_upload_answer.png" alt="DFD4" style="zoom:40%;" />
+<img src="pic/DFD/user_search_match.png" alt="user_search_match" style="zoom:50%;" />
 	For the upload questions, the content of questions goes through a text editor and becomes pretty(in html format). Then, the content will be stored in the Question database. The pictures and files will be separately stored into the storage file in the cloud server. For creating a new answers under a blog, the data flow is very similar with the one of uploading new questions. Answers will be stored in the anwer database and file, pictures will be stored into the cloud. The third flow is regarding the online compiling part, the code and language will be sent to the online compiler, after the execution of code, the runing result will be displayed to users.  
 
-##  Detailed Description of Components by UML
+<img src="pic/DFD/User_upload_answer.png" alt="User_upload_answer" style="zoom:50%;" />
 
-### Component-1: Registration & Login
+##  3 Detailed Description of Components by UML
+
+### 3.1 Component-1: Registration & Login
 
 <img src="pic/UML/Picture1.png" alt="Picture1" style="zoom:30%;" />
 
@@ -136,7 +211,7 @@
 
 ​      If the user already has a valid account, then the registration process can be ignored, but the log-in process is now required. The user has to type in a unique username and password to get into the website. Then the information will be sent to the backend of the server to validate. If neither the username nor the password is valid, the log-in request will be surly rejected, and faint hints will be sent back to the user. Specifically, the hints information goes like “Username or Password Fail”, which will not provide detailed information about the error so that the privacy of the user is protected. If the information is valid, then the user will get permission to the main page.
 
-### Component-2: Search Question
+### 3.2 Component-2: Search Question
 
 <img src="pic/UML/Picture2.png" alt="Picture2" style="zoom:50%;" />
 
@@ -144,13 +219,13 @@
 
 ​      Getting lots of returned blocks is always a good idea. Sometimes, people are more interested in finding what they want in a faster way. Therefore, our search function is implemented together with the scope selection. That is, users can select the topic of the questions to narrow down the search scope. In this way, the blocks returned will be more related and concentrated.
 
-### Component-3: Reply
+### 3.3 Component-3: Reply
 
 <img src="pic/UML/Picture3.png" alt="Picture3" style="zoom:30%;" />
 
 ​	To reply to a block, users have to get into a block in the first place. After users get into the block, not only the block information will be shown, other answers will be returned if existing as well. All the returned information is provided for the users to better understand the blocks. If users want to offer more information and reply to the block, they should type in their answers, and the answers will be sent as raw content to the text composer. Then the text composer will process the raw content, returning and showing the content in a neat and nice way. Besides, users can also upload the files and pictures together with the answers. The uploaded answers will be stored in a unique area on the server. After the edit of the reply, the reply can be formally uploaded. Answers and their relation to different questions will also be stored in the server's database. At last, the reply will be shown to every visitor to the block.
 
-### Component-4: Online Compiler
+### 3.4 Component-4: Online Compiler
 
 <img src="pic/UML/Picture4.jpg" alt="Picture4" style="zoom:50%;" />
 
@@ -158,9 +233,9 @@
 
 ​      The process of raising a question is similar to the replying procedure. In the text chat, users can type in the essential information about what they want to post, including the title, content, group type, and sub-group type. Then the information will be optimized by the text composer. Next, the backend will check the validation of the question. If there is nothing wrong, the question will be stored and posted. If not, corresponding hints will be returned to the users for them to correct.
 
-## User Interface Design
+## 4 User Interface Design
 
-### Description of the User Interface
+### 4. 1Description of the User Interface
 
 ​	The interface of our project is insipired by the public forum in China: Zhihu, especially the home page. It mainly consist of the search engine on the top, and different navigation bars below. Each navigation bar represent a unique order and function for all of the blogs in our database. For example, the hottes blog navigation bar represent that the most popular blogs among all users, and the non-solved navigation bar represent the blogs that are not be answered yet, whose layout is similart to Zhihu.
 
@@ -170,7 +245,7 @@
 
 ​	Overall, our UI have is **detailed, well-designed and friendly to user**. The follwing part will demonstrate each function and actions.
 
-### Object and Actions
+### 4.2 Object and Actions
 
 - **Login**
 
@@ -244,7 +319,7 @@
 
 ​	In post part, User are also allowed to write their code as a supplement material. they could also run the code to see the output. Typically, User are allowed to write the code without environmental configuration, they could also write code in an ipad or a phone. The online compiler support many language include C, C++, Python, Rust... The running time and memory used will be shown on webpage just as an open Jude system. The code will be highlighted due to different language, different language has different highlighted method, and they will also be used here to improve user coding feeling. 
 
-##  Test
+##  5 Test
 
 - ​	For the explanation of our test part, it will be divided into 3 sub-sections. In the first section, the introduction of test-files arrangement will be introduced. In the second sectiosn,  we will explain the design-idea of test files, including what test suites we are leveraging, what functions we are testing, and how we make sure the test suites are have a good coverage of cases. In the third section, we will report about the testing results.
 
@@ -409,7 +484,7 @@ After introducing the component testing, we link all the components together to 
 ​	We test our programs using the Unit testing, Component testing, and System testing files we explain above. The results return show that our programs pass all of the testing cases except the API for searching question as it shown in the below figure. Then, we debug the API for searching questions and finally get all the test cases passed.
 <img src="pic/TEST/test_result.JPG" alt="result" style="zoom:100%;" />
 
-##  Lessons Learned
+##  6 Lessons Learned
 
 - Team work
 
@@ -419,18 +494,46 @@ After introducing the component testing, we link all the components together to 
 
 ​	At first, it is not easy for our group’s frontend engineers and backend engineers to effectively develop the software in a parallel way because there are many dependences between frontend and backend. We realize this problem and decide to pursuit a way that backend and frontend can be developed together in a more effecient way. Therefore, we choose to deploy the development environment to the cloud server at the very begining. In this way, frontend engineers can access the APIs provided by backend which is deployed on the cloud and therefore avoid the time-comsuming process of merging code of frontend and backend during the process of development. On the other hand, backend engineers can also access the static resources of frontend from the cloud server during developing. In addition every members can access the cloud server and see the logs of program when bugs emerges.  This development model brings several conveniences to us and provides a lesson of cooperative development of backend and frontend.
 
-* Frontend learning
+* Technical Skill learning
 
 ​	From this Project, we have learned how to use Vue, as a frontend frame, to build our webpage and connect to the backend in order to transfer the data. Also, we have implemented many web actions to make our webpage more fancy and more applied to attract users. In fact, There are amount of webpage actions in our frontend like login, search, post, delete. Those actions requires many buttons and data transportation, which many cause many bugs. We took enormous time to design our page and also debug those web actions, it is tedious work when the web actions increase. Most Importantly, both the members in frontend and backend follow the strict rule of api function, which maintain a development path for us. We also made the development timeline and devide those tasks into different pieces, and we followed our schedule and have a meeting to cover the progress each week. It guarantee us to finish the huge project in time. The cohesive teamwork and coorperations make sure we could finished our project successfully step by step.
 
-**Below is the exmple of our api function during the developing progress:**
+**Below is the exmple of our api function and github commit log during the developing progress,** which demonstrate the team work. 
 
-<img src="pic/api.png" alt="api" style="zoom:35%;" />
+​               																												  <img src="pic/api.png" alt="api" style="zoom:35%;" align=center/>
 
-##  Conclusion
+<img src="pic/team.png" alt="team" style="zoom:10%;"  align=center/>
+
+##  7 Conclusion
 
 ​	In Conclusion, to help our programmers in CUHKSZ improve the learning and problem-solving efficiency, we created the CUHKSZ-Overflow. It also offered a social media for students share their idea,  exchange their thoughts and solve their learning issues. Meanwhile, We also provide the online complier for all of the user, which provide users write, compile, and run their code on our web server so that they will no longer confiure the environement on their local host and they could wirte their code on their ipad. More Importantly, we also provide a powerful search engine, which enables user find the relevant answers in a relative short time.  
 
 ​	For the E-R diagram and database design, we matain our all tables in our database in 3NF form to avoid the redundancy as we could, we also design B tree searhing method to increase our query speed in order to provide user a faster and fluence searching experience. For the User Interface design, we implemented enormous fancy actions like rich text editor and code highlighted editor for users, moreover, user are allowed to upload their picture or file on our server by posting blog. Those files will permanently saved on website unless user delete those blog. We also designed the blog catlog page for user, user could use those catlogs to find the corresponding answers. For backend and server part, we use nigix as agency for our server and we also apply the domain named  [http://www.cuhksz-stackoverflow.cn](http://www.cuhksz-stackoverflow.cn/) so that user could directly access our website without building the environment. For the test part, we geneate completed and automatic test code, which inlcudes unit test and component test, and all the tests has been successfully passed which means the website is well-rounded and completed without bugs. 
 
 ​	Overall, The project, CUHKSZ-Overflow, is an efficient tool for CUHKSZ programmers to solve and exchange their technical problems and has been proved to play a role in online web forum, which could be applied into real life to help many programmers handle their course project or other technical issues. It also has a promising future and could be improved as a more functional and attractive online forum. 
+
+## 8 Appendix
+
+LOC in Project Statistic:
+
+<img src="pic/Statistics/ID1_back.png" alt="ID1_back" style="zoom:20%;"  align=center />
+<img src="pic/Statistics/ID1_front.png" alt="ID1_front" style="zoom:20%;"  align=center />
+<img src="pic/Statistics/ID2_back.png" alt="ID2_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID2_front.png" alt="ID2_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID3_back.png" alt="ID3_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID3_front.png" alt="ID3_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID3_front.png" alt="ID3_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID4_back.png" alt="ID3_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID4_front.png" alt="ID4_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID5_front.png" alt="ID5_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID5_back.png" alt="ID5_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID6_front.png" alt="ID6_front" style="zoom:20%;"  align=center />
+<img src="pic/Statistics/ID6_back.png" alt="ID6_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID7_front.png" alt="ID7_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID7_back.png" alt="ID7_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID8_front.png" alt="ID8_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID8_back.png" alt="ID8_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID9_front.png" alt="ID9_front" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID9_back.png" alt="ID9_back" style="zoom:20%;"  align=center  />
+<img src="pic/Statistics/ID10_front.png" alt="ID10_front" style="zoom:20%;"  align=center   />
+<img src="pic/Statistics/ID10_back.png" alt="ID10_back" style="zoom:20%;"  align=left />
