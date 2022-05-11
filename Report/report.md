@@ -78,7 +78,7 @@
 
 <center><b>Table 2 - Inverted Index</b></center>
 
-​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then list all the blogs in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
+​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then all the blogs are listed in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
 
 #### 1.5.3 Online complier and code editor highlight
 
@@ -516,24 +516,91 @@ After introducing the component testing, we link all the components together to 
 
 LOC in Project Statistic:
 
-<img src="pic/Statistics/ID1_back.png" alt="ID1_back" style="zoom:20%;"  align=center />
-<img src="pic/Statistics/ID1_front.png" alt="ID1_front" style="zoom:20%;"  align=center />
-<img src="pic/Statistics/ID2_back.png" alt="ID2_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID2_front.png" alt="ID2_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID3_back.png" alt="ID3_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID3_front.png" alt="ID3_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID3_front.png" alt="ID3_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID4_back.png" alt="ID3_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID4_front.png" alt="ID4_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID5_front.png" alt="ID5_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID5_back.png" alt="ID5_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID6_front.png" alt="ID6_front" style="zoom:20%;"  align=center />
-<img src="pic/Statistics/ID6_back.png" alt="ID6_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID7_front.png" alt="ID7_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID7_back.png" alt="ID7_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID8_front.png" alt="ID8_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID8_back.png" alt="ID8_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID9_front.png" alt="ID9_front" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID9_back.png" alt="ID9_back" style="zoom:20%;"  align=center  />
-<img src="pic/Statistics/ID10_front.png" alt="ID10_front" style="zoom:20%;"  align=center   />
-<img src="pic/Statistics/ID10_back.png" alt="ID10_back" style="zoom:20%;"  align=left />
+<img src="pic/Statistics/ID1_back.png" alt="ID1_back" style="zoom:20%;" />
+
+<center><b>Module_1 backend</b></center>
+
+<img src="pic/Statistics/ID1_front.png" alt="ID1_front" style="zoom:20%;" />
+
+<center><b>Module_1 frontend</b></center>
+
+<img src="pic/Statistics/ID2_back.png" alt="ID2_back" style="zoom:20%;" />
+
+<center><b>Module_2 backend</b></center>
+
+<img src="pic/Statistics/ID2_front.png" alt="ID2_front" style="zoom:20%;" />
+
+<center><b>Module_2 frontend</b></center>
+
+<img src="pic/Statistics/ID3_back.png" alt="ID3_back" style="zoom:20%;" />
+
+<center><b>Module_3 backend</b></center>
+
+<img src="pic/Statistics/ID3_back(1).png" alt="ID3_back(1)" style="zoom:20%;" />
+
+<center><b>Module_3 backend</b></center>
+
+<img src="pic/Statistics/ID3_front.png" alt="ID3_front" style="zoom:20%;" />
+
+<center><b>Module_3 frontend</b></center>
+
+<img src="pic/Statistics/ID3_front(1).png" alt="ID3_front(1)" style="zoom:20%;" />
+
+<center><b>Module_3 frontend</b></center>
+
+<img src="pic/Statistics/ID4_back.png" alt="ID4_back" style="zoom:20%;" />
+
+<center><b>Module_4 backend</b></center>
+
+<img src="pic/Statistics/ID4_front.png" alt="ID4_frontend" style="zoom:20%;" />
+
+<center><b>Module_4 frontend</b></center>
+
+<img src="pic/Statistics/ID5_back.png" alt="ID5_back" style="zoom:20%;" />
+
+<center><b>Module_5 backend</b></center>
+
+<img src="pic/Statistics/ID5_front.png" alt="ID5_front" style="zoom:20%;" />
+
+<center><b>Module_5 frontend</b></center>
+
+<img src="pic/Statistics/ID6_back.png" alt="ID6_back" style="zoom:20%;" />
+
+<center><b>Module_6 backend</b></center>
+
+<img src="pic/Statistics/ID6_front.png" alt="ID6_front" style="zoom:20%;" />
+
+<center><b>Module_6 frontend</b></center>
+
+<img src="pic/Statistics/ID7_back.png" alt="ID7_back" style="zoom:20%;" />
+
+<center><b>Module_7 backend</b></center>
+
+<img src="pic/Statistics/ID7_front.png" alt="ID7_front" style="zoom:20%;" />
+
+<center><b>Module_7 frontend</b></center>
+
+<img src="pic/Statistics/ID8_back.png" alt="ID8_back" style="zoom:20%;" />
+
+<center><b>Module_8 backend</b></center>
+
+<img src="pic/Statistics/ID8_front.png" alt="ID8_front" style="zoom:20%;" />
+
+<center><b>Module_8 frontend</b></center>
+
+<img src="pic/Statistics/ID9_back.png" alt="ID9_back" style="zoom:20%;" />
+
+<center><b>Module_9 backend</b></center>
+
+<img src="pic/Statistics/ID9_front.png" alt="ID9_front" style="zoom:20%;" />
+
+<center><b>Module_9 frontend</b></center>
+
+<img src="pic/Statistics/ID10_back.png" alt="ID10_back" style="zoom:20%;" />
+
+<center><b>Module_10 backend</b></center>
+
+<img src="pic/Statistics/ID10_front.png" alt="ID10_front" style="zoom:20%;" />
+
+<center><b>Module_10 frontend</b></center>
+
