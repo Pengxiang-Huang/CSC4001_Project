@@ -56,7 +56,7 @@
 
 ​	Initially, we use string match method which aims to divide the whole sentences into several words and find blogs whose title contains those words. It has some limitations. At first, the method cannot detect the words with tense inconsistency. For example, the word "make" in the search contents cannot find blogs whose title contains the word "made". Additionally, those words which do not have semantic meaning will also be considered in string match, thus causing a imperfect search results to some degree. For example, the search contents "how to learn programming" may find blogs whose title contains the word "to". Therefore, we improve our search engine algorithm and adopt the natural language processing algorithm.
 
-​	Apart from using NLP in the process of search content, we also use inverted index in our database. Since the workload of forward index is huge, which is caused by traversing all the records in a table to determine whether each record contains the related words, for example, if the user take "kernel" as inputs, record 1, record 2 and record 3 will be retrieved and then record 1 is found to meet the requirements (Table 1.3.2.1), we consider to build a table with inverted index (Table 1.3.2.2). With the application of inverted index, if the user take "kernel" as inputs, record 2 is found to meet the requirements and the blog id 1 is obtained to directly retrieve the corresponding blog, which improves the efficiency in getting data from the database.
+​	Apart from using NLP in the process of search content, we also use inverted index in our database. Since the workload of forward index is huge, which is caused by traversing all the records in a table to determine whether each record contains the related words, for example, if the user take "kernel" as inputs, record 1, record 2 and record 3 will be retrieved and then record 1 is found to meet the requirements (Table 1), we consider to build a table with inverted index (Table 2). With the application of inverted index, if the user take "kernel" as inputs, record 2 is found to meet the requirements and the blog id 1 is obtained to directly retrieve the corresponding blog, which improves the efficiency in getting data from the database.
 
 | blog_id | content                 |
 | ------- | ----------------------- |
@@ -64,7 +64,7 @@
 | 2       | How to learn C++        |
 | 3       | How about my code below |
 
-<center><b>Table 1.3.2.1 - Forward Index</b></center>
+<center><b>Table 1 - Forward Index</b></center>
 
 | id   | words  | blog_id |
 | ---- | :----- | ------- |
@@ -74,7 +74,7 @@
 | 4    | code   | {3}     |
 | ..   | ..     | ..      |
 
-<center><b>Table 1.3.2.2 - Inverted Index</b></center>
+<center><b>Table 2 - Inverted Index</b></center>
 
 ​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then list all the blogs in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
 
@@ -99,9 +99,32 @@
 
 <center><b>Table 1.3.2.2 - Inverted Index</b></center>
 
-​	To sum up, the search content will first be split into words and then the words frequency is calculated to make up a vector (target_vec). For example, the user take "I want to learn build kernel" as inputs, the target_vec should be [1, 1, 1] where the first 1 means the word "learn" appears once in the content, the second 1 means the word "build" appears once in the content and the third 1 means the word "kernel" appears once in the content. Second, the inverted index table will be retrieved to get the list of words frequency according to the blogs. For example, the inverted index table is retrieved according to the words in the search content and the blog_vec can be obtained in the form of [[1, 0, 1, 1], [2, 1, 0, 0]] where the first value in each list represents the blog id and the rest three values in each list represents the frequency of the words in the blog content. Finally, the similarity is calculated by inner product and then list all the blogs in the descending order of the similarity. For example, [0, 1, 1] inner product with [1, 1, 1] is 2 and [1, 0, 0] inner product with [1, 1, 1] is 1. Therefore, the results contain blog 1 and blog 2, and the blog 1 is listed in the former of blog 2. 
-
 ## System Arcgitectual Design by DFD
+
+### System Architecture
+
+### DFDs
+
+​	To better inllustrate how data flows in our website as well as asist in explaining the mechanism of our work, this report will provide you some Data Flow Diagrams and several detailed explanations regarding these DFDs. The components of systems we plan to describe below are: Login and Register module, Main page which delevers blogs, Question Posting system, and Searching Engine.   
+<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Login_and_registration.png" alt="DFD1" style="zoom:40%;" />  
+
+​	For the Login and register module, our website provides users three main functions:
+
+1. User can go into the registration part and register a new account by entering his/her email and password. Both backend and frontend will check the registation status and show it on the screen(if the username has already been registered, the status message would display error.) If what users type are valid, they will be guided to the email confirmation page and a confirmation email would be sent to user’s email address. The verification code is used to activate the user account, and after email confirmed, the corresponding user information would be stored into user database. 
+2. If the user has already got an account, he/she can directly enter the email and password for login. the login status would be shown on screen after backend checking. 
+3. We empower user to use email to reset the password, if he/she forget the password. For the safety consideration, there will also be a confirmation code sent by email. Once confirmed, the new password of users would be stored into database. 
+
+<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Main_page.png" alt="DFD2" style="zoom:40%;" />
+	For the mainpage module, two main messages will be shown to the current user: Question(blog) information and Groups & sub-groups information. Of course, there are several other non-crucial information like amount of likes, follows, views, will be also deliered to users in main page, while will not be included in DFD.
+
+1. For the Questions(blogs), they will be retrieved from backend and through a ranking system and to be recommended to the current user.  Finally, the correponding blogs will be shown in the frontend. 
+2. For the groups and sub-groups information, they will be retrieved from database. They will first go through a filter to distinguish the groups that are followed by users or not. Finally, they will be delivered to user in together. 
+
+<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/Ranking_system.png" alt="DFD3" style="zoom:40%;" />
+	For the search engine module, the basic data flow is chunking the user input and get the corresponding results in database according to the similarities. Since the detailed mechanism will be explained in the following part, we don’t introduce it too much here. The above figure is the corresponding DFD. 
+
+<img src="C:/Users/qianxiaochang/Downloads/CSC4001_Project-main/CSC4001_Project/Report/pic/DFD/User_upload_answer.png" alt="DFD4" style="zoom:40%;" />
+	For the upload questions, the content of questions goes through a text editor and becomes pretty(in html format). Then, the content will be stored in the Question database. The pictures and files will be separately stored into the storage file in the cloud server. For creating a new answers under a blog, the data flow is very similar with the one of uploading new questions. Answers will be stored in the anwer database and file, pictures will be stored into the cloud. The third flow is regarding the online compiling part, the code and language will be sent to the online compiler, after the execution of code, the runing result will be displayed to users.  
 
 ##  Detailed Description of Components by UML
 
@@ -125,13 +148,13 @@
 
 <img src="pic/UML/Picture3.png" alt="Picture3" style="zoom:30%;" />
 
-To reply to a block, users have to get into a block in the first place. After users get into the block, not only the block information will be shown, other answers will be returned if existing as well. All the returned information is provided for the users to better understand the blocks. If users want to offer more information and reply to the block, they should type in their answers, and the answers will be sent as raw content to the text composer. Then the text composer will process the raw content, returning and showing the content in a neat and nice way. Besides, users can also upload the files and pictures together with the answers. The uploaded answers will be stored in a unique area on the server. After the edit of the reply, the reply can be formally uploaded. Answers and their relation to different questions will also be stored in the server's database. At last, the reply will be shown to every visitor to the block.
+​	To reply to a block, users have to get into a block in the first place. After users get into the block, not only the block information will be shown, other answers will be returned if existing as well. All the returned information is provided for the users to better understand the blocks. If users want to offer more information and reply to the block, they should type in their answers, and the answers will be sent as raw content to the text composer. Then the text composer will process the raw content, returning and showing the content in a neat and nice way. Besides, users can also upload the files and pictures together with the answers. The uploaded answers will be stored in a unique area on the server. After the edit of the reply, the reply can be formally uploaded. Answers and their relation to different questions will also be stored in the server's database. At last, the reply will be shown to every visitor to the block.
 
 ### Component-4: Online Compiler
 
 <img src="pic/UML/Picture4.jpg" alt="Picture4" style="zoom:50%;" />
 
-The online compiler is on the posting page. Users can enter the posting page at first. If they want to test some codes, they should choose the programming language first. Then, they are free to program on the posting page. After they click the run button, the request will be sent to the sphere engine, and different compilers will be chosen based on which kind of program language the users are using. After that, the code will be compiled in the backend, and the result will be sent back to users.
+​	The online compiler is on the posting page. Users can enter the posting page at first. If they want to test some codes, they should choose the programming language first. Then, they are free to program on the posting page. After they click the run button, the request will be sent to the sphere engine, and different compilers will be chosen based on which kind of program language the users are using. After that, the code will be compiled in the backend, and the result will be sent back to users.
 
 ​      The process of raising a question is similar to the replying procedure. In the text chat, users can type in the essential information about what they want to post, including the title, content, group type, and sub-group type. Then the information will be optimized by the text composer. Next, the backend will check the validation of the question. If there is nothing wrong, the question will be stored and posted. If not, corresponding hints will be returned to the users for them to correct.
 
@@ -201,7 +224,7 @@ The online compiler is on the posting page. Users can enter the posting page at 
 
 <img src="pic/User_Interface/Blog.png" alt="Blog" style="zoom:20%;" />
 
-When User goes into the blogs page. They could see the blog's parition and its sub partition, and they could click the like or follwed button to support this blogs. The title is in a bold form and content is in a normal form. The file will be shown as a link in the blog and the picture will be shown directly. User could click the file link to download the flie if blog contains any. They are also allowed to enlarge the picture or download the picture. When they hover the user icon, the username who created this blog will be shown. All the text form in post part will be the same here.  
+​	When User goes into the blogs page. They could see the blog's parition and its sub partition, and they could click the like or follwed button to support this blogs. The title is in a bold form and content is in a normal form. The file will be shown as a link in the blog and the picture will be shown directly. User could click the file link to download the flie if blog contains any. They are also allowed to enlarge the picture or download the picture. When they hover the user icon, the username who created this blog will be shown. All the text form in post part will be the same here.  
 
 - **Reply**
 
@@ -219,17 +242,17 @@ When User goes into the blogs page. They could see the blog's parition and its s
 
 <img src="pic/User_Interface/Complie.png" alt="Complie" style="zoom:20%;" />
 
-In post part, User are also allowed to write their code as a supplement material. they could also run the code to see the output. Typically, User are allowed to write the code without environmental configuration, they could also write code in an ipad or a phone. The online compiler support many language include C, C++, Python, Rust... The running time and memory used will be shown on webpage just as an open Jude system. The code will be highlighted due to different language, different language has different highlighted method, and they will also be used here to improve user coding feeling. 
+​	In post part, User are also allowed to write their code as a supplement material. they could also run the code to see the output. Typically, User are allowed to write the code without environmental configuration, they could also write code in an ipad or a phone. The online compiler support many language include C, C++, Python, Rust... The running time and memory used will be shown on webpage just as an open Jude system. The code will be highlighted due to different language, different language has different highlighted method, and they will also be used here to improve user coding feeling. 
 
 ##  Test
 
-- For the explanation of our test part, it will be divided into 3 sub-sections. In the first section, the introduction of test-files arrangement will be introduced. In the second sectiosn,  we will explain the design-idea of test files, including what test suites we are leveraging, what functions we are testing, and how we make sure the test suites are have a good coverage of cases. In the third section, we will report about the testing results.
+- ​	For the explanation of our test part, it will be divided into 3 sub-sections. In the first section, the introduction of test-files arrangement will be introduced. In the second sectiosn,  we will explain the design-idea of test files, including what test suites we are leveraging, what functions we are testing, and how we make sure the test suites are have a good coverage of cases. In the third section, we will report about the testing results.
 
 ---
 
 **Test-Part1: Overall arrangement of test files**
 
-To ensure the functionality, robusty, Genarality of our programs, we implemented the Unit tests, Component tests, and system test based on blackbox testing. The arrangement of test files are showing below:
+​	To ensure the functionality, robusty, Genarality of our programs, we implemented the Unit tests, Component tests, and system test based on blackbox testing. The arrangement of test files are showing below:
 
 - For Unit Testing, it includes 19 test files, based on blackbox testing:
   
@@ -260,7 +283,7 @@ To ensure the functionality, robusty, Genarality of our programs, we implemented
 
 **Test-Part2: Design ideas of test files**
 
-In this part, we will explain the corresponding function that each file tests, as well as the design idea of each test file briefly. 
+​	In this part, we will explain the corresponding function that each file tests, as well as the design idea of each test file briefly. 
 
 For the unit-test:
 
@@ -383,17 +406,24 @@ After introducing the component testing, we link all the components together to 
 
 **Test-Part3: Testing results**
 
-We test our programs using the Unit testing, Component testing, and System testing files we explain above. The results return show that our programs pass all of the testing cases except the API for searching question as it shown in the below figure. Then, we debug the API for searching questions and finally get all the test cases passed.
+​	We test our programs using the Unit testing, Component testing, and System testing files we explain above. The results return show that our programs pass all of the testing cases except the API for searching question as it shown in the below figure. Then, we debug the API for searching questions and finally get all the test cases passed.
 <img src="pic/TEST/test_result.JPG" alt="result" style="zoom:100%;" />
 
 ##  Lessons Learned
 
+- Team work
 
-### Frontend Learning 
+​	During the whole process, our group enjoys a great team work and the team work gives us a valueable experience of working and developing the software within a group. Our group start thinking of the main idea of our website in February and start coding at the begining at the start of March. When thinking of the main idea of our software, our groups discuss on the project specification and main functions together for times. During the process, we learn the lesson about the values of team work -  combine the wisdom of all the members together and give out a more rational, innovative, and feasible idea that all the members have the will to work on it. During the coding process, we learn the second lesson from team work: a clear and responsible division of work to each member. Before our group start working, we discuss on the schedule that each member plan to complete in each week. The responsible division of workload and clear schedule of work smooth the process of developing software together and let all of us focus more on the work. To conclude, we learn a lot from the great team work and got a experience about how a crucial role that team work plays in the software developing. 
 
-**Member HuangPengxiang:** From this Project, I have learned how to use Vue, as a frontend frame, to build our webpage and connect to the backend in order to transfer the data. Also, we have implemented many web actions to make our webpage more fancy and more applied to attract users. In fact, There are amount of webpage actions in our frontend like login, search, post, delete. Those actions requires many buttons and data transportation, which many cause many bugs. I took enormous time to design our page and also debug those web actions, it is tedious work when the web actions increase. Most Importantly, both the members in frontend and backend follow the strict rule of api function, which maintain a development path for us. We also made the development timeline and devide those tasks into different pieces, and we followed our schedule and have a meeting to cover the progress each week. It guarantee us to finish the huge project in time. The cohesive teamwork and coorperations make sure we could  finished our project successfully step by step. 
+- Knowledge about the cooperative development of backend and frontend
 
-**below is the exmple of our api function during the developing progress:**
+​	At first, it is not easy for our group’s frontend engineers and backend engineers to effectively develop the software in a parallel way because there are many dependences between frontend and backend. We realize this problem and decide to pursuit a way that backend and frontend can be developed together in a more effecient way. Therefore, we choose to deploy the development environment to the cloud server at the very begining. In this way, frontend engineers can access the APIs provided by backend which is deployed on the cloud and therefore avoid the time-comsuming process of merging code of frontend and backend during the process of development. On the other hand, backend engineers can also access the static resources of frontend from the cloud server during developing. In addition every members can access the cloud server and see the logs of program when bugs emerges.  This development model brings several conveniences to us and provides a lesson of cooperative development of backend and frontend.
+
+* Frontend learning
+
+​	From this Project, we have learned how to use Vue, as a frontend frame, to build our webpage and connect to the backend in order to transfer the data. Also, we have implemented many web actions to make our webpage more fancy and more applied to attract users. In fact, There are amount of webpage actions in our frontend like login, search, post, delete. Those actions requires many buttons and data transportation, which many cause many bugs. We took enormous time to design our page and also debug those web actions, it is tedious work when the web actions increase. Most Importantly, both the members in frontend and backend follow the strict rule of api function, which maintain a development path for us. We also made the development timeline and devide those tasks into different pieces, and we followed our schedule and have a meeting to cover the progress each week. It guarantee us to finish the huge project in time. The cohesive teamwork and coorperations make sure we could finished our project successfully step by step.
+
+**Below is the exmple of our api function during the developing progress:**
 
 <img src="pic/api.png" alt="api" style="zoom:35%;" />
 
