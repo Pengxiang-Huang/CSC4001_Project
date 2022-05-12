@@ -107,7 +107,7 @@ LOC (lines of code) is showing in the appendix.
 
 ### 2.1 System Architecture
 
-<img src="pic/ER.png" alt="ER" style="zoom:50%;" />
+<img src="pic/ER.png" alt="ER" style="zoom:30%;" />
 
 ​	In our project, we have a totally 7 entity sets and 5 relationship sets. The table gives a detailed interpretation of these sets.
 
@@ -205,7 +205,7 @@ LOC (lines of code) is showing in the appendix.
 
 ### 3.1 Component-1: Registration & Login
 
-<img src="pic/UML/Picture1.png" alt="Picture1" style="zoom:30%;" />
+<img src="pic/UML/Picture1.png" alt="Picture1" style="zoom:20%;" />
 
 ​	If it is the first time the user visits our website, then registration is essentially the first step. To make a new count, users must input the username, password, and email address. Based on the information, the backend will check whether the username has been taken or not. If the username is invalid, then the information will be returned to the user in order to help them choose a new valid username. If the username is valid, then an email with a randomized verification code will be sent to the input email address. The user has to type in the exact verification code to finish the verification process. If the code is invalid, the corresponding message will be sent back to the user. If the code is correct, which means the registration is legal, then all the formation about the new user will be formally recorded in the database. The most sensitive information, the password, will be hashed and encoded in the database to protect the users’ privacy and keep the website safe. After storing the information, a new account is created. And the user will be redirected to his main page directly without another log-in process since the registration will promise the validation and safety of the user.
 
@@ -213,7 +213,7 @@ LOC (lines of code) is showing in the appendix.
 
 ### 3.2 Component-2: Search Question
 
-<img src="pic/UML/Picture2.png" alt="Picture2" style="zoom:50%;" />
+<img src="pic/UML/Picture2.png" alt="Picture2" style="zoom:40%;" />
 
 ​	The search function is implemented by keyword match rather than string match. Users can search blocks related to a specific topic on the main page. Generally, the frontend will check the input and send it to the backend. The backend will split the content into different vital words based on the typed content. Then based on the derived keywords, the backend will go through the entire database and search for the blocks with the maximum similarity. Then, then related answer blocks will be returned in the order of similarity for the users to choose. For the keyword match, it is used to expand the searching scope so that the users can get more related blocks that they might be interested in.
 
@@ -227,7 +227,7 @@ LOC (lines of code) is showing in the appendix.
 
 ### 3.4 Component-4: Online Compiler
 
-<img src="pic/UML/Picture4.jpg" alt="Picture4" style="zoom:50%;" />
+<img src="pic/UML/Picture4.jpg" alt="Picture4" style="zoom:30%;" />
 
 ​	The online compiler is on the posting page. Users can enter the posting page at first. If they want to test some codes, they should choose the programming language first. Then, they are free to program on the posting page. After they click the run button, the request will be sent to the sphere engine, and different compilers will be chosen based on which kind of program language the users are using. After that, the code will be compiled in the backend, and the result will be sent back to users.
 
@@ -470,7 +470,7 @@ After explaining the design of 19 unit-test files, we continue to briefly introd
 6. `test_like_follow.py` 
    
      This component test file tests the like-follow system of our website. It includes 4 test cases to cover the possible situations such as the user clicking likes on a blog/answer then following it, or clicking on like/follow on a blog/question twice. 
-    
+
 
 After introducing the component testing, we link all the components together to form a whole journal of using our website in `System_Test.py` . The whole process of using the website as shown below is tested:
 
