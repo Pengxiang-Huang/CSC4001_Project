@@ -1,7 +1,9 @@
 <template>
   <div id="app">
+    <!-- Register form -->
     <div class="wrapper">
       <h2>Registration</h2>
+      <!--form box contain information about user input-->
       <div class="formBox">
         <div class="input-box">
           <input type="text"
@@ -56,7 +58,6 @@
 import axios from 'axios'
 import Qs from 'qs'
 import router from '../router'
-// import bus from '../assets/bus.js'
 export default {
   name: 'register',
   data () {
@@ -70,6 +71,7 @@ export default {
     }
   },
   methods: {
+    // submit the registration form to backend
     submit () {
       var regExp = /[0-9]{9}@link\.cuhk\.edu\.cn/
       if (this.username === '') {
@@ -92,18 +94,21 @@ export default {
         }
         console.log(Qs.stringify(sendData))
         var url = 'http://175.178.34.84' + '/register/'
+        // pre registration to check whether the username has been taken, do not create user account
         axios({
           method: 'post',
           url: url,
           data: Qs.stringify(sendData)
         }).then((response) => {
           if (response.data.isRegister) {
+            // send the email to user account
             axios({
               method: 'post',
               url: 'http://175.178.34.84' + '/sendEmail/',
               data: Qs.stringify(sendData)
             }).then((response) => {
               this.veri_code = response.data.code
+              // send the verification code to the next component using router
               router.push({
                 path: '/design',
                 query: {
@@ -135,6 +140,7 @@ export default {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
 #app {
   min-height: 100vh;
   display: flex;
@@ -143,6 +149,7 @@ export default {
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
   text-align: center;
 }
+
 .wrapper {
   position: relative;
   max-width: 430px;
@@ -153,6 +160,7 @@ export default {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   animation: box-login 3s;
 }
+
 @keyframes box-login {
   0% {
     transform: rotateX(100deg);
@@ -163,12 +171,14 @@ export default {
     transform: rotateX(0deg);
   }
 }
+
 .wrapper h2 {
   position: relative;
   font-size: 22px;
   font-weight: 600;
   color: #333;
 }
+
 .wrapper h2::before {
   content: "";
   position: absolute;
@@ -179,13 +189,16 @@ export default {
   border-radius: 12px;
   background: #4070f4;
 }
+
 .wrapper .formBox {
   margin-top: 30px;
 }
+
 .wrapper .formBox .input-box {
   height: 52px;
   margin: 18px 0;
 }
+
 .formBox .input-box input {
   height: 100%;
   width: 100%;
@@ -200,20 +213,24 @@ export default {
   transition: all 0.3s ease;
   display: flex;
 }
+
 .input-box input:focus,
 .input-box input:valid {
   border-color: #6083e4;
 }
+
 .formBox .policy {
   display: flex;
   align-items: center;
 }
+
 .formBox h3 {
   color: #160303;
   font-size: 14px;
   font-weight: 500;
   margin-left: 10px;
 }
+
 .input-box.button input {
   color: #fff;
   letter-spacing: 1px;
@@ -222,21 +239,26 @@ export default {
   cursor: pointer;
   display: inline-block;
 }
+
 .input-box.button input:hover {
   background: #4871e2;
 }
+
 .formBox .text h3 {
   color: #333;
   width: 100%;
   text-align: center;
 }
+
 .formBox .text h3 a {
   color: #4070f4;
   text-decoration: none;
 }
+
 .formBox .text h3 a:hover {
   text-decoration: underline;
 }
+
 .policy input{
   --s: 10px; /* adjust this to control the size*/
   --_g: radial-gradient(calc(var(--s)/2),#15202a 96%,#0000); /* the color of the circle here */
@@ -256,6 +278,7 @@ export default {
   -moz-appearance: none;
   appearance: none;
 }
+
 .policy input:before,
 .policy input:after{
   content: "";
@@ -264,10 +287,12 @@ export default {
   transition: .3s;
   background: var(--_g) var(--_p,0%)/var(--s) 100% no-repeat;
 }
+
 .policy input:after{
   transition: .3s .2s;
   clip-path: inset(65% 0 0 0);
 }
+
 .policy input:checked{
   background-color: #85ff7a; /* the green color */
   --_p: 100%;

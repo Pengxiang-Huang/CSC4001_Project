@@ -8,8 +8,7 @@
           <span class="bar-inside bar"></span>
         </div>
       </div>
-      <div id="cloud-intro">
-      </div>
+      <div id="cloud-intro"></div>
       <div id="frame">
         <div id="wave"></div>
         <div id="boat"></div>
@@ -65,7 +64,6 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!-- <img src="../assets/log_out.png" class="logout" @click="logout" /> -->
         <button class="logout" @click="logout" >Log Out</button>
       </el-menu>
       <el-input v-model="searchContent" placeholder="Please enter something you want to search..." class="searchBox" @keyup.enter.native="search">
@@ -92,7 +90,6 @@
       <div v-if="index === 'Main'" class="tab">
         <div id="leftBox"></div>
         <div id="rightBox"></div>
-        <!-- <img v-show="inSearch === true" src="../assets/back.png" @click="backToMain" style="position: fixed;left: 80%;cursor: pointer;"/> -->
         <div class="bk-btn" v-show="inSearch === true" src="../assets/back.png" @click="backToMain" ><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
         <el-tabs :value="activeTab" @tab-click="handleClick">
           <el-tab-pane></el-tab-pane>
@@ -182,10 +179,7 @@
           </el-tab-pane>
           <el-tab-pane name="third">
             <button slot="label" class="fontClass btn-3"><span>关注分区</span></button>
-            <img v-show="p_type === false"
-                 src="../assets/back.png"
-                 @click="back"
-                 style="position: fixed;left: 80%;cursor: pointer;" />
+            <div class="bk-btn" v-show="p_type === false" src="../assets/back.png" @click="back"><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
             <div v-if="p_type"
                  class="partition animate__animated animate__slideInUp"
                  v-for="(item,index) in followedPartitions"
@@ -315,7 +309,7 @@
               </div>
               <div class="noclick_icon">
                 <i class="el-icon-chat-line-round"></i>
-                <span>{{ item.amount_of_answers }}</span>
+                <span>0</span>
               </div>
               <div class="noclick_icon">
                 <i class="el-icon-view"></i>
@@ -366,7 +360,7 @@
       <div v-if="index === 'Partitions'" class="tab">
         <div id="leftBox"></div>
         <div id="rightBox"></div>
-        <img v-show="p_type === false" src="../assets/back.png" @click="back" style="position: fixed;left: 80%;cursor: pointer;"/>
+        <div class="bk-btn" v-show="p_type === false" src="../assets/back.png" @click="back"><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
         <div v-if="p_type" class="partition animate__animated animate__slideInUp" v-for="(item,index) in partitions" :key="'partition_'+index">
           <img :src="item.url" class="partition-icon"/>
           <h3>{{ item.group_name + ' - ' + item.description }}</h3>
@@ -428,28 +422,27 @@ import Qs from 'qs'
 export default {
   data () {
     return {
-      input: '',
-      searchContent: '',
-      searchCondition: 'All',
-      srPage: [], // used to show the search results page
-      srBlogs: {}, // used to store the blogs resulting from the search
-      inSearch: false, // true => show the search results, false => not show
-      index: 'Main',
-      activeTab: 'first',
-      profileURL: '',
-      hotBlogs: {},
-      followedBlogs: {},
-      partitions: {},
-      followedPartitions: {},
-      myBlogs: {},
-      unAnsweredBlogs: {},
-      partition: 'Partitions', // used in selecting the partition when posting a question
-      subPartition: 'Sub Partitions', // used in selecting the partition when posting a question
-      p_type: true, // true => partition, false => sub-partition
-      subBlogs: {},
-      username: '',
-      newVal: '',
-      value: 0
+      searchContent: '',                // store the search content
+      searchCondition: 'All',           // store the search condition, e.g. 'All', 'CSC4001', 'CSC4001|Project' ...
+      srPage: [],                       // used to show the search results page
+      srBlogs: {},                      // used to store the blogs resulting from the search
+      inSearch: false,                  // true => show the search results, false => not show
+      index: 'Main',                    // used to locate the page in 'Main' or in 'Partition'
+      activeTab: 'first',               // used to locate the tab in 'Hot Blogs', 'Followed Blogs' ...
+      hotBlogs: {},                     // store all the blogs belonging to 'Hot Blogs' tab
+      followedBlogs: {},                // store all the blogs belonging to 'Followed Blogs' tab
+      partitions: {},                   // store all the partitions in the 'Partition' page
+      followedPartitions: {},           // store all the partitions belonging to 'Followed Partition' tab
+      myBlogs: {},                      // store all the blogs belonging to 'My Blogs' tab
+      unAnsweredBlogs: {},              // store all the blogs belonging to 'Unsolved Blogs' tab
+      partition: 'Partitions',          // used in selecting the partition when posting a question
+      subPartition: 'Sub Partitions',   // used in selecting the partition when posting a question
+      p_type: true,                     // true => partition, false => sub-partition
+      subBlogs: {},                     // store all the blogs belonging to corresponding partition
+      username: '',                     // store the user name
+      profileURL: '',                   // store the profile picture url of the user
+      newVal: '',                       // used to reset the username or password
+      value: 0                          // used in the loading animation
     }
   },
   computed: {
@@ -648,48 +641,46 @@ export default {
     },
     // Reset username or password
     reset () {
-      let type = document.getElementById('reset-title').innerHTML
-      if (type === 'Reset password' && document.getElementById('inputBox1') !== this.newVal) {
+      var type = document.getElementById('reset-title').innerHTML
+      if (type === 'Reset Password' && document.getElementById('inputBox1').value !== this.newVal) {
         this.$message.error('The passwords are not the same, please check it!')
-        return
-      }
-      if (this.newVal === '') {
+      } else if (this.newVal === '') {
         this.$message.error('You have not set your new ' + type.substring(6))
-        return
-      }
-      let sendData = {
-        type: type,
-        username: this.username,
-        newVal: this.newVal
-      }
-      axios({
-        method: 'POST',
-        url: 'http://175.178.34.84/updateInformation/',
-        data: Qs.stringify(sendData)
-      }).then((response) => {
-        if (type === 'Reset Username' && response.data === 'UserName has been taken') {
-          this.$message.error('The username has already been used, please change it again!')
-        } else {
-          this.$message.success((response.data))
-          this.close()
-          if (type === 'Reset Username') {
-            this.username = this.newVal
-            this.$router.replace({
-              path: '/blank',
-              name: 'blank',
-              params: {
-                username: this.username
-              }
-            })
-          } else {
-            this.$message('You need to log in again!')
-            this.$router.push({
-              path: '/login',
-              name: 'login'
-            })
-          }
+      } else {
+        let sendData = {
+          type: type,
+          username: this.username,
+          newVal: this.newVal
         }
-      })
+        axios({
+          method: 'POST',
+          url: 'http://175.178.34.84/updateInformation/',
+          data: Qs.stringify(sendData)
+        }).then((response) => {
+          if (type === 'Reset Username' && response.data === 'UserName has been taken') {
+            this.$message.error('The username has already been used, please change it again!')
+          } else {
+            this.$message.success((response.data))
+            this.close()
+            if (type === 'Reset Username') {
+              this.username = this.newVal
+              this.$router.replace({
+                path: '/blank',
+                name: 'blank',
+                params: {
+                  username: this.username
+                }
+              })
+            } else {
+              this.$message('You need to log in again!')
+              this.$router.push({
+                path: '/login',
+                name: 'login'
+              })
+            }
+          }
+        })
+      }
     },
     // Callback when the user successfully upload a profile
     handleAvatarSuccess (res, file) {
@@ -723,6 +714,7 @@ export default {
     },
     // User like the blog if no like, dislike the blog if like
     like (e, item, t, inPartition) {
+      e.currentTarget.classList.add('on')
       let sendData = {
         id: item.id,
         username: this.username,
@@ -997,6 +989,7 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 #mask {
   position: fixed;
   width: 100%;
@@ -1178,7 +1171,6 @@ export default {
 }
 .menu-item {
   font-family: 'myfont2' !important;
-  font-size: 20px;
   margin-left: 2% !important;
 }
 .searchBox {
@@ -1607,7 +1599,7 @@ export default {
 }
 .blog>h3:hover, .blog>p:hover {
   cursor: pointer;
-  color: #0a52e2;
+  color: #2e60c4;
 }
 .like, .follow, .follow-partition {
   box-sizing: border-box;
@@ -1848,69 +1840,6 @@ export default {
   background-color: white;
   display: none;
 }
-.mytext{
-  font-family: 'myfont';
-  color: white;
-}
-.postIcon {
-  position: fixed;
-  top: 10px;
-  right: 25%;
-  width: 0;
-  height: 0;
-  font-size: 18px;
-  -webkit-perspective: 230px;
-  perspective: 230px;
-  border:none;
-  box-shadow: none;
-  background-color: rgb(32, 129, 181);
-  cursor: pointer;
-}
-.postIcon span {
-  background: rgb(0,172,238);
-  font-family: 'myfont';
-  background: linear-gradient(0deg, rgba(0,172,238,1) 0%, rgba(2,126,251,1) 100%);
-  display: block;
-  position: absolute;
-  width: 130px;
-  height: 40px;
-  border-radius: 5px;
-  margin:0;
-  line-height: 40px;
-  padding: auto 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-transition: all .3s;
-  transition: all .3s;
-}
-.postIcon span:nth-child(1) {
-  -webkit-transform: rotateX(90deg);
-  -moz-transform: rotateX(90deg);
-  transform: rotateX(90deg);
-  -webkit-transform-origin: 50% 50% -20px;
-  -moz-transform-origin: 50% 50% -20px;
-  transform-origin: 50% 50% -20px;
-}
-.postIcon span:nth-child(2) {
-  -webkit-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-  transform: rotateX(0deg);
-  -webkit-transform-origin: 50% 50% -20px;
-  -moz-transform-origin: 50% 50% -20px;
-  transform-origin: 50% 50% -20px;
-}
-.postIcon:hover span:nth-child(1) {
-  -webkit-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-  transform: rotateX(0deg);
-}
-.postIcon:hover span:nth-child(2) {
-  color: transparent;
-  -webkit-transform: rotateX(-90deg);
-  -moz-transform: rotateX(-90deg);
-  transform: rotateX(-90deg);
-}
 .anitext {
   background-color: red;
   top: 10%;
@@ -1956,7 +1885,6 @@ export default {
   position: absolute;
   top: 0;
 }
-
 .bar-inside {
   border-radius: 5px;
   border-top-left-radius: 0px;
@@ -1974,12 +1902,10 @@ export default {
   transform: scalex(1);
   animation: processing 2s infinite;
 }
-
 p {
   font-family: 'Roboto', sans-serif;
   letter-spacing: 2px;
 }
-
 @keyframes processing {
   0% {
     transform: scalex(1);
@@ -1999,7 +1925,7 @@ p {
   position: fixed;
   top: 1px;
   height: 30px;
-  right: 2%;
+  right: 1%;
   cursor: pointer;
   margin: 1rem;
   background-color: #34bced;
@@ -2016,7 +1942,6 @@ p {
    box-shadow:0px 2px 10px 5px #97B1BF;
    color:#000;
 }
-
 .logout:after {
     content: "";
     background: #f1c40f;
@@ -2029,7 +1954,6 @@ p {
     opacity: 0;
     transition: all 0.8s
 }
-
 .logout:active:after {
     padding: 0;
     margin: 0;
@@ -2042,10 +1966,9 @@ p {
   background-color: rgb(26, 221, 133);
   border-radius: 50%;
   position: fixed;
-  left: 80%;
+  left: 81%;
   cursor: pointer;
 }
-
 .bk-btn .bk-btn-triangle {
   position: relative;
   top: 13px;
@@ -2056,7 +1979,6 @@ p {
   border-bottom: 13px solid transparent;
   border-right: 13px solid white;
 }
-
 .bk-btn .bk-btn-bar {
   position: relative;
   background-color: white;
@@ -2065,5 +1987,4 @@ p {
   top: -3.64px;
   left: 22.88px;
 }
-
 </style>

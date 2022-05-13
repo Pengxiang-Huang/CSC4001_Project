@@ -1,5 +1,7 @@
 <template>
+  <!--used for verify the code and help user jump to home page -->
   <div id="body">
+    <!--user verify the code here-->
     <div class="profile-card">
       <header>
         <h1>Welcome to our community!</h1>
@@ -37,7 +39,6 @@
 
 <script>
 import axios from 'axios'
-// import bus from '../assets/bus.js'
 import router from '../router'
 import Qs from 'qs'
 export default {
@@ -52,12 +53,14 @@ export default {
     }
   },
   created () {
+    // recieve the params from registeration
     this.correct_code = this.$route.query.code
     this.username = this.$route.query.username
     this.email = this.$route.query.email
     this.password = this.$route.query.password
   },
   methods: {
+    // confirm the verification code
     confirm () {
       let senddata = {
         username: this.username,
@@ -67,6 +70,7 @@ export default {
       if (this.code !== this.correct_code) {
         this.$message.error('The Verification Code is wrong, please try again')
       } else {
+        // send the information to backend, create a user account here
         axios({
           method: 'post',
           url: 'http://175.178.34.84/api/verify',
@@ -98,6 +102,7 @@ html {
   height: 100%;
 }
 
+/*begin with animation background */
 #body {
   overflow: hidden;
   background: linear-gradient(-218deg, #206475 48%, #2f9aa8 75%);
@@ -620,6 +625,7 @@ p {
     }
   }
 }
+
 .verify-box input {
   height: 32px;
   margin: 18px 0;
@@ -638,6 +644,7 @@ p {
 .verify-box input:valid {
   border-color: #6083e4;
 }
+
 .confirm-box input {
   font: "Poppins", sans-serif;
   font-style: italic;
