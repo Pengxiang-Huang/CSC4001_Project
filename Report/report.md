@@ -17,6 +17,9 @@
         <p style="font-size: 20px;">Li Zihan 119010167</p >
         <p style="font-size: 20px;">Linghu Han 119010185</p >
         <p style="font-size: 20px;">Qin Peiran 119010249</p >
+      	<br>
+      	<p>Version 1.1.0</p>
+      	<br>
         <b>May, 2022</b>
     </center>
 </div>
@@ -102,9 +105,9 @@
 <center><b>Table 1.3.2.2 - Inverted Index</b></center>
 
 LOC (lines of code) is showing in the appendix.  
-  
+
 ### 1.7 Workload division  
-​	 Our group divides the workload of the whole project in a balance way, everyone contributes substantially during every stages. Huang Pengxiang and Li Zihan maily contribute on the frontend and UI parts. Linhu Han and Qin Peiran mainly contribute on the backend, cloud deployment and testing parts. For the design document, ppt slides, presentation, and the final report, each member is in charge of several parts and contributes evenly. 
+​	 Our group divides the workload of the whole project in a balanced way, everyone contributes substantially during every stage. Huang Pengxiang and Li Zihan maily contribute to the frontend and UI parts. Linhu Han and Qin Peiran mainly contribute to the backend parts, cloud deployment and testing parts. For the design document, ppt slides, presentation, and the final report, each member is on charge of several parts and contributes evenly. 
 
 ## 2 System Arcgitectual Design by DFD
 
@@ -252,7 +255,7 @@ LOC (lines of code) is showing in the appendix.
 
 - **Login**
 
-<img src="pic/User_Interface/Login.png" alt="Login" style="zoom:20%;" />
+<img src="pic/User_Interface/Login.png" alt="Login" style="zoom:15%;" />
 
 ​	The log-in page is designed for the user directly use their user name and password to get into the home page, users must input the correct username and password in our database in order to log-in. Users could click the eye icon to hide or show the password. They can also click remember to remember their password. The sign-up and forget password buttons are on the top. Users could click those icons to jump to another webpage. The animation text will be shown every time one refreshes the page.
 
