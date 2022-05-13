@@ -9,12 +9,8 @@ from django.db import connection    # allow Django to use the original SQL state
 from datetime import date, datetime
 import os
 import random
-import _thread
-import time
-import queue
 from sphere_engine import CompilersClientV4
 from sphere_engine.exceptions import SphereEngineException
-import requests
 import urllib.request
 import pymysql
 
@@ -73,54 +69,10 @@ def encode(n = 6):
         code += all_code[num]
     return code
 
-##############################
 # Create your views here.
 def index(request):  # request means the request sent by front-end
     if request.method == 'GET':  #GET 返回页面
         return render(request, 'index.html')
-
-# def register(request):
-#     #POST 处理数据
-#         #1.当前用户名是否可用
-#         #1.插入数据[暂时明文处理]
-#     data = {
-#         'isRegister': 1
-#     }# control flag
-
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         email = request.POST['email']
-#         password = request.POST['password']
-#         print(username,email,password)
-
-#         #check user name. Multi-thread considerration.
-#         old_users = User.objects.filter(username=username)
-#         print(old_users)
-#         if (old_users):# if exists
-#             data['isRegister'] = 0
-#             return HttpResponse(json.dumps(data), content_type='application/json')
-        
-#         ##hash the code
-#         m = hashlib.md5()
-#         m.update(password.encode())
-#         password_m = m.hexdigest()
-        
-#         try: #Multi-thread considerration:唯一索引，并发写入问题。
-#         #insert data
-#             user = User.objects.create(username=username, password=password_m, email=email)
-#         except Exception as e:
-#             print('--create user error%s'%(e))
-#             data['isRegister'] = 0
-#             return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-#         #免登录一天 session
-#         request.session['username'] = username
-#         request.session['uid'] = user.id
-#         #TODO 修改session储存时间为一天
-
-#         #return successful information
-#         return HttpResponse(json.dumps(data), content_type='application/json')
 
 def register(request):
     #POST 处理数据
@@ -236,7 +188,7 @@ def logout(request):
         resp.delete_cookie('uid')
     return resp
 
-
+# 返回首页
 @check_state
 def after_login(request):
     return render(request, 'after_index.html')
@@ -278,12 +230,9 @@ def update(request):
             return HttpResponse('Password Reset successfully!')
     return HttpResponse('Password Reset failed!')
 
-
-
-#not yet
+# 发送邮箱验证码
 def sendEmail(request):
     #send email heres
-    #is href a POST or a GET request?
     if request.method == 'POST':
         try: 
             email = request.POST['email']
@@ -297,7 +246,6 @@ def sendEmail(request):
         if (email[9:] != "@link.cuhk.edu.cn"):
             return HttpResponse('Invalid email address!')
 
-
         R_list = []
         R_list.append(email)
         mail.send_mail(subject='Register code', message=code_send, from_email='1092298689@qq.com', recipient_list=R_list)
@@ -309,7 +257,6 @@ def sendEmail(request):
 
 
 #提出问题并放入数据库
-#需要对接如何返回
 def setQuestion(request):
     data = {
         'ok': 0
@@ -360,13 +307,11 @@ def setQuestion(request):
             code = ""
             land = ""
 
-
         like = 0
         follow = 0
         hot = 0
         views = 0
 
-        # try: 
         #insert data
         new_question = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
                                             content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views, \
@@ -383,6 +328,8 @@ def setQuestion(request):
 
         conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC4001", charset="utf8")
         cursor = conn.cursor()
+
+        #储存index table 用于搜索
         for item in index_list:
             mydata = []
             mydata.append(item)
@@ -426,10 +373,8 @@ def searchQuestion(request):
         #get the infor
         question1 = request.POST['content'] #question in test
          
-        #old
         question4 = question1.upper()
         questionElem = question4.split(' ')
-        #old
 
         question2 = search_spilt(question1)
         dim = question2[0]
@@ -441,7 +386,6 @@ def searchQuestion(request):
         username = request.POST['username']
         userid = User.objects.filter(username = username).values()[0]['id']
 
-        #old
         DBlist = []
         #get the db values of all contents
         titleDB = Blog_Questions.objects.values('title').order_by('id')
@@ -457,13 +401,13 @@ def searchQuestion(request):
             blockNumberTotalList = []
             lenList = len(question)
             searchIndex = 1
+
+            # 切分blog内容为不同的keyword并储存，用于后期的搜索
             for item in question:
                 if item[0].isalpha:
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
                     cursor.execute(sql)
                     a=cursor.fetchall()
-                    # print(a)
-                    # print(len(a))
                 else:  
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
                     cursor.execute(sql)
@@ -482,10 +426,6 @@ def searchQuestion(request):
                 searchIndex += 1
             searchIndex -= 1
             conn.close()
-            # print(blockNumberTotalList)
-            #print(Answer_T)
-            #print(Answer_C)
-              
 
             finalT = {}
             finalC = {}
@@ -495,22 +435,17 @@ def searchQuestion(request):
                 finalT[item] = temp1
                 finalC[item] = temp2
 
-            # print(finalT)
-            # print(finalC,"nima")
             for item in Answer_T:
                 blocknumber = item[0]
                 for i in range(1,lenList+1):
                     if item[i] != 0:
                         finalT[blocknumber][i-1] = item[i]
 
-          
             for item in Answer_C:
                 blocknumber = item[0]
                 for i in range(1,lenList+1):
                     if item[i] != 0:
                         finalC[blocknumber][i-1] = item[i]
-            #print(finalT)
-            #print(finalC)# content
           
             blog_vec_list = []
             my_dict = {}
@@ -525,7 +460,6 @@ def searchQuestion(request):
                 vec.append(myvalue)
               blog_vec_list.append(vec)
 
-            #print(blog_vec_list)
             result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
             print(result_list)
             blockID_list = []
@@ -539,7 +473,6 @@ def searchQuestion(request):
                 blockanswer = Blog_Questions.objects.filter(id = i).values()
                 print(blockanswer)
                 if len(blockanswer) == 0: continue
-                #temp = ALL_blogs[positionList[i]]
                 temp = blockanswer
                 rawContent = temp[0]['content']
                 answerID = temp[0]['id']
@@ -572,8 +505,7 @@ def searchQuestion(request):
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
                     cursor.execute(sql)
                     a=cursor.fetchall()
-                    # print(a)
-                    # print(len(a))
+                    
                 else:  
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
                     cursor.execute(sql)
@@ -592,10 +524,6 @@ def searchQuestion(request):
                 searchIndex += 1
             searchIndex -= 1
             conn.close()
-            # print(blockNumberTotalList)
-            #print(Answer_T)
-            #print(Answer_C)
-              
 
             finalT = {}
             finalC = {}
@@ -605,8 +533,6 @@ def searchQuestion(request):
                 finalT[item] = temp1
                 finalC[item] = temp2
 
-            # print(finalT)
-            # print(finalC,"nima")
             for item in Answer_T:
                 blocknumber = item[0]
                 for i in range(1,lenList+1):
@@ -619,8 +545,6 @@ def searchQuestion(request):
                 for i in range(1,lenList+1):
                     if item[i] != 0:
                         finalC[blocknumber][i-1] = item[i]
-            #print(finalT)
-            #print(finalC)# content
           
             blog_vec_list = []
             my_dict = {}
@@ -635,7 +559,6 @@ def searchQuestion(request):
                 vec.append(myvalue)
               blog_vec_list.append(vec)
 
-            #print(blog_vec_list)
             result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
             print(result_list)
             blockID_list = []
@@ -669,60 +592,6 @@ def searchQuestion(request):
                 data['blog'+str(i+1)] = temp[0]
 
             return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-            # # idea, set the non-type to 0 so that not effectively return
-            # DBScope = []
-            # #get the db values
-            # DBtype = Blog_Questions.objects.values('group_type').order_by('id')
-            # for type in DBtype:   
-            #     DBScope.append(type['group_type'])
-
-            # # start to search
-            # for DBitem in DBlist:
-            #     similarity = 0
-            #     for title in questionElem:
-            #         if title in DBitem:
-            #             similarity += 1
-            #     answerList.append(similarity) #answerList contains all similarity in the order of id
-            
-            # # set non-type's similarity to 0
-            # for i in range(len(DBScope)):
-            #     if (DBScope[i] != scope):
-            #         answerList[i] = 0
-
-            # maxSimilrty = len(questionElem)
-            # positionList = []
-            # searchValue = maxSimilrty
-            # while(searchValue != 0):
-            # # positionlist contains the index of content, descending by similarity.
-            #     for i in range(len(answerList)):    #here i is the index of the similarity list.
-            #         if (answerList[i] == searchValue):
-            #             positionList.append(i)
-            #     #update the similarity
-            #     searchValue -= 1
-
-            # #finially, return the searched answer
-            # ALL_blogs = Blog_Questions.objects.values()
-            # data = {}
-            # for i in range(len(positionList)):
-            #     temp = ALL_blogs[positionList[i]]
-            #     rawContent = temp['content']
-            #     answerID = temp['id']
-            #     amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
-            #     temp['amount_of_answers'] = amount_of_answers
-            #     isliked = 0
-            #     if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
-            #     temp['isliked'] = isliked
-
-            #     isfollowed = 0
-            #     if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
-            #     temp['isfollowed'] = isfollowed
-
-            #     if (len(rawContent) > 140):
-            #         rawContent = rawContent[0:140] + '...'
-            #         temp['content'] = rawContent
-            #     data['blog'+str(i+1)] = temp
-
-            # return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
         else:   #CSC3150|project1   sub_group_type and group_type
             scopeItem = scope.split('|')
@@ -742,8 +611,6 @@ def searchQuestion(request):
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
                     cursor.execute(sql)
                     a=cursor.fetchall()
-                    # print(a)
-                    # print(len(a))
                 else:  
                     sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
                     cursor.execute(sql)
@@ -998,9 +865,7 @@ def my_group(request):
     except:
         return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
 
-
-
-# /unAnswered: 按关注的数量返回高赞未回答的问题
+# unAnswered: 按关注的数量返回高赞未回答的问题
 def unAnswered(request):
     try:
         if request.method == 'POST':
@@ -1067,9 +932,6 @@ def unAnswered(request):
     except:
         return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
 
-
-
-
 # allow user to like a question/answer
 def like(request):
     data = {
@@ -1112,9 +974,6 @@ def like(request):
         return HttpResponse("Invalid input!")
 
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
-            
-
-    
 
 # allow user to follow a question
 def follow(request):
@@ -1213,13 +1072,11 @@ def uploadProfile(request):
     else:
         return HttpResponse("Only POST-request is accepted!")
 
-'''
 
- A function to retrieve the user propfile
- 1. get the url from database and sent it to frontend
- 2. the frontend can retrieve the profile according to the url, because we set up the static resource proxy
+#  A function to retrieve the user propfile
+#  1. get the url from database and sent it to frontend
+#  2. the frontend can retrieve the profile according to the url, because we set up the static resource proxy
 
-'''
 def getProfile(request):
     try:
         if request.method == "POST":
@@ -1242,10 +1099,9 @@ def getProfile(request):
         return HttpResponse("Invalid Request! Please use Post-request and attach usename.")
 
 
-'''
-    Receive the POST request about the group_name, username, subgroup_name
-    First, return the blogs related to this group.
-'''
+# Receive the POST request about the group_name, username, subgroup_name
+# First, return the blogs related to this group.
+
 def getGroup(request):
     try:
         if request.method == "POST":
@@ -1311,12 +1167,11 @@ def getGroup(request):
         return HttpResponse("Invalid Input!")
 
 
-'''
-    Receive the POST request about the username and group_name
-    If the user has followed, then unfollow. Vice Verse
-    Store/Delete the "user follow group" info into DB, add/delete the number of follow of Group by 1
-    return {ok: 1} if the  
-'''
+# Receive the POST request about the username and group_name
+# If the user has followed, then unfollow. Vice Verse
+# Store/Delete the "user follow group" info into DB, add/delete the number of follow of Group by 1
+# return {ok: 1} if the  
+
 def followGroup(request):
     try:
         if request.method == "POST":
