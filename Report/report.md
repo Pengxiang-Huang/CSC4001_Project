@@ -101,7 +101,10 @@
 
 <center><b>Table 1.3.2.2 - Inverted Index</b></center>
 
-LOC (lines of code) is showing in the appendix.
+LOC (lines of code) is showing in the appendix.  
+  
+#### 1.7 Workload division  
+​	 Our group divides the workload of the whole project in a balance way, everyone contributes substantially during every stages. Huang Pengxiang and Li Zihan maily contribute on the frontend and UI parts. Linhu Han and Qin Peiran mainly contribute on the backend, cloud deployment and testing parts. For the design document, ppt slides, presentation, and the final report, each member is in charge of several parts and contributes evenly. 
 
 ## 2 System Arcgitectual Design by DFD
 
