@@ -599,12 +599,12 @@ import Qs from 'qs'
 export default {
   data () {
     return {
-      searchContent: '',                // store the search content
-      searchCondition: 'All',           // store the search condition, e.g. 'All', 'CSC4001', 'CSC4001|Project' ...
-      srPage: [],                       // used to show the search results page
-      srBlogs: {},                      // used to store the blogs resulting from the search
-      inSearch: false,                  // true => show the search results, false => not show
-      index: 'Main',                    // used to locate the page in 'Main' or in 'Partition'
+      searchContent: '', //store the search content
+      searchCondition: 'All',           //store the search condition, e.g. 'All', 'CSC4001', 'CSC4001|Project' ...
+      srPage: [],                       //used to show the search results page
+      srBlogs: {},                      //used to store the blogs resulting from the search
+      inSearch: false,                  //true => show the search results, false => not show
+      index: 'Main', //used to locate the page in 'Main' or in 'Partition'
       activeTab: 'first',               // used to locate the tab in 'Hot Blogs', 'Followed Blogs' ...
       hotBlogs: {},                     // store all the blogs belonging to 'Hot Blogs' tab
       followedBlogs: {},                // store all the blogs belonging to 'Followed Blogs' tab

@@ -5,7 +5,7 @@
     <div class="profile-card">
       <header>
         <h1>Welcome to our community!</h1>
-        <h2>Designed for CUHKSZ Prorgammers</h2>
+        <h3>Designed for CUHKSZ Prorgammers</h3>
       </header>
       <div class="profile-bio">
         <p>
