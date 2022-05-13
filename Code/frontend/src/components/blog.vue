@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--the inital loading background -->
     <div class="initbackground" v-show="showbackground(2)">
       <div class="anitext" >
         <h1 class="loadtext">Loading....</h1>
@@ -14,6 +15,7 @@
         <div id="boat"></div>
       </div>
     </div>
+    <!--the main page -->
     <div v-show="!showbackground(2)">
       <div id="mask"></div>
       <div id="pop-up-reset" class="pop-up">
@@ -28,6 +30,7 @@
         <img src="../assets/close.png" @click="closeAnwserBox" style="position: fixed;top: 21%;left: 81%;cursor: pointer">
         <el-button type="primary" @click="submitPost" round style="width: 100%;margin-top: 20px;">Post</el-button>
       </div>
+      <!--the navigation bar -->
       <el-menu
         default-active="Main"
         class="el-menu-demo"
@@ -88,6 +91,7 @@
         <div id="rightBox"></div>
         <div id="deletion" class="fa fa-trash"  @click="deleteblog" v-show="ismyblog"></div>
         <div class="bk-btn" src="../assets/back.png" @click="backToMain" ><div class="bk-btn-triangle"></div><div class="bk-btn-bar"></div></div>
+        <!--the blog question part -->
         <div style="padding: 0 50px;" class="animate__animated animate__zoomIn">
           <el-tooltip class="item" effect="dark" :content="blog.author_name" placement="left">
             <el-avatar v-if="blog.author_profile" :src="blog.author_profile" style="float: left;cursor: pointer;margin-right: 10px;"></el-avatar>
@@ -133,6 +137,7 @@
           </div>
         </div>
         <hr style="color: gray;margin: 20px 0;" class="animate__animated animate__zoomIn"/>
+        <!--the blog answer part -->
         <div class="comments-container animate__animated animate__zoomIn">
           <ul id="comments-list" class="comments-list" style="list-style-type: none;">
             <li v-for="(item,index) in answers" :key="'answer_'+index">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--the  inital loading background -->
+    <!--the inital loading background -->
     <div class="initbackground"
          v-show="showbackground(2)">
       <div class="anitext">
@@ -16,6 +16,7 @@
         <div id="boat"></div>
       </div>
     </div>
+    <!--the main page -->
     <div v-show="!showbackground(2)">
       <div id="mask"></div>
       <div id="pop-up-reset"
@@ -30,6 +31,7 @@
         <button class="clickBtn"
                 @click="reset">Reset</button>
       </div>
+      <!--the navigation bar -->
       <el-menu default-active="Main"
                class="el-menu-demo"
                mode="horizontal"
@@ -134,6 +136,7 @@
           <div class="bk-btn-triangle"></div>
           <div class="bk-btn-bar"></div>
         </div>
+        <!--the tab bar -->
         <el-tabs :value="activeTab"
                  @tab-click="handleClick">
           <el-tab-pane></el-tab-pane>
