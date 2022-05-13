@@ -286,22 +286,23 @@ export default {
   },
   data () {
     return {
-      searchContent: '',
-      searchCondition: 'All',
-      srPage: [], // used to show the search results page
-      srBlogs: {}, // used to store the blogs resulting from the search
-      inSearch: false, // true => show the search results, false => not show
-      index: 'Main',
-      profileURL: '',
-      partitions: {},
-      partition: 'Partitions', // used in selecting the partition when posting a question
-      subPartition: 'Sub Partitions', // used in selecting the partition when posting a question
-      p_type: true, // true => partition, false => sub-partition
-      subBlogs: {},
-      username: '',
-      newVal: '',
-      blog: {},
-      answers: {},
+      searchContent: '',                   // store the search content
+      searchCondition: 'All',              // store the search condition, e.g. 'All', 'CSC4001', 'CSC4001|Project' ...
+      srPage: [],                          // used to show the search results page
+      srBlogs: {},                         // used to store the blogs resulting from the search
+      inSearch: false,                     // true => show the search results, false => not show
+      index: 'Main',                       // used to locate the page in 'Main' or in 'Partition'
+      partitions: {},                      // store all the partitions in the 'Partition' page
+      partition: 'Partitions',             // used in selecting the partition when posting a question
+      subPartition: 'Sub Partitions',      // used in selecting the partition when posting a question
+      p_type: true,                        // true => partition, false => sub-partition
+      subBlogs: {},                        // store all the blogs belonging to corresponding partition
+      username: '',                        // store the user name
+      profileURL: '',                      // store the profile picture url of the user
+      newVal: '',                          // used to reset the username or password
+      blog: {},                            // store all the info of this blog
+      answers: {},                         // store all the answers of this blog
+      // some configuration of the plug-in input box
       config: {
         heightMax: 330,
         heightMin: 330,
@@ -324,10 +325,10 @@ export default {
         },
         imageUploadURL: 'http://175.178.34.84/api/getfile'
       },
-      answerText: '',
-      father_answer_id: '',
-      value: 0,
-      ismyblog: true
+      answerText: '',           // store the content of the answer waiting for posting
+      father_answer_id: '',     // store the answer id to which the answer waiting for posting replys
+      value: 0,                 // used in the loading aniamtion
+      ismyblog: true            // used in deleting the self-post blog
     }
   },
   computed: {
