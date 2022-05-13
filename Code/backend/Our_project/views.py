@@ -307,34 +307,6 @@ def sendEmail(request):
         
         return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')#需要把信息验证码一起用字典传过去、或者设置全局变量。
 
-# def setQuestion(request):
-#     data = {
-#         'isRegister': 1
-#     }# control flag
-
-#     if request.method == 'POST':
-#         title = request.POST['title']
-#         author_id = request.POST['author_id']
-#         group_type = request.POST['group_type']
-#         sub_group_type = request.POST['sub_group_type']
-#         content = request.POST['content']
-#         content_format = request.POST['content_format']
-#         like = request.POST['like']
-#         follow = request.POST['follow']
-#         hot = request.POST['hot']
-#         views = request.POST['views']
-
-#         try: 
-#         #insert data
-#             user = Blog_Questions.objects.create(title=title, author_id=author_id, group_type=group_type, sub_group_type=sub_group_type, \
-#                                                 content=content, content_format=content_format, like=like, follow=follow, hot=hot, views=views)
-#         except Exception as e:
-#             print('--Insert question error%s'%(e))
-#             data['isRegister'] = 0
-#             return HttpResponse(json.dumps(data), content_type='application/json')
-
-#         #if success
-#         return HttpResponse(json.dumps(data), content_type='application/json')
 
 #提出问题并放入数据库
 #需要对接如何返回
@@ -409,7 +381,7 @@ def setQuestion(request):
         
         print(index_list)
 
-        conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
+        conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC4001", charset="utf8")
         cursor = conn.cursor()
         for item in index_list:
             mydata = []
@@ -453,8 +425,12 @@ def searchQuestion(request):
         answerList = []
         #get the infor
         question1 = request.POST['content'] #question in test
-        # question = question.upper()
-        # questionElem = question.split(' ')
+         
+        #old
+        question4 = question1.upper()
+        questionElem = question4.split(' ')
+        #old
+
         question2 = search_spilt(question1)
         dim = question2[0]
         question = question2[1]
@@ -464,10 +440,17 @@ def searchQuestion(request):
 
         username = request.POST['username']
         userid = User.objects.filter(username = username).values()[0]['id']
+
+        #old
+        DBlist = []
+        #get the db values of all contents
+        titleDB = Blog_Questions.objects.values('title').order_by('id')
+        for title in titleDB:   
+            DBlist.append(title['title'].upper())
         
 
         if (scope=='All'):
-            conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC3170", charset="utf8")
+            conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC4001", charset="utf8")
             cursor = conn.cursor()
             Answer_T = []
             Answer_C = []
@@ -498,9 +481,10 @@ def searchQuestion(request):
                     Answer_C.append(Ctemp1)
                 searchIndex += 1
             searchIndex -= 1
+            conn.close()
             # print(blockNumberTotalList)
-            print(Answer_T)
-            print(Answer_C)
+            #print(Answer_T)
+            #print(Answer_C)
               
 
             finalT = {}
@@ -525,11 +509,11 @@ def searchQuestion(request):
                 for i in range(1,lenList+1):
                     if item[i] != 0:
                         finalC[blocknumber][i-1] = item[i]
-            print(finalT)
-            print(finalC)# content
+            #print(finalT)
+            #print(finalC)# content
           
             blog_vec_list = []
-            my_dict = {} . 
+            my_dict = {}
             for (key,value) in finalT.items():
               blog_id = key
               title_value = value
@@ -541,93 +525,204 @@ def searchQuestion(request):
                 vec.append(myvalue)
               blog_vec_list.append(vec)
 
-            print(blog_vec_list)
+            #print(blog_vec_list)
             result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
             print(result_list)
+            blockID_list = []
+            for item in result_list:  #get answer id
+                blockID_list.append(item[0])
+            print(blockID_list)
 
 
-
-
-
-            #finially, return the searched answer
-            ALL_blogs = Blog_Questions.objects.values()
             data = {}
-            for i in range(len(positionList)):
-                temp = ALL_blogs[positionList[i]]
-                rawContent = temp['content']
-                answerID = temp['id']
+            for i in blockID_list:
+                blockanswer = Blog_Questions.objects.filter(id = i).values()
+                print(blockanswer)
+                if len(blockanswer) == 0: continue
+                #temp = ALL_blogs[positionList[i]]
+                temp = blockanswer
+                rawContent = temp[0]['content']
+                answerID = temp[0]['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
-                temp['amount_of_answers'] = amount_of_answers
+                temp[0]['amount_of_answers'] = amount_of_answers
                 isliked = 0
                 if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
-                temp['isliked'] = isliked
+                temp[0]['isliked'] = isliked
 
                 isfollowed = 0
                 if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
-                temp['isfollowed'] = isfollowed
+                temp[0]['isfollowed'] = isfollowed
                 
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
-                    temp['content'] = rawContent
-                data['blog'+str(i+1)] = temp
-
+                    temp[0]['content'] = rawContent
+                data['blog'+str(i+1)] = temp[0]
             return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
         elif ('|' not in scope):    #CSC3150   group_type
-            # idea, set the non-type to 0 so that not effectively return
-            DBScope = []
-            #get the db values
-            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
-            for type in DBtype:   
-                DBScope.append(type['group_type'])
+            conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC4001", charset="utf8")
+            cursor = conn.cursor()
+            Answer_T = []
+            Answer_C = []
+            blockNumberTotalList = []
+            lenList = len(question)
+            searchIndex = 1
+            for item in question:
+                if item[0].isalpha:
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                    # print(a)
+                    # print(len(a))
+                else:  
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                
+                for i in range(len(a)):
+                    if a[i][1] not in blockNumberTotalList: blockNumberTotalList.append(a[i][1])
+                    Ttemp1 = [0]*(lenList+1)
+                    Ctemp1 = [0]*(lenList+1)
+                    Ttemp1[0] = a[i][1]
+                    Ttemp1[searchIndex] = a[i][2]
+                    Ctemp1[0] = a[i][1]
+                    Ctemp1[searchIndex] = a[i][3]
+                    Answer_T.append(Ttemp1)
+                    Answer_C.append(Ctemp1)
+                searchIndex += 1
+            searchIndex -= 1
+            conn.close()
+            # print(blockNumberTotalList)
+            #print(Answer_T)
+            #print(Answer_C)
+              
 
-            # start to search
-            for DBitem in DBlist:
-                similarity = 0
-                for title in questionElem:
-                    if title in DBitem:
-                        similarity += 1
-                answerList.append(similarity) #answerList contains all similarity in the order of id
-            
-            # set non-type's similarity to 0
-            for i in range(len(DBScope)):
-                if (DBScope[i] != scope):
-                    answerList[i] = 0
+            finalT = {}
+            finalC = {}
+            for item in blockNumberTotalList:
+                temp1 = [0]*(lenList)
+                temp2 = [0]*(lenList)
+                finalT[item] = temp1
+                finalC[item] = temp2
 
-            maxSimilrty = len(questionElem)
-            positionList = []
-            searchValue = maxSimilrty
-            while(searchValue != 0):
-            # positionlist contains the index of content, descending by similarity.
-                for i in range(len(answerList)):    #here i is the index of the similarity list.
-                    if (answerList[i] == searchValue):
-                        positionList.append(i)
-                #update the similarity
-                searchValue -= 1
+            # print(finalT)
+            # print(finalC,"nima")
+            for item in Answer_T:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalT[blocknumber][i-1] = item[i]
 
-            #finially, return the searched answer
-            ALL_blogs = Blog_Questions.objects.values()
+          
+            for item in Answer_C:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalC[blocknumber][i-1] = item[i]
+            #print(finalT)
+            #print(finalC)# content
+          
+            blog_vec_list = []
+            my_dict = {}
+            for (key,value) in finalT.items():
+              blog_id = key
+              title_value = value
+              content_value = finalC[key]
+              vec = []
+              vec.append(blog_id)
+              for j in range(0, len(title_value)):
+                myvalue = 3 * title_value[j] + content_value[j]
+                vec.append(myvalue)
+              blog_vec_list.append(vec)
+
+            #print(blog_vec_list)
+            result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
+            print(result_list)
+            blockID_list = []
+            for item in result_list:  #get answer id
+                blockID_list.append(item[0])
+            print(blockID_list)
+
+
             data = {}
-            for i in range(len(positionList)):
-                temp = ALL_blogs[positionList[i]]
-                rawContent = temp['content']
-                answerID = temp['id']
+            for i in blockID_list:
+                blockanswer = Blog_Questions.objects.filter(id = i, group_type = scope).values()
+                print(blockanswer)
+                if len(blockanswer) == 0: continue
+                #temp = ALL_blogs[positionList[i]]
+                temp = blockanswer
+                rawContent = temp[0]['content']
+                answerID = temp[0]['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
-                temp['amount_of_answers'] = amount_of_answers
+                temp[0]['amount_of_answers'] = amount_of_answers
                 isliked = 0
                 if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
-                temp['isliked'] = isliked
+                temp[0]['isliked'] = isliked
 
                 isfollowed = 0
                 if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
-                temp['isfollowed'] = isfollowed
-
+                temp[0]['isfollowed'] = isfollowed
+                
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
-                    temp['content'] = rawContent
-                data['blog'+str(i+1)] = temp
+                    temp[0]['content'] = rawContent
+                data['blog'+str(i+1)] = temp[0]
 
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+            return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+            # # idea, set the non-type to 0 so that not effectively return
+            # DBScope = []
+            # #get the db values
+            # DBtype = Blog_Questions.objects.values('group_type').order_by('id')
+            # for type in DBtype:   
+            #     DBScope.append(type['group_type'])
+
+            # # start to search
+            # for DBitem in DBlist:
+            #     similarity = 0
+            #     for title in questionElem:
+            #         if title in DBitem:
+            #             similarity += 1
+            #     answerList.append(similarity) #answerList contains all similarity in the order of id
+            
+            # # set non-type's similarity to 0
+            # for i in range(len(DBScope)):
+            #     if (DBScope[i] != scope):
+            #         answerList[i] = 0
+
+            # maxSimilrty = len(questionElem)
+            # positionList = []
+            # searchValue = maxSimilrty
+            # while(searchValue != 0):
+            # # positionlist contains the index of content, descending by similarity.
+            #     for i in range(len(answerList)):    #here i is the index of the similarity list.
+            #         if (answerList[i] == searchValue):
+            #             positionList.append(i)
+            #     #update the similarity
+            #     searchValue -= 1
+
+            # #finially, return the searched answer
+            # ALL_blogs = Blog_Questions.objects.values()
+            # data = {}
+            # for i in range(len(positionList)):
+            #     temp = ALL_blogs[positionList[i]]
+            #     rawContent = temp['content']
+            #     answerID = temp['id']
+            #     amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
+            #     temp['amount_of_answers'] = amount_of_answers
+            #     isliked = 0
+            #     if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
+            #     temp['isliked'] = isliked
+
+            #     isfollowed = 0
+            #     if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
+            #     temp['isfollowed'] = isfollowed
+
+            #     if (len(rawContent) > 140):
+            #         rawContent = rawContent[0:140] + '...'
+            #         temp['content'] = rawContent
+            #     data['blog'+str(i+1)] = temp
+
+            # return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
         else:   #CSC3150|project1   sub_group_type and group_type
             scopeItem = scope.split('|')
@@ -635,66 +730,123 @@ def searchQuestion(request):
             subGroupType = scopeItem[1]
             sub_group_type = sub_group.objects.filter(sub_group_name = subGroupType, group_name = groupType).values()[0]['id']
 
-            DBScope = []
-            #get the db values
-            DBtype = Blog_Questions.objects.values('group_type').order_by('id')
-            for type in DBtype:   
-                DBScope.append(type['group_type'])
+            conn = pymysql.connect(host="175.178.34.84", port=3306, user="root", passwd="Q@@pr294118", db="CSC4001", charset="utf8")
+            cursor = conn.cursor()
+            Answer_T = []
+            Answer_C = []
+            blockNumberTotalList = []
+            lenList = len(question)
+            searchIndex = 1
+            for item in question:
+                if item[0].isalpha:
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format(item[0].upper(), item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                    # print(a)
+                    # print(len(a))
+                else:  
+                    sql = 'select * from Our_project_{} where WORDS = "{}";'.format('OTHERS', item)
+                    cursor.execute(sql)
+                    a=cursor.fetchall()
+                
+                for i in range(len(a)):
+                    if a[i][1] not in blockNumberTotalList: blockNumberTotalList.append(a[i][1])
+                    Ttemp1 = [0]*(lenList+1)
+                    Ctemp1 = [0]*(lenList+1)
+                    Ttemp1[0] = a[i][1]
+                    Ttemp1[searchIndex] = a[i][2]
+                    Ctemp1[0] = a[i][1]
+                    Ctemp1[searchIndex] = a[i][3]
+                    Answer_T.append(Ttemp1)
+                    Answer_C.append(Ctemp1)
+                searchIndex += 1
+            searchIndex -= 1
+            conn.close()
+              
 
-            DBsub = []
-            #get the db values
-            DBsubid = Blog_Questions.objects.values('sub_group_type')
-            for subid in DBsubid:   
-                DBsub.append(subid['sub_group_type'])
+            finalT = {}
+            finalC = {}
+            for item in blockNumberTotalList:
+                temp1 = [0]*(lenList)
+                temp2 = [0]*(lenList)
+                finalT[item] = temp1
+                finalC[item] = temp2
 
-            # start to search
-            for DBitem in DBlist:
-                similarity = 0
-                for title in questionElem:
-                    if title in DBitem:
-                        similarity += 1
-                answerList.append(similarity) #answerList contains all similarity in the order of id
-            
-            # set non-type's similarity to 0
-            for i in range(len(DBScope)):
-                if (DBScope[i] != groupType or DBsub[i] != sub_group_type):
-                    answerList[i] = 0
-            # print('answerlist: ' , answerList)
-            maxSimilrty = len(questionElem)
-            positionList = []
-            searchValue = maxSimilrty
-            while(searchValue != 0):
-            # positionlist contains the index of content, descending by similarity.
-                for i in range(len(answerList)):    #here i is the index of the similarity list.
-                    if (answerList[i] == searchValue):
-                        positionList.append(i)
-                #update the similarity
-                searchValue -= 1
+            for item in Answer_T:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalT[blocknumber][i-1] = item[i]
 
-            #finially, return the searched answer
-            ALL_blogs = Blog_Questions.objects.values()
+          
+            for item in Answer_C:
+                blocknumber = item[0]
+                for i in range(1,lenList+1):
+                    if item[i] != 0:
+                        finalC[blocknumber][i-1] = item[i]
+          
+            blog_vec_list = []
+            my_dict = {}
+            for (key,value) in finalT.items():
+              blog_id = key
+              title_value = value
+              content_value = finalC[key]
+              vec = []
+              vec.append(blog_id)
+              for j in range(0, len(title_value)):
+                myvalue = 3 * title_value[j] + content_value[j]
+                vec.append(myvalue)
+              blog_vec_list.append(vec)
+
+            result_list = quicksort_blog(dim,target_vec,blog_vec_list,0,len(blog_vec_list)-1)
+            print(result_list)
+            blockID_list = []
+            for item in result_list:  #get answer id
+                blockID_list.append(item[0])
+            print(blockID_list)
+
+
             data = {}
-            for i in range(len(positionList)):
-                temp = ALL_blogs[positionList[i]]
-                rawContent = temp['content']
-                answerID = temp['id']
+            print(sub_group_type)
+            for i in blockID_list:
+                blockanswer = Blog_Questions.objects.filter(id = i, group_type = groupType, sub_group_type = sub_group_type).values()
+                # print(len(blockanswer))
+                if len(blockanswer) == 0: continue
+                print(blockanswer)
+                #temp = ALL_blogs[positionList[i]]
+                temp = blockanswer
+                rawContent = temp[0]['content']
+                answerID = temp[0]['id']
                 amount_of_answers = Blog_Answers.objects.filter(question_id = answerID).count()
-                temp['amount_of_answers'] = amount_of_answers
+                temp[0]['amount_of_answers'] = amount_of_answers
                 isliked = 0
                 if (user_like_question.objects.filter(question_id = answerID, id = userid)): isliked = 1
-                temp['isliked'] = isliked
+                temp[0]['isliked'] = isliked
 
                 isfollowed = 0
                 if (user_follow_question.objects.filter(question_id = answerID, id = userid)):isfollowed = 1
-                temp['isfollowed'] = isfollowed
-
+                temp[0]['isfollowed'] = isfollowed
+                
                 if (len(rawContent) > 140):
                     rawContent = rawContent[0:140] + '...'
-                    temp['content'] = rawContent
-                data['blog'+str(i+1)] = temp
-            return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+                    temp[0]['content'] = rawContent
+                data['blog'+str(i+1)] = temp[0]
+
+            return  HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
 
     
+def delete(request):
+    data = {
+        'ok': 1
+    }
+    if request.method =="POST":
+        id = request.POST['id']
+        blockTodelete = Blog_Questions.objects.filter(id = id)
+        blockTodelete.delete()
+        return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
+
+
 # 根据hot排序，返回5个当前热门的问题
 def main_page(request):
     try:
@@ -993,8 +1145,9 @@ def follow(request):
     return HttpResponse(json.dumps(data , cls=ComplexEncoder), content_type='application/json')
 
 
+# an auxilary function for change the amount of like, follow, and hot in database
 def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_like, add_or_reduce):
-    if (follow_or_like):  # if it is follow
+    if (follow_or_like):  # if it is follow, then change the amount of follow in database
         num_follow = Blog_Questions.objects.filter(id=target_id).values()[0]
         num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
         update_blog = Blog_Questions.objects.get(id=target_id)
@@ -1005,12 +1158,12 @@ def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_lik
             update_blog.follow = num_follow['follow'] - 1
             update_blog.hot = num_hot['hot'] - 1
         update_blog.save()
-    else:     # if it is like
+    else:     # if it is like, then change the amount of like in database
         if (Question_or_Answer):      # if this is a question
             num_like = Blog_Questions.objects.filter(id=target_id).values()[0]
             num_hot = Blog_Questions.objects.filter(id=target_id).values()[0]                  
             update_blog = Blog_Questions.objects.get(id=target_id)
-            if (add_or_reduce):       # if add
+            if (add_or_reduce):       # if add the amount
                 update_blog.like = num_like['like'] + 1
                 update_blog.hot = num_hot['hot'] + 1
             else:     # reduce
@@ -1020,12 +1173,13 @@ def change_amount_of_like_or_follow(target_id, Question_or_Answer, follow_or_lik
         else:                         # if this is an answer
             num_like = Blog_Answers.objects.filter(id=target_id).values()[0]                 
             update_blog = Blog_Answers.objects.get(id=target_id)
-            if (add_or_reduce):       # if add
+            if (add_or_reduce):       # if add the amount
                 update_blog.like = num_like['like'] + 1
             else:     # reduce
                 update_blog.like = num_like['like'] - 1
             update_blog.save()
 
+# A function to upload a user profile on cloud and update the url in database
 def uploadProfile(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -1059,7 +1213,13 @@ def uploadProfile(request):
     else:
         return HttpResponse("Only POST-request is accepted!")
 
+'''
 
+ A function to retrieve the user propfile
+ 1. get the url from database and sent it to frontend
+ 2. the frontend can retrieve the profile according to the url, because we set up the static resource proxy
+
+'''
 def getProfile(request):
     try:
         if request.method == "POST":
@@ -1190,8 +1350,7 @@ def followGroup(request):
 
 '''
     Receive the POST request about the username
-    Return all the groups, as well as each's description, url of picture, 
-    number of follows, and whether the current user follow
+    Return my_group
     default own = 0 means return all the groups, own = 1 means only return the groups that current user follows
 '''
 def groups(request, own = 0):
@@ -1474,8 +1633,10 @@ def run_code(request):
             except:
                 lang = "Python"
 
-            accessToken = '988ee724e12e4b4add3d9b8baf105b56'
-            endpoint = 'c63f7566.compilers.sphere-engine.com'
+
+            # used to access the API of sphere engine.
+            accessToken = 'ade080747f9c1bea80ab73bbc03f89c5'
+            endpoint = 'e4d772a7.compilers.sphere-engine.com'
 
             client = CompilersClientV4(accessToken, endpoint)
 
@@ -1514,10 +1675,12 @@ def run_code(request):
 
             executing_status = response.get("executing")
 
+            # busy waiting for the results. 
             while (executing_status):
                 response = client.submissions.get(task_id)
                 executing_status = response.get("executing")
 
+            # try to segment the results and extract useful information. 
             time = response.get("result").get("time")
             memory = response.get("result").get("memory")
             try:
@@ -1663,7 +1826,7 @@ def Reply(request):
 
 
 '''
-    Add views by one
+    Add views by one. 增加浏览量 
 '''
 def AddViews(request):
     data = {}
@@ -1680,7 +1843,11 @@ def AddViews(request):
 
 
 
-
+'''
+    get the file from frontend.
+    1. store the file into the cloud server.
+    2. update the url in database.
+'''
 def get_file(request):
     data= {}
     recevie_file = request.FILES.get("file")
@@ -1709,7 +1876,10 @@ def get_file(request):
 
 
 '''
-    Defining the test cases
+    Conduct the test cases
+    1. Unit Testing
+    2. Component testing 
+    3. System testing
 '''
 def testing(request):
 
@@ -1725,79 +1895,90 @@ def testing(request):
 
     return HttpResponse(json.dumps(result , cls=ComplexEncoder), content_type='application/json')
 
+'''
+    When runing the test cases, some garbage data would be inserted into database. 
+    We delete them after testing. 
+'''
 def delete_test_insert():
     Blog_Questions.objects.filter(title='How to be a perfect test engineer?').delete()
 
 def filter_word(blog_list):
-  blog_id = blog_list[0]
-  blog_title = blog_list[1]
-  blog_content = blog_list[2]
+    blog_id = blog_list[0]
+    blog_title = blog_list[1]
+    blog_content = blog_list[2]
 
-  # load the deep learning dataset
-  nlp = spacy.load('en_core_web_sm')
+    # load the deep learning dataset
+    nlp = spacy.load('en_core_web_sm')
 
-  doc_title = nlp(blog_title)
-  doc_content = nlp(blog_content)
+    doc_title = nlp(blog_title)
+    doc_content = nlp(blog_content)
+    #print(doc_title,"tit")
+    #print(doc_content,"con")
 
-  #创建字典 {token名字：出现的次数}
-  token_dict = {}
+    #创建字典 {token名字：出现的次数}
+    token_dict = {}
 
-  #遍历标题所有数据
-  for token in doc_title:
-    if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
-      lemma_token = token.lemma_ # transform it to normal form (lemma)
-      if lemma_token in token_dict:
-        token_dict[lemma_token][0] += 1
-      else:
-        token_dict[lemma_token] = [1,0]
-  
-  #遍历内容所有数据
-  for token in doc_content:
-    if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
-      lemma_token = token.lemma_ # transform it to normal form (lemma)
-      if lemma_token in token_dict:
-        token_dict[lemma_token][1] += 1
-      else:
-        token_dict[lemma_token] = [0,1]
+    #遍历标题所有数据
+    for token in doc_title:
+        if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
+            lemma_token = token.lemma_ # transform it to normal form (lemma)
+            lemma_token = lemma_token.lower()
+            if lemma_token in token_dict:
+                token_dict[lemma_token][0] += 1
+            else:
+                token_dict[lemma_token] = [1,0]
 
-  result_list = []
+    #遍历内容所有数据
+    for token in doc_content:
+        if not (token.is_punct or token.is_stop): # if not a punctuation or a stop word
+            lemma_token = token.lemma_ # transform it to normal form (lemma)
+            lemma_token = lemma_token.lower()
+            if lemma_token in token_dict:
+                token_dict[lemma_token][1] += 1
+            else:
+                token_dict[lemma_token] = [0,1]
 
-  for (key,value) in token_dict.items():
-    mylist = []
-    mylist.append(key)
-    mylist.append(blog_id)
-    mylist.append(value[0])
-    mylist.append(value[1])
-    result_list.append(mylist)
+    result_list = []
 
-  return result_list
+    for (key,value) in token_dict.items():
+        mylist = []
+        mylist.append(key)
+        mylist.append(blog_id)
+        mylist.append(value[0])
+        mylist.append(value[1])
+        result_list.append(mylist)
+        
+    #print("shishishishishishishsi")
+    return result_list
 
 def search_spilt(title):
-  nlp = spacy.load('en_core_web_sm')
-  
-  doc_title = nlp(title)
+    #print("shitshitshitshit")
+    nlp = spacy.load('en_core_web_sm')
 
-  token_dict = {}
+    doc_title = nlp(title)
 
-  for token in doc_title:
-    if not (token.is_punct or token.is_stop):
-      lemma_token = token.lemma_
-      if lemma_token in token_dict:
-        token_dict[lemma_token] += 1
-      else:
-        token_dict[lemma_token] = 1
-  
-  word_list = []
-  count_list = []
-  dim = 0
-  for (key,value) in token_dict.items():
-    dim += 1
-    word_list.append(key)
-    count_list.append(value)
-  
-  result = [dim, word_list,count_list]
+    token_dict = {}
 
-  return result
+    for token in doc_title:
+        if not (token.is_punct or token.is_stop):
+            lemma_token = token.lemma_
+            lemma_token = lemma_token.lower()
+            if lemma_token in token_dict:
+                token_dict[lemma_token] += 1
+            else:
+                token_dict[lemma_token] = 1
+
+    word_list = []
+    count_list = []
+    dim = 0
+    for (key,value) in token_dict.items():
+        dim += 1
+        word_list.append(key)
+        count_list.append(value)
+
+    result = [dim, word_list,count_list]
+    print(result)
+    return result
 
 
 # quick sort
